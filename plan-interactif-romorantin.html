@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan Interactif — Maison 170 m² — Romorantin-Lanthenay</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+    /* ── HEADER ─────────────────────────────────────────── */
+    #header {
+      height: 52px; background: #fff; border-bottom: 1px solid #e4e7ec;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; flex-shrink: 0; z-index: 100;
+    }
+    #header h1 { font-size: 14px; font-weight: 700; color: #111; }
+    #tabs { display: flex; gap: 4px; }
+    .tab-btn {
+      padding: 7px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: 1.5px solid #e4e7ec; background: #f8f9fb;
+      color: #888; transition: all 0.15s;
+    }
+    .tab-btn:hover { background: #f0f0f0; }
+    .tab-btn.active { background: #111; color: #fff; border-color: #111; }
+
+    /* ── BODY ────────────────────────────────────────────── */
+    #body { flex: 1; display: flex; overflow: hidden; }
+
+    /* ── VIEWS ───────────────────────────────────────────── */
+    #views { flex: 1; position: relative; overflow: hidden; }
+    .view { position: absolute; inset: 0; display: none; }
+    .view.active { display: flex; align-items: flex-start; justify-content: center; overflow: auto; padding: 16px; }
+
+    /* Vue 2D */
+    #view-2d svg { width: 100%; height: auto; max-width: 1200px; display: block; }
+    .room-overlay { opacity: 0; transition: opacity 0.28s ease; pointer-events: none; }
+    .room-overlay.active { opacity: 0.38; }
+    .room-zone { fill: transparent; cursor: pointer; stroke: transparent; stroke-width: 2; transition: fill 0.15s, stroke 0.15s; }
+    .room-zone:hover { fill: rgba(255,255,255,0.08); stroke: rgba(255,210,0,0.75); stroke-width: 2; }
+    .room-zone.active { stroke: rgba(255,210,0,1); stroke-width: 2.5; }
+
+    /* Vue 3D — override display:flex et padding hérités de .view.active */
+    #view-3d.active  { padding: 0 !important; overflow: hidden !important; display: block !important; }
+    #view-3d { background: #f0ede8; cursor: grab; }
+    #view-3d:active { cursor: grabbing; }
+    #view-3d canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+
+    /* Vue 360° */
+    #view-360.active { padding: 0 !important; overflow: hidden !important; display: block !important; }
+    #view-360 { background: #111; cursor: grab; }
+    #view-360:active { cursor: grabbing; }
+    #view-360 canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+    #hint-360 {
+      position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.65); color: #fff; padding: 8px 20px; border-radius: 20px;
+      font-size: 12px; pointer-events: none; transition: opacity 1.5s; z-index: 10;
+    }
+    #hint-360.fade { opacity: 0; }
+    #room-label-360 {
+      position: absolute; top: 16px; left: 20px;
+      background: rgba(0,0,0,0.65); color: #fff; padding: 8px 16px; border-radius: 8px;
+      font-size: 14px; font-weight: 700; pointer-events: none; z-index: 10;
+    }
+    #nav-360 {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.75); display: flex; gap: 8px;
+      overflow-x: auto; padding: 12px 16px; z-index: 10;
+    }
+    #nav-360::-webkit-scrollbar { height: 4px; }
+    #nav-360::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 2px; }
+    .nav-btn-360 {
+      flex-shrink: 0; padding: 8px 18px; background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .nav-btn-360:hover { background: rgba(255,255,255,0.2); color: #fff; }
+    .nav-btn-360.active { background: #fff; color: #111; border-color: #fff; }
+    #add-img-360 {
+      position: absolute; top: 16px; right: 16px;
+      background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7);
+      border: 1px dashed rgba(255,255,255,0.3); border-radius: 8px;
+      padding: 8px 14px; font-size: 11px; cursor: pointer; z-index: 10;
+      transition: all 0.2s;
+    }
+    #add-img-360:hover { background: rgba(255,255,255,0.2); color: #fff; }
+    #diag-3d {
+      position: absolute; bottom: 80px; left: 16px; right: 16px;
+      background: rgba(200,0,0,0.85); color: #fff; padding: 10px 14px;
+      border-radius: 8px; font-size: 11px; font-family: monospace; white-space: pre-wrap;
+      z-index: 50; display: none; max-height: 150px; overflow: auto;
+    }
+    #controls-3d {
+      position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 10px; z-index: 10; pointer-events: all;
+    }
+    .btn3d {
+      padding: 9px 22px; border: 2px solid transparent; border-radius: 8px;
+      cursor: pointer; font-size: 13px; font-weight: 700;
+      transition: all 0.18s; box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+    }
+    .btn3d.on     { background: #1d4ed8; color: #fff; border-color: #1e40af; }
+    .btn3d.off    { background: #e5e7eb; color: #9ca3af; border-color: #d1d5db; }
+    .btn3d.active { background: #059669; color: #fff; border-color: #047857; }
+    #hint3d {
+      position: absolute; top: 12px; left: 16px;
+      background: rgba(255,255,255,0.88); padding: 8px 12px; border-radius: 8px;
+      font-size: 11px; color: #555; line-height: 1.9; pointer-events: none;
+    }
+    #legend3d {
+      position: absolute; top: 12px; right: 16px;
+      background: rgba(255,255,255,0.9); padding: 12px 16px; border-radius: 10px;
+      font-size: 11px; color: #333; line-height: 2; pointer-events: none;
+    }
+    #legend3d h3 { font-size: 10px; font-weight: 700; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; color: #111; }
+    .li { display: flex; align-items: center; gap: 8px; }
+    .lc { width: 13px; height: 13px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
+
+    /* ── PANNEAU INFO ────────────────────────────────────── */
+    #info-panel {
+      width: 300px; min-width: 260px; background: #fff; border-left: 1px solid #e4e7ec;
+      padding: 24px 18px 18px; overflow-y: auto; flex-shrink: 0;
+      display: flex; flex-direction: column;
+    }
+    .panel-title { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #b0b8c8; margin-bottom: 20px; letter-spacing: 0.9px; }
+    .default-view { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px 0; }
+    .default-view .icon { font-size: 38px; margin-bottom: 12px; opacity: 0.2; }
+    .default-view h3 { font-size: 14px; color: #aaa; margin-bottom: 8px; font-weight: 600; }
+    .default-view p { font-size: 12px; color: #ccc; line-height: 1.6; }
+    .room-info { display: none; animation: slideIn 0.2s ease; }
+    .room-info.active { display: block; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    .room-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.6px; }
+    .room-name { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 14px; line-height: 1.2; }
+    .room-stats { background: #f8f9fb; border-radius: 10px; padding: 13px; margin-bottom: 14px; }
+    .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #eef0f3; }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-label { font-size: 12px; color: #999; }
+    .stat-value { font-size: 13px; font-weight: 600; color: #222; }
+    .room-desc { font-size: 12px; color: #666; line-height: 1.65; margin-bottom: 14px; }
+    .features-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .feature-tag { background: #f0f4ff; color: #4a6cf7; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    .global-stats { margin-top: auto; padding-top: 16px; border-top: 1px solid #eef0f3; font-size: 11px; color: #bbb; text-align: center; line-height: 1.7; }
+
+    @media (max-width: 860px) {
+      #body { flex-direction: column; }
+      #info-panel { width: 100%; border-left: none; border-top: 1px solid #e4e7ec; max-height: 220px; min-width: unset; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<div id="header">
+  <h1>Plan Interactif — Maison 170 m² — Romorantin-Lanthenay</h1>
+  <div id="tabs">
+    <button class="tab-btn active" data-tab="2d"  onclick="switchTab('2d')">Plan 2D</button>
+    <button class="tab-btn"        data-tab="3d"  onclick="switchTab('3d')">Vue 3D</button>
+    <button class="tab-btn"        data-tab="360" onclick="switchTab('360')">Visite 360°</button>
+  </div>
+</div>
+
+<!-- ══ BODY ══ -->
+<div id="body">
+  <div id="views">
+
+    <!-- ════════════════ VUE 2D ════════════════ -->
+    <div id="view-2d" class="view active">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" style="background:#fff;font-family:Arial,sans-serif;">
+        <text x="600" y="35" text-anchor="middle" font-size="18" font-weight="bold" fill="#111">Plan 2D — Maison 170 m² — Romorantin-Lanthenay</text>
+
+        <!-- RDC -->
+        <text x="270" y="65" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Rez-de-chaussée (~85 m²)</text>
+        <rect x="50" y="80" width="340" height="265" fill="#f9f9f9" stroke="#111" stroke-width="3"/>
+        <rect x="390" y="245" width="140" height="100" fill="#efefef" stroke="#111" stroke-width="3"/>
+        <rect x="50" y="80" width="200" height="140" fill="none" stroke="#444" stroke-width="1.5"/>
+        <text x="150" y="142" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">SÉJOUR</text>
+        <text x="150" y="157" text-anchor="middle" font-size="10" fill="#555">~30 m²</text>
+        <circle cx="90" cy="185" r="6" fill="none" stroke="#888" stroke-width="1.2"/>
+        <text x="105" y="188" font-size="8" fill="#888">poêle</text>
+        <rect x="250" y="80" width="140" height="140" fill="none" stroke="#444" stroke-width="1.5"/>
+        <text x="320" y="135" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">SALLE À</text>
+        <text x="320" y="149" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">MANGER</text>
+        <text x="320" y="163" text-anchor="middle" font-size="10" fill="#555">~15 m²</text>
+        <line x1="250" y1="80" x2="250" y2="220" stroke="#444" stroke-width="1.5"/>
+        <rect x="250" y="220" width="140" height="125" fill="none" stroke="#444" stroke-width="1.5"/>
+        <text x="320" y="272" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">CUISINE</text>
+        <text x="320" y="286" text-anchor="middle" font-size="10" fill="#555">~20 m²</text>
+        <rect x="279" y="263" width="62" height="35" fill="#ddd" stroke="#888" stroke-width="1" rx="2"/>
+        <text x="310" y="285" text-anchor="middle" font-size="8" fill="#777">îlot</text>
+        <rect x="50" y="220" width="100" height="125" fill="none" stroke="#444" stroke-width="1.5"/>
+        <text x="100" y="272" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">ENTRÉE</text>
+        <text x="100" y="286" text-anchor="middle" font-size="10" fill="#555">~8 m²</text>
+        <rect x="150" y="280" width="100" height="65" fill="none" stroke="#444" stroke-width="1.5"/>
+        <text x="200" y="309" text-anchor="middle" font-size="10" font-weight="bold" fill="#222">WC</text>
+        <text x="200" y="323" text-anchor="middle" font-size="10" fill="#555">~3 m²</text>
+        <rect x="150" y="220" width="100" height="60" fill="#eee" stroke="#444" stroke-width="1.5"/>
+        <circle cx="200" cy="250" r="22" fill="none" stroke="#333" stroke-width="1.5"/>
+        <circle cx="200" cy="250" r="5" fill="#555"/>
+        <path d="M200,228 A22,22 0 0,1 222,250" stroke="#333" stroke-width="1" fill="none"/>
+        <path d="M200,228 A22,22 0 0,0 178,250" stroke="#333" stroke-width="1" fill="none"/>
+        <text x="200" y="272" text-anchor="middle" font-size="8" fill="#555">escalier</text>
+        <text x="460" y="290" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">GARAGE</text>
+        <text x="460" y="304" text-anchor="middle" font-size="10" fill="#555">~15 m²</text>
+        <line x1="390" y1="245" x2="530" y2="245" stroke="#111" stroke-width="3"/>
+        <line x1="460" y1="245" x2="460" y2="265" stroke="#888" stroke-width="1"/>
+        <!-- Portes RDC -->
+        <line x1="65" y1="345" x2="95" y2="345" stroke="#fff" stroke-width="3"/>
+        <path d="M65,345 A30,30 0 0,1 95,315" stroke="#333" stroke-width="1" fill="none"/>
+        <line x1="150" y1="290" x2="150" y2="320" stroke="#fff" stroke-width="3"/>
+        <path d="M150,290 A30,30 0 0,1 178,308" stroke="#333" stroke-width="1" fill="none"/>
+        <line x1="250" y1="230" x2="250" y2="260" stroke="#fff" stroke-width="3"/>
+        <path d="M250,230 A30,30 0 0,0 222,248" stroke="#333" stroke-width="1" fill="none"/>
+        <line x1="455" y1="345" x2="500" y2="345" stroke="#fff" stroke-width="3"/>
+        <path d="M455,345 A45,45 0 0,0 500,300" stroke="#333" stroke-width="1" fill="none"/>
+        <!-- Fenêtres RDC -->
+        <line x1="80" y1="80" x2="180" y2="80" stroke="#fff" stroke-width="3"/>
+        <line x1="80" y1="80" x2="180" y2="80" stroke="#555" stroke-width="1"/>
+        <line x1="80" y1="84" x2="180" y2="84" stroke="#555" stroke-width="1"/>
+        <line x1="80" y1="76" x2="180" y2="76" stroke="#555" stroke-width="1"/>
+        <line x1="265" y1="80" x2="375" y2="80" stroke="#fff" stroke-width="3"/>
+        <line x1="265" y1="80" x2="375" y2="80" stroke="#555" stroke-width="1"/>
+        <line x1="265" y1="84" x2="375" y2="84" stroke="#555" stroke-width="1"/>
+        <line x1="265" y1="76" x2="375" y2="76" stroke="#555" stroke-width="1"/>
+        <line x1="50" y1="100" x2="50" y2="180" stroke="#fff" stroke-width="3"/>
+        <line x1="50" y1="100" x2="50" y2="180" stroke="#555" stroke-width="1"/>
+        <line x1="54" y1="100" x2="54" y2="180" stroke="#555" stroke-width="1"/>
+        <line x1="46" y1="100" x2="46" y2="180" stroke="#555" stroke-width="1"/>
+
+        <!-- ÉTAGE -->
+        <text x="820" y="65" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Étage sous combles (~85 m²)</text>
+        <rect x="620" y="80" width="340" height="265" fill="#f9f9f9" stroke="#111" stroke-width="3"/>
+        <rect x="620" y="80" width="100" height="80" fill="#eee" stroke="#444" stroke-width="1.5"/>
+        <circle cx="670" cy="120" r="22" fill="none" stroke="#333" stroke-width="1.5"/>
+        <circle cx="670" cy="120" r="5" fill="#555"/>
+        <text x="670" y="145" text-anchor="middle" font-size="8" fill="#555">palier</text>
+        <rect x="620" y="160" width="170" height="185" fill="none" stroke="#444" stroke-width="1.5"/>
+        <text x="705" y="238" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">CH. PRINCIPALE</text>
+        <text x="705" y="253" text-anchor="middle" font-size="10" fill="#555">~18 m²</text>
+        <rect x="620" y="300" width="60" height="45" fill="#e8e8e8" stroke="#888" stroke-width="1"/>
+        <text x="650" y="327" text-anchor="middle" font-size="8" fill="#777">dressing</text>
+        <rect x="655" y="200" width="110" height="70" rx="4" fill="#ddd" stroke="#aaa" stroke-width="1"/>
+        <rect x="655" y="200" width="110" height="20" rx="2" fill="#bbb" stroke="#aaa" stroke-width="1"/>
+        <rect x="790" y="80" width="85" height="120" fill="none" stroke="#444" stroke-width="1.5"/>
+        <text x="832" y="135" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">CH. 2</text>
+        <text x="832" y="149" text-anchor="middle" font-size="10" fill="#555">~12 m²</text>
+        <rect x="875" y="80" width="85" height="120" fill="none" stroke="#444" stroke-width="1.5"/>
+        <text x="917" y="128" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">CH. 3</text>
+        <text x="917" y="142" text-anchor="middle" font-size="10" fill="#555">~12 m²</text>
+        <rect x="892" y="88" width="30" height="20" fill="#cce8ff" stroke="#555" stroke-width="1"/>
+        <text x="907" y="101" text-anchor="middle" font-size="7" fill="#446">velux</text>
+        <rect x="875" y="200" width="85" height="145" fill="#fff8f0" stroke="#444" stroke-width="1.5"/>
+        <text x="917" y="265" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">CH. 4</text>
+        <text x="917" y="279" text-anchor="middle" font-size="10" fill="#555">~12 m²</text>
+        <rect x="892" y="208" width="30" height="20" fill="#cce8ff" stroke="#555" stroke-width="1"/>
+        <text x="907" y="221" text-anchor="middle" font-size="7" fill="#446">velux</text>
+        <rect x="720" y="80" width="70" height="130" fill="#e8f4ff" stroke="#444" stroke-width="1.5"/>
+        <text x="755" y="135" text-anchor="middle" font-size="10" font-weight="bold" fill="#222">SDB</text>
+        <text x="755" y="148" text-anchor="middle" font-size="9" fill="#555">~10 m²</text>
+        <rect x="726" y="87" width="40" height="22" rx="5" fill="none" stroke="#77a" stroke-width="1"/>
+        <text x="746" y="102" text-anchor="middle" font-size="7" fill="#77a">bain</text>
+        <rect x="726" y="115" width="25" height="25" fill="none" stroke="#77a" stroke-width="1"/>
+        <text x="738" y="131" text-anchor="middle" font-size="7" fill="#77a">dche</text>
+        <rect x="790" y="200" width="85" height="80" fill="#e8f4ff" stroke="#444" stroke-width="1.5"/>
+        <text x="832" y="236" text-anchor="middle" font-size="10" font-weight="bold" fill="#222">SDB 2</text>
+        <text x="832" y="249" text-anchor="middle" font-size="9" fill="#555">~5 m²</text>
+        <!-- Portes étage -->
+        <line x1="720" y1="160" x2="720" y2="190" stroke="#fff" stroke-width="3"/>
+        <path d="M720,160 A30,30 0 0,1 750,178" stroke="#333" stroke-width="1" fill="none"/>
+        <line x1="790" y1="130" x2="790" y2="160" stroke="#fff" stroke-width="3"/>
+        <path d="M790,130 A30,30 0 0,0 762,148" stroke="#333" stroke-width="1" fill="none"/>
+        <line x1="875" y1="130" x2="875" y2="160" stroke="#fff" stroke-width="3"/>
+        <path d="M875,130 A30,30 0 0,1 905,148" stroke="#333" stroke-width="1" fill="none"/>
+        <line x1="875" y1="215" x2="875" y2="245" stroke="#fff" stroke-width="3"/>
+        <path d="M875,215 A30,30 0 0,1 905,233" stroke="#333" stroke-width="1" fill="none"/>
+        <line x1="720" y1="80" x2="750" y2="80" stroke="#fff" stroke-width="3"/>
+        <path d="M720,80 A30,30 0 0,0 742,106" stroke="#333" stroke-width="1" fill="none"/>
+        <line x1="790" y1="200" x2="820" y2="200" stroke="#fff" stroke-width="3"/>
+        <path d="M790,200 A30,30 0 0,1 812,226" stroke="#333" stroke-width="1" fill="none"/>
+        <!-- Fenêtres étage -->
+        <line x1="620" y1="200" x2="620" y2="270" stroke="#fff" stroke-width="3"/>
+        <line x1="620" y1="200" x2="620" y2="270" stroke="#555" stroke-width="1"/>
+        <line x1="624" y1="200" x2="624" y2="270" stroke="#555" stroke-width="1"/>
+        <line x1="616" y1="200" x2="616" y2="270" stroke="#555" stroke-width="1"/>
+        <line x1="800" y1="80" x2="860" y2="80" stroke="#fff" stroke-width="3"/>
+        <line x1="800" y1="80" x2="860" y2="80" stroke="#555" stroke-width="1"/>
+        <line x1="800" y1="84" x2="860" y2="84" stroke="#555" stroke-width="1"/>
+        <line x1="800" y1="76" x2="860" y2="76" stroke="#555" stroke-width="1"/>
+
+        <!-- LÉGENDE -->
+        <rect x="40" y="380" width="520" height="270" fill="#fafafa" stroke="#ccc" stroke-width="1" rx="4"/>
+        <text x="300" y="402" text-anchor="middle" font-size="12" font-weight="bold" fill="#222">Légende</text>
+        <line x1="60" y1="420" x2="100" y2="420" stroke="#111" stroke-width="3"/>
+        <text x="110" y="424" font-size="10" fill="#333">Mur porteur</text>
+        <line x1="200" y1="420" x2="240" y2="420" stroke="#555" stroke-width="1"/>
+        <line x1="200" y1="424" x2="240" y2="424" stroke="#555" stroke-width="1"/>
+        <line x1="200" y1="416" x2="240" y2="416" stroke="#555" stroke-width="1"/>
+        <text x="250" y="424" font-size="10" fill="#333">Fenêtre</text>
+        <line x1="340" y1="415" x2="370" y2="415" stroke="#333" stroke-width="1"/>
+        <path d="M340,415 A30,30 0 0,1 370,415" stroke="#333" stroke-width="1" fill="none"/>
+        <text x="380" y="424" font-size="10" fill="#333">Porte</text>
+        <rect x="450" y="410" width="25" height="16" fill="#cce8ff" stroke="#555" stroke-width="1"/>
+        <text x="480" y="422" font-size="10" fill="#333">Velux</text>
+        <text x="60" y="450" font-size="10" fill="#444">RDC :</text>
+        <text x="90" y="450" font-size="10" fill="#333">Entrée/Hall ~8 m² · Séjour ~30 m² · Salle à manger ~15 m²</text>
+        <text x="90" y="465" font-size="10" fill="#333">Cuisine (îlot central) ~20 m² · WC ~3 m² · Garage ~15 m²</text>
+        <text x="90" y="480" font-size="10" fill="#333">Escalier colimaçon métal central</text>
+        <text x="60" y="500" font-size="10" fill="#444">Étage :</text>
+        <text x="90" y="500" font-size="10" fill="#333">Palier ~8 m² · Chambre principale + dressing ~18 m²</text>
+        <text x="90" y="515" font-size="10" fill="#333">Chambre 2 ~12 m² · Chambre 3 ~12 m² (velux) · Chambre 4 ~12 m² (velux)</text>
+        <text x="90" y="530" font-size="10" fill="#333">Grande SDB (baignoire + douche + double vasque) ~10 m² · SDB2/WC ~5 m²</text>
+        <line x1="60" y1="545" x2="540" y2="545" stroke="#ccc" stroke-width="1"/>
+        <text x="60" y="562" font-size="11" font-weight="bold" fill="#222">Surface habitable totale : ~170 m²</text>
+        <text x="60" y="578" font-size="10" fill="#555">Construction 2010 · Plain-pied + combles aménagés · Velux en toiture</text>
+        <text x="60" y="600" font-size="9" fill="#888">Échelle indicative — plan non contractuel</text>
+        <line x1="60" y1="615" x2="210" y2="615" stroke="#333" stroke-width="2"/>
+        <line x1="60" y1="610" x2="60" y2="620" stroke="#333" stroke-width="1.5"/>
+        <line x1="210" y1="610" x2="210" y2="620" stroke="#333" stroke-width="1.5"/>
+        <text x="60" y="630" font-size="9" fill="#555">0</text>
+        <text x="127" y="630" font-size="9" fill="#555">5 m</text>
+        <text x="200" y="630" font-size="9" fill="#555">10 m</text>
+        <rect x="610" y="380" width="550" height="270" fill="#fafafa" stroke="#ccc" stroke-width="1" rx="4"/>
+        <text x="885" y="402" text-anchor="middle" font-size="12" font-weight="bold" fill="#222">Notes et repères</text>
+        <text x="630" y="425" font-size="10" fill="#444">Orientation :</text><text x="720" y="425" font-size="10" fill="#333">Nord en haut (façade principale au sud)</text>
+        <text x="630" y="445" font-size="10" fill="#444">Structure :</text><text x="720" y="445" font-size="10" fill="#333">Maison de plain-pied (RDC) + combles aménagés (étage)</text>
+        <text x="630" y="465" font-size="10" fill="#444">Chauffage :</text><text x="720" y="465" font-size="10" fill="#333">Poêle à bois dans le séjour (RDC)</text>
+        <text x="630" y="485" font-size="10" fill="#444">Lumière :</text><text x="720" y="485" font-size="10" fill="#333">Velux chambres 3 et 4 (toiture), double vitrage façade sud</text>
+        <text x="630" y="505" font-size="10" fill="#444">Escalier :</text><text x="720" y="505" font-size="10" fill="#333">Colimaçon métal — central, entre entrée et cuisine</text>
+        <text x="630" y="525" font-size="10" fill="#444">Garage :</text><text x="720" y="525" font-size="10" fill="#333">Attenant (droite), accès extérieur uniquement</text>
+        <text x="630" y="545" font-size="10" fill="#444">SDB principale :</text><text x="720" y="545" font-size="10" fill="#333">Baignoire + douche + double vasque (~10 m²)</text>
+        <g transform="translate(1125, 430)">
+          <circle cx="0" cy="0" r="30" fill="white" stroke="#333" stroke-width="1.5"/>
+          <polygon points="0,-25 -7,5 0,0 7,5" fill="#222"/>
+          <polygon points="0,25 -7,-5 0,0 7,-5" fill="#aaa"/>
+          <text x="0" y="-31" text-anchor="middle" font-size="10" font-weight="bold" fill="#111">N</text>
+          <text x="0" y="42" text-anchor="middle" font-size="9" fill="#666">S</text>
+          <text x="34" y="4" text-anchor="middle" font-size="9" fill="#666">E</text>
+          <text x="-34" y="4" text-anchor="middle" font-size="9" fill="#666">O</text>
+          <line x1="0" y1="-20" x2="0" y2="20" stroke="#ccc" stroke-width="0.5"/>
+          <line x1="-20" y1="0" x2="20" y2="0" stroke="#ccc" stroke-width="0.5"/>
+        </g>
+        <text x="630" y="635" font-size="9" fill="#888">Plan 2D · Romorantin-Lanthenay (41200) · 2026-05-26</text>
+
+        <!-- OVERLAYS 2D -->
+        <rect id="ov-sejour"         class="room-overlay" x="50"  y="80"  width="200" height="140" fill="#4a90e2" rx="2"/>
+        <rect id="ov-sam"            class="room-overlay" x="250" y="80"  width="140" height="140" fill="#27ae60" rx="2"/>
+        <rect id="ov-cuisine"        class="room-overlay" x="250" y="220" width="140" height="125" fill="#e67e22" rx="2"/>
+        <rect id="ov-entree"         class="room-overlay" x="50"  y="220" width="100" height="125" fill="#95a5a6" rx="2"/>
+        <rect id="ov-wc"             class="room-overlay" x="150" y="280" width="100" height="65"  fill="#7f8c8d" rx="2"/>
+        <rect id="ov-garage"         class="room-overlay" x="390" y="245" width="140" height="100" fill="#7f8c8d" rx="2"/>
+        <rect id="ov-ch-principale"  class="room-overlay" x="620" y="160" width="170" height="185" fill="#9b59b6" rx="2"/>
+        <rect id="ov-ch2"            class="room-overlay" x="790" y="80"  width="85"  height="120" fill="#8e44ad" rx="2"/>
+        <rect id="ov-ch3"            class="room-overlay" x="875" y="80"  width="85"  height="120" fill="#2980b9" rx="2"/>
+        <rect id="ov-ch4"            class="room-overlay" x="875" y="200" width="85"  height="145" fill="#16a085" rx="2"/>
+        <rect id="ov-sdb"            class="room-overlay" x="720" y="80"  width="70"  height="130" fill="#1abc9c" rx="2"/>
+        <rect id="ov-sdb2"           class="room-overlay" x="790" y="200" width="85"  height="80"  fill="#3498db" rx="2"/>
+
+        <!-- ZONES CLIQUABLES 2D -->
+        <rect class="room-zone" data-room="sejour"        x="50"  y="80"  width="200" height="140" rx="2"/>
+        <rect class="room-zone" data-room="sam"           x="250" y="80"  width="140" height="140" rx="2"/>
+        <rect class="room-zone" data-room="cuisine"       x="250" y="220" width="140" height="125" rx="2"/>
+        <rect class="room-zone" data-room="entree"        x="50"  y="220" width="100" height="125" rx="2"/>
+        <rect class="room-zone" data-room="wc"            x="150" y="280" width="100" height="65"  rx="2"/>
+        <rect class="room-zone" data-room="garage"        x="390" y="245" width="140" height="100" rx="2"/>
+        <rect class="room-zone" data-room="ch-principale" x="620" y="160" width="170" height="185" rx="2"/>
+        <rect class="room-zone" data-room="ch2"           x="790" y="80"  width="85"  height="120" rx="2"/>
+        <rect class="room-zone" data-room="ch3"           x="875" y="80"  width="85"  height="120" rx="2"/>
+        <rect class="room-zone" data-room="ch4"           x="875" y="200" width="85"  height="145" rx="2"/>
+        <rect class="room-zone" data-room="sdb"           x="720" y="80"  width="70"  height="130" rx="2"/>
+        <rect class="room-zone" data-room="sdb2"          x="790" y="200" width="85"  height="80"  rx="2"/>
+      </svg>
+    </div>
+
+    <!-- ════════════════ VUE 3D ════════════════ -->
+    <div id="view-3d" class="view">
+      <div id="hint3d">🖱 Clic + drag : rotation<br>🔍 Scroll : zoom<br>🖱 Clic pièce : détails</div>
+      <div id="legend3d">
+        <h3>Légende</h3>
+        <div class="li"><div class="lc" style="background:#c2e6bc"></div>Séjour</div>
+        <div class="li"><div class="lc" style="background:#fce49c"></div>Cuisine</div>
+        <div class="li"><div class="lc" style="background:#ffd09a"></div>Salle à manger</div>
+        <div class="li"><div class="lc" style="background:#f0f0d0"></div>Entrée / Hall</div>
+        <div class="li"><div class="lc" style="background:#e0ccf0"></div>Chambre</div>
+        <div class="li"><div class="lc" style="background:#a8d8f0"></div>SDB / WC</div>
+        <div class="li"><div class="lc" style="background:#d8d8d0"></div>Garage</div>
+      </div>
+      <div id="controls-3d">
+        <button class="btn3d on"  id="b-rdc"       onclick="toggle3d('rdc')">RDC</button>
+        <button class="btn3d on"  id="b-etage"     onclick="toggle3d('etage')">Étage</button>
+        <button class="btn3d on"  id="b-toit"      onclick="toggle3d('toit')">Toiture</button>
+        <button class="btn3d off" id="b-interieur" onclick="toggleInterieur()">Vue intérieure</button>
+      </div>
+      <div id="diag-3d"></div>
+    </div>
+
+    <!-- ════════════════ VUE 360° ════════════════ -->
+    <div id="view-360" class="view">
+      <div id="room-label-360">Séjour</div>
+      <div id="hint-360">Faites glisser pour regarder autour · Scroll pour zoomer</div>
+      <div id="add-img-360" title="Remplacer par votre image 360°">&#x1F4F7; Ajouter image 360°</div>
+      <div id="nav-360"></div>
+    </div>
+
+  </div>
+
+  <!-- ══ PANNEAU INFO ══ -->
+  <div id="info-panel">
+    <div class="panel-title">Maison 170 m² — Romorantin-Lanthenay</div>
+    <div id="default-view" class="default-view">
+      <div class="icon">🏠</div>
+      <h3>Cliquez sur une pièce</h3>
+      <p>Survolez puis cliquez sur n'importe quelle pièce pour découvrir ses caractéristiques.</p>
+    </div>
+    <div id="room-panels"></div>
+    <div class="global-stats">
+      <div>Surface totale : ~170 m²</div>
+      <div>RDC ~85 m² · Étage ~85 m²</div>
+      <div style="font-size:10px;margin-top:4px;color:#d0d5e0;">Romorantin-Lanthenay (41200)</div>
+    </div>
+  </div>
+</div>
+
+<!-- Three.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
+
+
+<script>
+'use strict';
+
+// ══════════════════════════════════════════════════════
+//  DONNÉES PIÈCES (partagées 2D + 3D)
+// ══════════════════════════════════════════════════════
+const ROOMS = {
+  sejour:        { name:'Séjour',          badge:'RDC',   badgeBg:'#e8f2ff', badgeColor:'#4a90e2', surface:'~30 m²', level:'Rez-de-chaussée', orientation:'Nord / Ouest', desc:'Grande pièce de vie lumineuse avec triple fenêtrage. Poêle à bois au centre.', features:['Poêle à bois','3 fenêtres','Parquet','Lumineux'] },
+  sam:           { name:'Salle à Manger',  badge:'RDC',   badgeBg:'#e8fff2', badgeColor:'#27ae60', surface:'~15 m²', level:'Rez-de-chaussée', orientation:'Nord',        desc:'Espace repas convivial en communication directe avec le séjour et la cuisine.', features:['Parquet','Ouvert','Lumineux'] },
+  cuisine:       { name:'Cuisine',         badge:'RDC',   badgeBg:'#fff4e8', badgeColor:'#e67e22', surface:'~20 m²', level:'Rez-de-chaussée', orientation:null,           desc:'Cuisine semi-ouverte spacieuse avec îlot central et grande surface de plan de travail.', features:['Équipée','Îlot central','Carrelage','Fenêtre'] },
+  entree:        { name:'Entrée / Hall',   badge:'RDC',   badgeBg:'#f0f0f0', badgeColor:'#7f8c8d', surface:'~8 m²',  level:'Rez-de-chaussée', orientation:null,           desc:'Hall d\'entrée avec escalier colimaçon métal donnant accès à l\'étage.', features:['Escalier colimaçon','Carrelage'] },
+  wc:            { name:'WC',              badge:'RDC',   badgeBg:'#f0f0f0', badgeColor:'#7f8c8d', surface:'~3 m²',  level:'Rez-de-chaussée', orientation:null,           desc:'WC indépendant accessible depuis le hall d\'entrée.', features:['Carrelage','Indépendant'] },
+  garage:        { name:'Garage',          badge:'RDC',   badgeBg:'#f0f0f0', badgeColor:'#7f8c8d', surface:'~15 m²', level:'Rez-de-chaussée', access:'Extérieur uniquement', desc:'Garage attenant avec porte double. Accès depuis l\'extérieur uniquement.', features:['Attenant','Porte double','Accès ext.'] },
+  'ch-principale':{ name:'Ch. Principale', badge:'Étage', badgeBg:'#f4e8ff', badgeColor:'#9b59b6', surface:'~18 m²', level:'1er (combles)',    orientation:'Ouest',        desc:'Suite parentale spacieuse avec dressing intégré et grande fenêtre exposée côté ouest.', features:['Dressing','Fenêtre ouest','Parquet'] },
+  ch2:           { name:'Chambre 2',       badge:'Étage', badgeBg:'#f4e8ff', badgeColor:'#8e44ad', surface:'~12 m²', level:'1er (combles)',    orientation:'Nord',         desc:'Chambre lumineuse avec fenêtre exposée nord. Idéale pour chambre d\'enfant.', features:['Fenêtre nord','Parquet'] },
+  ch3:           { name:'Chambre 3',       badge:'Étage', badgeBg:'#e8f4ff', badgeColor:'#2980b9', surface:'~12 m²', level:'1er (combles)',    orientation:null,           desc:'Chambre sous combles avec velux pour une luminosité naturelle zénithale.', features:['Velux','Parquet','Combles'] },
+  ch4:           { name:'Chambre 4',       badge:'Étage', badgeBg:'#e8fff9', badgeColor:'#16a085', surface:'~12 m²', level:'1er (combles)',    orientation:null,           desc:'Chambre sous combles avec velux et papier peint décoratif.', features:['Velux','Papier peint','Combles'] },
+  sdb:           { name:'Grande SDB',      badge:'Étage', badgeBg:'#e0fff9', badgeColor:'#1abc9c', surface:'~10 m²', level:'1er (combles)',    orientation:null,           desc:'Salle de bain complète : baignoire, douche séparée et double vasque.', features:['Baignoire','Douche','Double vasque','Carrelage'] },
+  sdb2:          { name:'SDB 2 / WC',      badge:'Étage', badgeBg:'#e8f4ff', badgeColor:'#3498db', surface:'~5 m²',  level:'1er (combles)',    orientation:null,           desc:'Deuxième salle de bain compacte avec douche et WC.', features:['Douche','WC','Carrelage'] }
+};
+
+// Générer les panneaux HTML
+const roomPanels = document.getElementById('room-panels');
+Object.entries(ROOMS).forEach(([id, r]) => {
+  const statsRows = [
+    `<div class="stat-row"><span class="stat-label">Surface</span><span class="stat-value">${r.surface}</span></div>`,
+    `<div class="stat-row"><span class="stat-label">Niveau</span><span class="stat-value">${r.level}</span></div>`,
+    r.orientation ? `<div class="stat-row"><span class="stat-label">Orientation</span><span class="stat-value">${r.orientation}</span></div>` : '',
+    r.access      ? `<div class="stat-row"><span class="stat-label">Accès</span><span class="stat-value">${r.access}</span></div>` : ''
+  ].join('');
+  const featureTags = r.features.map(f => `<span class="feature-tag">${f}</span>`).join('');
+  roomPanels.insertAdjacentHTML('beforeend', `
+    <div class="room-info" data-room="${id}">
+      <span class="room-badge" style="background:${r.badgeBg};color:${r.badgeColor};">${r.badge}</span>
+      <div class="room-name">${r.name}</div>
+      <div class="room-stats">${statsRows}</div>
+      <p class="room-desc">${r.desc}</p>
+      <div class="features-list">${featureTags}</div>
+    </div>`);
+});
+
+// ══════════════════════════════════════════════════════
+//  PANNEAU INFO — activation commune
+// ══════════════════════════════════════════════════════
+let currentRoom = null;
+const defaultView = document.getElementById('default-view');
+
+function activateRoom(id) {
+  deactivateRoom();
+  if (!id || !ROOMS[id]) return;
+  currentRoom = id;
+  defaultView.style.display = 'none';
+  document.querySelectorAll('.room-info').forEach(el => {
+    if (el.dataset.room === id) el.classList.add('active');
+  });
+}
+
+function deactivateRoom() {
+  currentRoom = null;
+  document.querySelectorAll('.room-info').forEach(el => el.classList.remove('active'));
+  defaultView.style.display = 'flex';
+}
+
+// ══════════════════════════════════════════════════════
+//  VUE 2D — interactions SVG
+// ══════════════════════════════════════════════════════
+document.querySelectorAll('.room-zone').forEach(zone => {
+  zone.addEventListener('click', e => {
+    e.stopPropagation();
+    const id = zone.dataset.room;
+    if (currentRoom === id) { deactivate2D(); deactivateRoom(); }
+    else { activate2D(id); activateRoom(id); }
+  });
+});
+
+function activate2D(id) {
+  deactivate2D();
+  const ov = document.getElementById('ov-' + id);
+  if (ov) ov.classList.add('active');
+  document.querySelectorAll('.room-zone').forEach(z => { if (z.dataset.room === id) z.classList.add('active'); });
+}
+function deactivate2D() {
+  document.querySelectorAll('.room-overlay').forEach(o => o.classList.remove('active'));
+  document.querySelectorAll('.room-zone').forEach(z => z.classList.remove('active'));
+}
+
+document.getElementById('view-2d').addEventListener('click', e => {
+  if (!e.target.closest('.room-zone')) { deactivate2D(); deactivateRoom(); }
+});
+
+// ══════════════════════════════════════════════════════
+//  SWITCH TAB
+// ══════════════════════════════════════════════════════
+let threeReady = false;
+let animRunning = false;
+
+// Capture erreurs JS → affichage dans #diag-3d
+window.addEventListener('error', e => {
+  const d = document.getElementById('diag-3d');
+  if (d) { d.style.display = 'block'; d.textContent += '❌ ' + e.message + '\n   ' + e.filename + ':' + e.lineno + '\n'; }
+});
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + tab).classList.add('active');
+  deactivate2D(); deactivateRoom();
+  stopLoop(); stop360Loop();
+  if (tab === '3d') {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const c = document.getElementById('view-3d');
+      const d = document.getElementById('diag-3d');
+      if (d) { d.textContent = ''; d.style.display='none'; }
+      if (typeof THREE === 'undefined') {
+        if (d) { d.style.display='block'; d.textContent = '❌ Three.js non chargé (CDN inaccessible)'; }
+        return;
+      }
+      if (!threeReady) initThree();
+      if (renderer) { resizeRenderer(); startLoop(); }
+    }));
+  } else if (tab === '360') {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (typeof THREE === 'undefined') return;
+      if (!three60Ready) init360();
+      else resize360();
+      if (renderer360) start360Loop();
+    }));
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  TROIS.JS
+// ══════════════════════════════════════════════════════
+let scene, camera, renderer, controls3d, raycaster, mouse;
+const clickables3d = [];
+let selectedMesh = null;
+let G, M3d, vis;
+let animId;
+
+function initThree() {
+  if (typeof THREE === 'undefined') {
+    document.getElementById('view-3d').insertAdjacentHTML('afterbegin',
+      '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;color:#888;text-align:center;padding:20px;pointer-events:none;">' +
+      '⚠️ Three.js non disponible.<br>Vérifiez votre connexion internet.</div>');
+    return;
+  }
+  threeReady = true;
+  const container = document.getElementById('view-3d');
+
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xf0ede8);
+
+  const W3 = container.clientWidth || window.innerWidth;
+  const H3 = container.clientHeight || window.innerHeight;
+  camera = new THREE.PerspectiveCamera(45, W3 / H3, 0.1, 300);
+  camera.position.set(4, 15, -22);
+
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(W3, H3);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.domElement.style.cssText = 'position:absolute;top:0;left:0;z-index:0;';
+  container.appendChild(renderer.domElement);
+
+  if (typeof THREE.OrbitControls !== 'undefined') {
+    controls3d = new THREE.OrbitControls(camera, renderer.domElement);
+    controls3d.enableDamping = true; controls3d.dampingFactor = 0.06;
+    controls3d.target.set(4, 3, 4.5);
+    controls3d.minDistance = 5; controls3d.maxDistance = 80;
+    controls3d.maxPolarAngle = Math.PI / 2.05;
+    controls3d.update();
+  }
+
+  raycaster = new THREE.Raycaster();
+  mouse = new THREE.Vector2();
+
+  // Lumières
+  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  const sun = new THREE.DirectionalLight(0xfff6e0, 1.3);
+  sun.position.set(18, 32, 8); sun.castShadow = true;
+  sun.shadow.mapSize.width = sun.shadow.mapSize.height = 2048;
+  sun.shadow.camera.left = -28; sun.shadow.camera.right = 28;
+  sun.shadow.camera.top = 28; sun.shadow.camera.bottom = -28;
+  sun.shadow.camera.near = 1; sun.shadow.camera.far = 110;
+  sun.shadow.bias = -0.001;
+  scene.add(sun);
+  const fill1 = new THREE.DirectionalLight(0xb0d0ff, 0.28); fill1.position.set(-12, 8, -15); scene.add(fill1);
+  const fill2 = new THREE.DirectionalLight(0xfff8f0, 0.22); fill2.position.set(4, 10, -18);  scene.add(fill2);
+
+  G = { rdc: new THREE.Group(), etage: new THREE.Group(), toit: new THREE.Group() };
+  Object.values(G).forEach(g => scene.add(g));
+
+  // Matériaux
+  function mat(hex, opts) { return new THREE.MeshPhongMaterial(Object.assign({ color: hex, shininess: 18 }, opts || {})); }
+  M3d = {
+    wallOut: new THREE.MeshPhongMaterial({ color: 0xe0d6c4, shininess: 22, transparent: true, opacity: 1.0, side: THREE.DoubleSide }),
+    wallIn: mat(0xece7dc), garage: mat(0xd0cec2),
+    hall: mat(0xf0f0d0), sejour: mat(0xc2e6bc), sam: mat(0xffd09a),
+    cuisine: mat(0xfce49c), wc: mat(0xa8d8f0),
+    sdb: mat(0xa8d8f0), garSol: mat(0xd8d8d0), couloir: mat(0xf0eed8),
+    roof: mat(0x8c5a38, { side: THREE.DoubleSide }),
+    velux: mat(0x88d8f5, { transparent: true, opacity: 0.72 }),
+    door: mat(0x7a5030), win: mat(0x88d5f2, { transparent: true, opacity: 0.52 }),
+    stair: mat(0x888888), island: mat(0xd4b080), stove: mat(0x1e1e1e),
+    ground: mat(0x8fbc6a)
+  };
+
+  // Helpers
+  function box(w, h, d, m, x, y, z, grp) {
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+    mesh.position.set(x, y, z); mesh.castShadow = true; mesh.receiveShadow = true;
+    grp.add(mesh); return mesh;
+  }
+  function floorBox(w, h, d, hex, x, y, z, grp, roomId) {
+    const m = new THREE.MeshPhongMaterial({ color: hex, shininess: 18 });
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+    mesh.position.set(x, y, z); mesh.castShadow = true; mesh.receiveShadow = true;
+    mesh.userData.room = roomId; mesh.userData.origColor = hex;
+    grp.add(mesh);
+    if (roomId) {
+      clickables3d.push(mesh);
+      // Volume invisible surélevé pour le raycast (depuis caméra haute, les dalles à Y=0.16 sont trop loin)
+      const hitH = 5;
+      const hitM = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false });
+      const hitMesh = new THREE.Mesh(new THREE.BoxGeometry(w, hitH, d), hitM);
+      hitMesh.position.set(x, y + hitH * 0.5 + 0.3, z);
+      hitMesh.userData.room = roomId; hitMesh.userData.origColor = hex; hitMesh.userData.floorMesh = mesh;
+      grp.add(hitMesh);
+      clickables3d.push(hitMesh);
+    }
+    return mesh;
+  }
+  function cyl(rt, rb, h, m, x, y, z, grp) {
+    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, 12), m);
+    mesh.position.set(x, y, z); mesh.castShadow = true; grp.add(mesh); return mesh;
+  }
+  function staircase(cx, cz, baseY, grp) {
+    cyl(0.5, 0.5, 2.8, M3d.stair, cx, baseY + 1.4, cz, grp);
+    for (let i = 0; i < 9; i++) {
+      const a = (i / 9) * Math.PI * 2;
+      const s = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.05, 0.28), M3d.stair);
+      s.position.set(cx + Math.cos(a) * 0.62, baseY + 0.1 + i * 0.3, cz + Math.sin(a) * 0.62);
+      s.rotation.y = -a; s.castShadow = true; grp.add(s);
+    }
+  }
+  function makeLabel(text, x, y, z, grpName) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 320; canvas.height = 80;
+    const ctx = canvas.getContext('2d');
+    ctx.shadowColor = 'rgba(0,0,0,0.18)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 2;
+    ctx.fillStyle = 'rgba(255,255,255,0.94)';
+    ctx.beginPath();
+    ctx.moveTo(14,3); ctx.lineTo(306,3); ctx.arcTo(317,3,317,14,11); ctx.lineTo(317,66); ctx.arcTo(317,77,306,77,11); ctx.lineTo(14,77); ctx.arcTo(3,77,3,66,11); ctx.lineTo(3,14); ctx.arcTo(3,3,14,3,11); ctx.closePath();
+    ctx.fill();
+    ctx.shadowColor = 'transparent'; ctx.strokeStyle = 'rgba(0,0,0,0.10)'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = '#1a1a1a'; ctx.font = 'bold 26px Segoe UI, Arial, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(text, 160, 40);
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas), depthTest: false, transparent: true }));
+    sprite.scale.set(3.0, 0.75, 1); sprite.position.set(x, y, z); sprite.renderOrder = 999;
+    G[grpName].add(sprite);
+  }
+
+  const FT = 0.15, WH = 2.8, WT = 0.2;
+  const F0 = FT / 2, W0 = FT + WH / 2, EB = FT + WH, EF = EB + FT / 2, EW = EB + FT + WH / 2, TB = EB + FT + WH;
+  const SR = FT + 0.01, SE = EF + 0.01;
+
+  // Terrain
+  const gnd = new THREE.Mesh(new THREE.PlaneGeometry(70, 55), M3d.ground);
+  gnd.rotation.x = -Math.PI / 2; gnd.position.set(3, -0.01, 4); gnd.receiveShadow = true;
+  scene.add(gnd);
+
+  // ── RDC ──
+  box(13, FT, 9, M3d.wallIn,  6.5, F0, 4.5, G.rdc);
+  box(5,  FT, 6, M3d.garage, -2.5, F0, 3.0, G.rdc);
+  // Sols colorés + cliquables
+  floorBox(7,   0.02, 2.5, 0xf0f0d0, 3.5,   SR, 1.25, G.rdc, 'entree');
+  floorBox(7,   0.02, 6.5, 0xc2e6bc, 3.5,   SR, 5.75, G.rdc, 'sejour');
+  floorBox(4,   0.02, 5,   0xffd09a, 9.0,   SR, 2.5,  G.rdc, 'sam');
+  floorBox(6,   0.02, 4,   0xfce49c, 10.0,  SR, 7.0,  G.rdc, 'cuisine');
+  floorBox(1.5, 0.02, 2,   0xa8d8f0, 12.25, SR, 1.0,  G.rdc, 'wc');
+  floorBox(5,   0.02, 6,   0xd8d8d0, -2.5,  SR, 3.0,  G.rdc, 'garage');
+  // Murs ext.
+  box(13, WH, WT, M3d.wallOut,  6.5, W0, 0,   G.rdc);
+  box(13, WH, WT, M3d.wallOut,  6.5, W0, 9,   G.rdc);
+  box(WT, WH, 9,  M3d.wallOut,  0,   W0, 4.5, G.rdc);
+  box(WT, WH, 9,  M3d.wallOut, 13,   W0, 4.5, G.rdc);
+  box(5,  WH, WT, M3d.garage,  -2.5, W0, 0,   G.rdc);
+  box(5,  WH, WT, M3d.garage,  -2.5, W0, 6,   G.rdc);
+  box(WT, WH, 6,  M3d.garage,  -5,   W0, 3,   G.rdc);
+  box(5.4, 0.22, 6.4, M3d.garage, -2.5, FT + WH + 0.11, 3.0, G.rdc);
+  // Murs int.
+  box(7,   WH, WT, M3d.wallIn,  3.5,   W0, 2.5, G.rdc);
+  box(WT,  WH, 9,  M3d.wallIn,  7,     W0, 4.5, G.rdc);
+  box(4,   WH, WT, M3d.wallIn,  9,     W0, 5,   G.rdc);
+  box(WT,  WH, 2,  M3d.wallIn, 11.5,   W0, 1,   G.rdc);
+  box(1.5, WH, WT, M3d.wallIn, 12.25,  W0, 2,   G.rdc);
+  // Ouvertures, mobilier
+  box(1.0, 2.1, 0.09, M3d.door,   1.5,  FT + 1.05, 0, G.rdc);
+  box(2.2, 1.3, 0.09, M3d.win,    4.2,  FT + 1.2,  0, G.rdc);
+  box(1.4, 1.2, 0.09, M3d.win,    9.0,  FT + 1.1,  0, G.rdc);
+  box(1.4, 1.2, 0.09, M3d.win,   10.5,  FT + 1.2,  9, G.rdc);
+  box(1.4, 1.2, 0.09, M3d.win,    4.0,  FT + 1.2,  9, G.rdc);
+  box(2.0, 0.9, 1.0, M3d.island, 10.5,  FT + 0.45, 7.2, G.rdc);
+  cyl(0.24, 0.3, 1.0, M3d.stove,  5.3,  FT + 0.5,  5.5, G.rdc);
+  cyl(0.08, 0.08, 2.5, M3d.stove, 5.3,  FT + 1.9,  5.5, G.rdc);
+  staircase(1.5, 3.0, FT, G.rdc);
+  const LR = FT + 1.7;
+  makeLabel('Entrée / Hall',  3.5,   LR, 1.25, 'rdc');
+  makeLabel('Séjour',         3.2,   LR, 5.8,  'rdc');
+  makeLabel('Salle à manger', 9.0,   LR, 2.5,  'rdc');
+  makeLabel('Cuisine + Îlot', 10.0,  LR, 7.0,  'rdc');
+  makeLabel('WC',            12.25,  LR, 1.0,  'rdc');
+  makeLabel('Garage',        -2.5,   LR, 3.0,  'rdc');
+
+  // ── ÉTAGE ──
+  box(13, FT, 9, M3d.wallIn, 6.5, EF, 4.5, G.etage);
+  floorBox(4.5, 0.02, 3,   0xe0ccf0, 2.25,  SE, 1.5,  G.etage, 'ch-principale');
+  floorBox(4.5, 0.02, 3,   0xe0ccf0, 6.75,  SE, 1.5,  G.etage, 'ch2');
+  floorBox(4,   0.02, 3,   0xe0ccf0, 11.0,  SE, 1.5,  G.etage, 'ch3');
+  floorBox(13,  0.02, 1,   0xf0eed8, 6.5,   SE, 3.5,  G.etage, null);
+  floorBox(3.5, 0.02, 5,   0xa8d8f0, 1.75,  SE, 6.5,  G.etage, 'sdb');
+  floorBox(5,   0.02, 5,   0xe0ccf0, 6.0,   SE, 6.5,  G.etage, 'ch4');
+  floorBox(3,   0.02, 2.5, 0xa8d8f0, 11.5,  SE, 7.75, G.etage, 'sdb2');
+  floorBox(4.5, 0.02, 2.5, 0xf0eed8, 10.75, SE, 5.25, G.etage, null);
+  // Murs ext. étage
+  box(13, WH, WT, M3d.wallOut,  6.5, EW, 0,   G.etage);
+  box(13, WH, WT, M3d.wallOut,  6.5, EW, 9,   G.etage);
+  box(WT, WH, 9,  M3d.wallOut,  0,   EW, 4.5, G.etage);
+  box(WT, WH, 9,  M3d.wallOut, 13,   EW, 4.5, G.etage);
+  box(13, WH, WT, M3d.wallIn,  6.5,   EW, 3.0,  G.etage);
+  box(13, WH, WT, M3d.wallIn,  6.5,   EW, 4.0,  G.etage);
+  box(WT, WH, 3,  M3d.wallIn,  4.5,   EW, 1.5,  G.etage);
+  box(WT, WH, 3,  M3d.wallIn,  9.0,   EW, 1.5,  G.etage);
+  box(WT, WH, 5,  M3d.wallIn,  3.5,   EW, 6.5,  G.etage);
+  box(WT, WH, 5,  M3d.wallIn,  8.5,   EW, 6.5,  G.etage);
+  box(3,  WH, WT, M3d.wallIn, 11.5,   EW, 6.5,  G.etage);
+  box(WT, WH, 2.5,M3d.wallIn, 10.0,   EW, 7.75, G.etage);
+  box(1.5, 1.1, 0.09, M3d.win,  2.2, EW, 0, G.etage);
+  box(1.5, 1.1, 0.09, M3d.win,  6.7, EW, 0, G.etage);
+  box(1.5, 1.1, 0.09, M3d.win, 11.0, EW, 0, G.etage);
+  box(1.5, 1.1, 0.09, M3d.win,  6.0, EW, 9, G.etage);
+  box(1.5, 1.1, 0.09, M3d.win, 11.0, EW, 9, G.etage);
+  staircase(1.5, 3.5, EB + FT, G.etage);
+  const LE = EB + FT + 1.7;
+  makeLabel('Couloir / Palier',   6.5,  LE, 3.5,  'etage');
+  makeLabel('Ch. Principale',     2.25, LE, 1.5,  'etage');
+  makeLabel('Chambre 2',          6.75, LE, 1.5,  'etage');
+  makeLabel('Chambre 3',         11.0,  LE, 1.5,  'etage');
+  makeLabel('Grande SDB',         1.75, LE, 6.5,  'etage');
+  makeLabel('Chambre 4',          6.0,  LE, 6.5,  'etage');
+  makeLabel('SDB2 / WC',         11.5,  LE, 7.75, 'etage');
+
+  // ── TOITURE ──
+  const FAITG = 3.8;
+  const roofShape = new THREE.Shape();
+  roofShape.moveTo(0, 0); roofShape.lineTo(6.5, FAITG); roofShape.lineTo(13, 0); roofShape.closePath();
+  const roofMesh = new THREE.Mesh(new THREE.ExtrudeGeometry(roofShape, { depth: 9.6, bevelEnabled: false }), M3d.roof);
+  roofMesh.position.set(0, TB, -0.3); roofMesh.castShadow = true;
+  G.toit.add(roofMesh);
+  const slopeAng = Math.atan2(FAITG, 6.5);
+  for (let vi = 0; vi < 2; vi++) {
+    const vx = 8.8 + vi * 2.3, relX = vx - 6.5;
+    const vy = TB + FAITG - relX * Math.tan(slopeAng) + 0.05;
+    const vel = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.07, 1.1), M3d.velux);
+    vel.position.set(vx, vy, 3.2 + vi * 2.5); vel.rotation.z = slopeAng;
+    G.toit.add(vel);
+  }
+
+  // Resize
+  window.addEventListener('resize', resizeRenderer);
+
+  // Raycasting clic
+  renderer.domElement.addEventListener('click', e => {
+    const rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const hits = raycaster.intersectObjects(clickables3d);
+    if (hits.length > 0) {
+      const id = hits[0].object.userData.room;
+      if (currentRoom === id) { unhighlight3D(); deactivateRoom(); }
+      else { highlight3D(hits[0].object, id); activateRoom(id); }
+    } else {
+      unhighlight3D(); deactivateRoom();
+    }
+  });
+
+  vis = { rdc: true, etage: true, toit: true };
+}
+
+function highlight3D(mesh, id) {
+  if (selectedMesh) {
+    const prev = selectedMesh.userData.floorMesh || selectedMesh;
+    prev.material.color.setHex(prev.userData.origColor);
+  }
+  selectedMesh = mesh;
+  const floor = mesh.userData.floorMesh || mesh;
+  floor.material.color.setHex(0xffdd44);
+}
+function unhighlight3D() {
+  if (selectedMesh) {
+    const floor = selectedMesh.userData.floorMesh || selectedMesh;
+    floor.material.color.setHex(floor.userData.origColor);
+    selectedMesh = null;
+  }
+}
+
+function resizeRenderer() {
+  if (!renderer) return;
+  const c = document.getElementById('view-3d');
+  const w = c.clientWidth || window.innerWidth;
+  const h = c.clientHeight || window.innerHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+function startLoop() {
+  animRunning = true;
+  (function loop() {
+    if (!animRunning) return;
+    animId = requestAnimationFrame(loop);
+    controls3d && controls3d.update();
+    renderer && scene && camera && renderer.render(scene, camera);
+  })();
+}
+function stopLoop() { animRunning = false; if (animId) { cancelAnimationFrame(animId); animId = null; } }
+
+// Toggle 3D boutons
+window.toggle3d = function(k) {
+  vis[k] = !vis[k];
+  G[k].visible = vis[k];
+  document.getElementById('b-' + k).className = 'btn3d ' + (vis[k] ? 'on' : 'off');
+};
+let interiorMode = false;
+window.toggleInterieur = function() {
+  interiorMode = !interiorMode;
+  M3d.wallOut.opacity = interiorMode ? 0.15 : 1.0;
+  M3d.wallOut.needsUpdate = true;
+  document.getElementById('b-interieur').className = 'btn3d ' + (interiorMode ? 'active' : 'off');
+};
+
+// ══════════════════════════════════════════════════════
+//  VISITE VIRTUELLE 360° — Three.js sphere
+// ══════════════════════════════════════════════════════
+function darken(hex, percent) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  const f = 1 - percent / 100;
+  return '#' + [Math.round(r*f),Math.round(g*f),Math.round(b*f)].map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase();
+}
+
+let three60Ready = false;
+let scene360, camera360, renderer360, controls360, sphere360mat;
+let anim360Id, anim360Running = false;
+let currentRoom360 = null;
+let targetFov360 = 75;
+const texCache360 = {};
+const texLoading360 = {}; // Track chargements en cours
+
+const TOUR = [
+  { id:'sejour',        name:'Séjour',          wallH:'#c2e6bc', wallL:darken('#c2e6bc',20), ceil:'#f5f2ec', floor:'#c8aa78', floorD:darken('#c8aa78',30) },
+  { id:'sam',           name:'Salle à Manger',  wallH:'#ffd09a', wallL:darken('#ffd09a',20), ceil:'#f5f2ec', floor:'#c8aa78', floorD:darken('#c8aa78',30) },
+  { id:'cuisine',       name:'Cuisine',         wallH:'#fce49c', wallL:darken('#fce49c',20), ceil:'#f5f2ec', floor:'#d0d0c8', floorD:darken('#d0d0c8',30) },
+  { id:'entree',        name:'Entrée / Hall',   wallH:'#f0f0d0', wallL:darken('#f0f0d0',20), ceil:'#f5f2ec', floor:'#d0d0c8', floorD:darken('#d0d0c8',30) },
+  { id:'ch-principale', name:'Ch. Principale',  wallH:'#e0ccf0', wallL:darken('#e0ccf0',20), ceil:'#f8f5fc', floor:'#c8aa78', floorD:darken('#c8aa78',30) },
+  { id:'ch2',           name:'Chambre 2',       wallH:'#d8d0ec', wallL:darken('#d8d0ec',20), ceil:'#f8f5fc', floor:'#c8aa78', floorD:darken('#c8aa78',30) },
+  { id:'ch3',           name:'Chambre 3',       wallH:'#c8d8ec', wallL:darken('#c8d8ec',20), ceil:'#f8f5fc', floor:'#c8aa78', floorD:darken('#c8aa78',30) },
+  { id:'ch4',           name:'Chambre 4',       wallH:'#d0e8dc', wallL:darken('#d0e8dc',20), ceil:'#f5fcf8', floor:'#c8aa78', floorD:darken('#c8aa78',30) },
+  { id:'sdb',           name:'Grande SDB',      wallH:'#a8d8f0', wallL:darken('#a8d8f0',20), ceil:'#f0f8ff', floor:'#d0d0c8', floorD:darken('#d0d0c8',30) },
+];
+
+const REAL_IMAGES = {}; // Pour intégrer photos réelles par room
+
+function makeRoomTexture(room) {
+  const W = 2048, H = 1024;
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  const CEIL_Y = H * 0.22, WALL_Y = H * 0.78;
+  ctx.fillStyle = room.ceil; ctx.fillRect(0, 0, W, CEIL_Y);
+  const rcx = W/2, rcy = H*0.07;
+  const rGlow = ctx.createRadialGradient(rcx,rcy,0,rcx,rcy,W*0.12);
+  rGlow.addColorStop(0,'rgba(255,248,220,0.55)'); rGlow.addColorStop(1,'rgba(255,245,200,0)');
+  ctx.fillStyle = rGlow; ctx.fillRect(0, 0, W, CEIL_Y);
+  ctx.fillStyle = '#f0e8d0'; ctx.beginPath(); ctx.arc(rcx,rcy,W*0.022,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle = '#d8d0bc'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.arc(rcx,rcy,W*0.036,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(rcx,rcy,W*0.050,0,Math.PI*2); ctx.stroke();
+  const wg = ctx.createLinearGradient(0,CEIL_Y,0,WALL_Y);
+  wg.addColorStop(0,room.wallH); wg.addColorStop(1,room.wallL);
+  ctx.fillStyle = wg; ctx.fillRect(0,CEIL_Y,W,WALL_Y-CEIL_Y);
+  const fg = ctx.createLinearGradient(0,WALL_Y,0,H);
+  fg.addColorStop(0,room.floor); fg.addColorStop(1,room.floorD);
+  ctx.fillStyle = fg; ctx.fillRect(0,WALL_Y,W,H-WALL_Y);
+  ctx.strokeStyle = 'rgba(0,0,0,0.09)'; ctx.lineWidth = 1;
+  const PLANK_H=20, PLANK_W=220; let rowIdx=0;
+  for(let y=WALL_Y+4;y<H;y+=PLANK_H,rowIdx++){
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+    const off=(rowIdx%2)*(PLANK_W/2);
+    for(let x=off-PLANK_W;x<W+PLANK_W;x+=PLANK_W){ ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x,y+PLANK_H); ctx.stroke(); }
+  }
+  [W*0.05,W*0.30,W*0.55,W*0.78].forEach(fx=>{
+    const fenW=160,cx=fx+80;
+    const coneGrad=ctx.createLinearGradient(cx,WALL_Y,cx,H);
+    coneGrad.addColorStop(0,'rgba(255,248,210,0.28)'); coneGrad.addColorStop(1,'rgba(255,248,210,0)');
+    ctx.fillStyle=coneGrad; ctx.beginPath(); ctx.moveTo(fx+fenW*0.1,WALL_Y); ctx.lineTo(fx+fenW*0.9,WALL_Y); ctx.lineTo(cx+fenW*2.0,H); ctx.lineTo(cx-fenW*2.0,H); ctx.closePath(); ctx.fill();
+  });
+  const corniche=ctx.createLinearGradient(0,CEIL_Y-8,0,CEIL_Y+28);
+  corniche.addColorStop(0,room.ceil); corniche.addColorStop(0.4,'#ffffff'); corniche.addColorStop(1,room.wallH);
+  ctx.fillStyle=corniche; ctx.fillRect(0,CEIL_Y-8,W,36);
+  const plinthe=ctx.createLinearGradient(0,WALL_Y-5,0,WALL_Y+24);
+  plinthe.addColorStop(0,room.wallL); plinthe.addColorStop(0.5,'#e8e4dc'); plinthe.addColorStop(1,room.floor);
+  ctx.fillStyle=plinthe; ctx.fillRect(0,WALL_Y-5,W,30);
+  const fenW=160, fenH=H*0.28, fenY=CEIL_Y+(WALL_Y-CEIL_Y)*0.12;
+  [W*0.05,W*0.30,W*0.55,W*0.78].forEach(fx=>{
+    ctx.fillStyle='#e0d8c8'; ctx.fillRect(fx-8,fenY-8,fenW+16,fenH+16);
+    const skyG=ctx.createLinearGradient(fx,fenY,fx,fenY+fenH);
+    skyG.addColorStop(0,'#87CEEB'); skyG.addColorStop(0.6,'#c8e8ff'); skyG.addColorStop(1,'#e0f4e0');
+    ctx.fillStyle=skyG; ctx.fillRect(fx,fenY,fenW,fenH);
+    ctx.fillStyle='rgba(255,255,255,0.25)'; ctx.fillRect(fx+10,fenY+10,fenW*0.3,fenH*0.4);
+    ctx.strokeStyle='#c0b8a8'; ctx.lineWidth=4;
+    ctx.beginPath(); ctx.moveTo(fx+fenW/2,fenY); ctx.lineTo(fx+fenW/2,fenY+fenH); ctx.moveTo(fx,fenY+fenH/2); ctx.lineTo(fx+fenW,fenY+fenH/2); ctx.stroke();
+    ctx.fillStyle='#d8d0c0'; ctx.fillRect(fx-6,fenY+fenH,fenW+12,12);
+  });
+  const dX=W*0.44,dW=100,dH=H*0.38,dY=WALL_Y-dH;
+  ctx.fillStyle='#d0c8b8'; ctx.fillRect(dX-10,dY-10,dW+20,dH+10);
+  ctx.fillStyle='#7a6040'; ctx.fillRect(dX,dY,dW,dH);
+  ctx.fillStyle='rgba(0,0,0,0.08)';
+  ctx.fillRect(dX+8,dY+10,dW-16,dH*0.4-5); ctx.fillRect(dX+8,dY+dH*0.4+5,dW-16,dH*0.55);
+  ctx.fillStyle='#c8a040'; ctx.beginPath(); ctx.arc(dX+dW-18,dY+dH*0.5,7,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='rgba(0,0,0,0.06)'; ctx.font='bold 70px Arial,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(room.name,W/2,CEIL_Y+(WALL_Y-CEIL_Y)/2);
+  const vig=ctx.createRadialGradient(W/2,H*0.5,H*0.25,W/2,H*0.5,H*0.75);
+  vig.addColorStop(0,'rgba(0,0,0,0)'); vig.addColorStop(1,'rgba(0,0,0,0.14)');
+  ctx.fillStyle=vig; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(0,0,0,0.25)'; ctx.font='15px Arial';
+  ctx.fillText('Aperçu — Remplacez par votre panorama 360° généré par IA',W/2,H-14);
+  return new THREE.CanvasTexture(cv);
+}
+
+// Convertit une photo plate en panorama equirectangulaire pour la sphère
+function processPhotoForSphere(img) {
+  const W = 4096, H = 2048;
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  const iw = img.naturalWidth || img.width;
+  const ih = img.naturalHeight || img.height;
+
+  const Y1 = Math.round(H * 0.13);
+  const Y2 = Math.round(H * 0.83);
+  const X1 = Math.round(W * 0.12);
+  const X2 = Math.round(W * 0.88);
+  const PW = X2 - X1, PH = Y2 - Y1;
+
+  ctx.filter = 'blur(80px) saturate(0.5) brightness(0.55)';
+  ctx.drawImage(img, 0, 0, W, H);
+  ctx.filter = 'none';
+
+  ctx.filter = 'blur(40px) brightness(1.10)';
+  ctx.drawImage(img, 0, 0, iw, Math.round(ih * 0.20), 0, 0, W, Y1 + 40);
+  ctx.filter = 'none';
+  const zenG = ctx.createLinearGradient(0, 0, 0, Y1);
+  zenG.addColorStop(0,   'rgba(255,252,245,1.0)');
+  zenG.addColorStop(0.4, 'rgba(255,252,245,1.0)');
+  zenG.addColorStop(1,   'rgba(255,252,245,0)');
+  ctx.fillStyle = zenG; ctx.fillRect(0, 0, W, Y1 + 20);
+
+  ctx.filter = 'blur(30px) brightness(0.55)';
+  ctx.drawImage(img, 0, Math.round(ih * 0.82), iw, Math.round(ih * 0.18), 0, Y2 - 20, W, H - Y2 + 20);
+  ctx.filter = 'none';
+  const nadG = ctx.createLinearGradient(0, Y2, 0, H);
+  nadG.addColorStop(0,   'rgba(0,0,0,0)');
+  nadG.addColorStop(0.5, 'rgba(0,0,0,1.0)');
+  nadG.addColorStop(1,   'rgba(0,0,0,1.0)');
+  ctx.fillStyle = nadG; ctx.fillRect(0, Y2, W, H - Y2);
+
+  ctx.drawImage(img, X1, Y1, PW, PH);
+
+  const bW = Math.round(W * 0.09);
+  const gL = ctx.createLinearGradient(X1, 0, X1 + bW, 0);
+  gL.addColorStop(0, 'rgba(0,0,0,0.72)'); gL.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = gL; ctx.fillRect(X1, Y1, bW, PH);
+  const gR = ctx.createLinearGradient(X2 - bW, 0, X2, 0);
+  gR.addColorStop(0, 'rgba(0,0,0,0)'); gR.addColorStop(1, 'rgba(0,0,0,0.72)');
+  ctx.fillStyle = gR; ctx.fillRect(X2 - bW, Y1, bW, PH);
+
+  const cF = ctx.createLinearGradient(0, Y1, 0, Y1 + 100);
+  cF.addColorStop(0, 'rgba(255,252,245,0.48)'); cF.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = cF; ctx.fillRect(X1, Y1, PW, 100);
+
+  const sF = ctx.createLinearGradient(0, Y2 - 100, 0, Y2);
+  sF.addColorStop(0, 'rgba(0,0,0,0)'); sF.addColorStop(1, 'rgba(0,0,0,0.70)');
+  ctx.fillStyle = sF; ctx.fillRect(X1, Y2 - 100, PW, 100);
+
+  return new THREE.CanvasTexture(cv);
+}
+
+function loadProcessedTexture(url, onDone) {
+  fetch(url)
+    .then(r => r.blob())
+    .then(blob => {
+      const img = new Image();
+      img.onload = () => { onDone(processPhotoForSphere(img)); };
+      img.onerror = () => console.error('Erreur img.src pour blob:', url);
+      img.src = URL.createObjectURL(blob);
+    })
+    .catch(e => console.error('Fetch ÉCHOUÉ:', url, '—', e.message));
+}
+
+function getTexture360(room) {
+  if (!texCache360[room.id]) {
+    texCache360[room.id] = makeRoomTexture(room); // placeholder immédiat
+    if (REAL_IMAGES && REAL_IMAGES[room.id]) {
+      texLoading360[room.id] = true;
+      loadProcessedTexture(REAL_IMAGES[room.id], tex => {
+        texCache360[room.id] = tex;
+        texLoading360[room.id] = false;
+        if (currentRoom360 === room.id && sphere360mat) {
+          sphere360mat.map = tex;
+          sphere360mat.needsUpdate = true;
+        }
+      });
+    }
+  }
+  return texCache360[room.id];
+}
+
+function init360() {
+  three60Ready = true;
+  const container = document.getElementById('view-360');
+  const W = container.clientWidth || window.innerWidth;
+  const H = container.clientHeight || window.innerHeight;
+  scene360 = new THREE.Scene();
+  camera360 = new THREE.PerspectiveCamera(75, W/H, 1, 1100);
+  camera360.position.set(0,0,0);
+  renderer360 = new THREE.WebGLRenderer({ antialias: true });
+  renderer360.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer360.setSize(W,H);
+  renderer360.domElement.style.cssText = 'position:absolute;top:0;left:0;z-index:0;';
+  container.insertBefore(renderer360.domElement, container.firstChild);
+  const geo = new THREE.SphereGeometry(500,64,40);
+  sphere360mat = new THREE.MeshBasicMaterial({ map:null, side:THREE.BackSide });
+  scene360.add(new THREE.Mesh(geo, sphere360mat));
+  if (THREE.OrbitControls) {
+    controls360 = new THREE.OrbitControls(camera360, renderer360.domElement);
+    controls360.enableZoom=false; controls360.enablePan=false;
+    controls360.rotateSpeed=-0.35; controls360.minDistance=1; controls360.maxDistance=1;
+    controls360.minPolarAngle=0.55; controls360.maxPolarAngle=Math.PI-0.55;
+    controls360.enableDamping=true; controls360.dampingFactor=0.08;
+    controls360.autoRotate=true; controls360.autoRotateSpeed=0.4;
+    let autoRotateTimer360;
+    renderer360.domElement.addEventListener('pointerdown',()=>{ controls360.autoRotate=false; clearTimeout(autoRotateTimer360); });
+    renderer360.domElement.addEventListener('pointerup',()=>{ autoRotateTimer360=setTimeout(()=>{ controls360.autoRotate=true; },5000); });
+    renderer360.domElement.addEventListener('wheel',e=>{ targetFov360=Math.max(30,Math.min(100,targetFov360+e.deltaY*0.04)); },{passive:true});
+  }
+  const nav = document.getElementById('nav-360');
+  nav.innerHTML = '';
+  TOUR.forEach(r => {
+    const btn = document.createElement('button');
+    btn.className='nav-btn-360'; btn.dataset.roomId=r.id; btn.textContent=r.name;
+    btn.onclick=()=>loadRoom360(r.id); nav.appendChild(btn);
+  });
+  setTimeout(()=>{ const h=document.getElementById('hint-360'); if(h) h.classList.add('fade'); },3500);
+  loadRoom360('sejour');
+  window.addEventListener('resize', resize360);
+}
+
+function loadRoom360(id) {
+  const room = TOUR.find(r=>r.id===id);
+  if (!room || !sphere360mat) return;
+  currentRoom360 = id;
+  document.querySelectorAll('.nav-btn-360').forEach(b=>b.classList.toggle('active',b.dataset.roomId===id));
+  const lbl = document.getElementById('room-label-360');
+  if (lbl) lbl.textContent = room.name;
+  activateRoom(id);
+  sphere360mat.opacity=0.3; sphere360mat.transparent=true;
+  const tex = getTexture360(room);
+  sphere360mat.map=tex; sphere360mat.needsUpdate=true;
+  if (REAL_IMAGES && REAL_IMAGES[id] && texLoading360[id]) {
+    const checkTex = setInterval(() => {
+      if (!texLoading360[id] && texCache360[id] !== tex && currentRoom360 === id) {
+        sphere360mat.map = texCache360[id];
+        sphere360mat.needsUpdate = true;
+        clearInterval(checkTex);
+      }
+    }, 50);
+    setTimeout(() => clearInterval(checkTex), 5000);
+  }
+  let t=0;
+  const fadeIn=setInterval(()=>{ t+=0.08; sphere360mat.opacity=Math.min(1,0.3+t*0.7); if(t>=1){sphere360mat.transparent=false;clearInterval(fadeIn);} },16);
+}
+
+function resize360() {
+  if (!renderer360) return;
+  const c = document.getElementById('view-360');
+  const w=c.clientWidth||window.innerWidth, h=c.clientHeight||window.innerHeight;
+  camera360.aspect=w/h; camera360.updateProjectionMatrix(); renderer360.setSize(w,h);
+}
+function start360Loop() {
+  anim360Running=true;
+  (function loop(){
+    if(!anim360Running) return;
+    anim360Id=requestAnimationFrame(loop);
+    controls360&&controls360.update();
+    if(camera360&&Math.abs(camera360.fov-targetFov360)>0.1){ camera360.fov+=(targetFov360-camera360.fov)*0.12; camera360.updateProjectionMatrix(); }
+    renderer360&&scene360&&camera360&&renderer360.render(scene360,camera360);
+  })();
+}
+function stop360Loop() { anim360Running=false; if(anim360Id){cancelAnimationFrame(anim360Id);anim360Id=null;} }
+
+document.getElementById('add-img-360').addEventListener('click',()=>{
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
+  inp.onchange=e=>{ const file=e.target.files[0]; if(!file) return;
+    const url=URL.createObjectURL(file);
+    const tmp=new Image();
+    tmp.onload=()=>{
+      const tex=processPhotoForSphere(tmp);
+      if(!sphere360mat) return; sphere360mat.map=tex; sphere360mat.needsUpdate=true;
+      const lbl=document.getElementById('room-label-360'); if(lbl) lbl.textContent=file.name.replace(/\.[^.]+$/,'');
+    }; tmp.src=url;
+  }; inp.click();
+});
+</script>
+
+</body>
+</html>

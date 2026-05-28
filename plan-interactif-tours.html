@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maison bourgeoise 235 m² — Tours centre</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    #header { height: 52px; background: #fff; border-bottom: 1px solid #e4e7ec; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; z-index: 100; }
+    #header h1 { font-size: 14px; font-weight: 700; color: #111; }
+    #tabs { display: flex; gap: 4px; }
+    .tab-btn { padding: 7px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1.5px solid #e4e7ec; background: #f8f9fb; color: #888; transition: all 0.15s; }
+    .tab-btn:hover { background: #f0f0f0; }
+    .tab-btn.active { background: #111; color: #fff; border-color: #111; }
+    #body { flex: 1; display: flex; overflow: hidden; }
+    #views { flex: 1; position: relative; overflow: hidden; }
+    .view { position: absolute; inset: 0; display: none; overflow: auto; }
+    .view.active { display: flex; }
+    #view-2d { align-items: center; justify-content: center; padding: 20px; background: #fff; }
+    #view-2d svg { max-width: 100%; height: auto; }
+    #view-3d { background: #f0ede8; }
+    #view-3d canvas { width: 100% !important; height: 100% !important; }
+    #view-360 { background: #111; align-items: center; justify-content: center; }
+    #view-360 canvas { width: 100% !important; height: 100% !important; }
+    #info-panel { width: 300px; background: #fff; border-left: 1px solid #e4e7ec; padding: 24px 18px; overflow-y: auto; flex-shrink: 0; display: flex; flex-direction: column; }
+    .panel-title { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #b0b8c8; margin-bottom: 20px; letter-spacing: 0.9px; }
+    .default-view { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px 0; }
+    .default-view h3 { font-size: 14px; color: #333; margin-bottom: 8px; font-weight: 700; }
+    .default-view p { font-size: 12px; color: #666; line-height: 1.6; }
+    .room-info { display: none; animation: slideIn 0.2s ease; }
+    .room-info.active { display: block; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    .room-name { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 14px; }
+    .room-stats { background: #f8f9fb; border-radius: 10px; padding: 13px; margin-bottom: 14px; }
+    .stat-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #eef0f3; }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-label { font-size: 12px; color: #999; }
+    .stat-value { font-size: 13px; font-weight: 600; color: #222; }
+    .room-desc { font-size: 12px; color: #666; line-height: 1.65; margin-bottom: 14px; }
+    .features-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .feature-tag { background: #f0f4ff; color: #4a6cf7; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    .global-stats { margin-top: auto; padding-top: 16px; border-top: 1px solid #eef0f3; font-size: 11px; color: #bbb; text-align: center; line-height: 1.7; }
+    @media (max-width: 860px) { #body { flex-direction: column; } #info-panel { width: 100%; border-left: none; border-top: 1px solid #e4e7ec; max-height: 220px; } }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+<div id="header">
+  <h1>Maison bourgeoise 235 m² — Tours centre</h1>
+  <div id="tabs">
+    <button class="tab-btn active" onclick="switchTab('2d')">Plan 2D</button>
+    <button class="tab-btn" onclick="switchTab('3d')">Vue 3D</button>
+    <button class="tab-btn" onclick="switchTab('360')">Visite 360°</button>
+  </div>
+</div>
+
+<div id="body">
+  <div id="views">
+    <div id="view-2d" class="view active">
+      <svg viewBox="0 0 1200 750" xmlns="http://www.w3.org/2000/svg" style="max-width: 90%; height: auto;">
+        <text x="600" y="35" font-size="20" font-weight="700" text-anchor="middle" fill="#111">Plan - Maison bourgeoise 235 m² (Tours)</text>
+        <g id="plan-rdc">
+          <rect x="50" y="80" width="440" height="300" fill="none" stroke="#d0d0c8" stroke-width="2"/>
+          <text x="60" y="105" font-size="13" font-weight="700" fill="#666">RDC</text>
+          <rect x="60" y="120" width="85" height="65" fill="#d4e8d0" stroke="#999" stroke-width="1"/><text x="102.5" y="155" font-size="11" font-weight="600" text-anchor="middle" fill="#333">Entrée</text><text x="102.5" y="168" font-size="9" text-anchor="middle" fill="#999">~8 m²</text>
+          <rect x="160" y="120" width="140" height="110" fill="#d4e8d0" stroke="#999" stroke-width="1"/><text x="230" y="175" font-size="11" font-weight="600" text-anchor="middle" fill="#333">Salon</text><text x="230" y="188" font-size="9" text-anchor="middle" fill="#999">~35 m²</text>
+          <rect x="315" y="120" width="95" height="85" fill="#e8d8c8" stroke="#999" stroke-width="1"/><text x="362.5" y="162.5" font-size="11" font-weight="600" text-anchor="middle" fill="#333">Salle M.</text><text x="362.5" y="175" font-size="9" text-anchor="middle" fill="#999">~22 m²</text>
+          <rect x="60" y="200" width="90" height="80" fill="#f0e8e0" stroke="#999" stroke-width="1"/><text x="105" y="242.5" font-size="11" font-weight="600" text-anchor="middle" fill="#333">Cuisine</text><text x="105" y="255" font-size="9" text-anchor="middle" fill="#999">~18 m²</text>
+        </g>
+        <g id="plan-etage">
+          <rect x="620" y="80" width="440" height="300" fill="none" stroke="#d0d0c8" stroke-width="2"/>
+          <text x="630" y="105" font-size="13" font-weight="700" fill="#666">Étages 1-4</text>
+          <rect x="630" y="120" width="100" height="80" fill="#e8e4e8" stroke="#999" stroke-width="1"/><text x="680" y="162.5" font-size="11" font-weight="600" text-anchor="middle" fill="#333">Bureau</text><text x="680" y="175" font-size="9" text-anchor="middle" fill="#999">~20 m²</text>
+          <rect x="745" y="120" width="110" height="85" fill="#e8e0d8" stroke="#999" stroke-width="1"/><text x="800" y="162.5" font-size="11" font-weight="600" text-anchor="middle" fill="#333">Ch. Principal</text><text x="800" y="175" font-size="9" text-anchor="middle" fill="#999">~22 m²</text>
+          <rect x="630" y="215" width="80" height="75" fill="#e8e0d8" stroke="#999" stroke-width="1"/><text x="670" y="252.5" font-size="11" font-weight="600" text-anchor="middle" fill="#333">Ch. 2</text><text x="670" y="265" font-size="9" text-anchor="middle" fill="#999">~16 m²</text>
+          <rect x="805" y="215" width="80" height="75" fill="#e8e0d8" stroke="#999" stroke-width="1"/><text x="845" y="252.5" font-size="11" font-weight="600" text-anchor="middle" fill="#333">Ch. 3</text><text x="845" y="265" font-size="9" text-anchor="middle" fill="#999">~16 m²</text>
+          <rect x="630" y="310" width="75" height="65" fill="#e8e0d8" stroke="#999" stroke-width="1"/><text x="667.5" y="342.5" font-size="11" font-weight="600" text-anchor="middle" fill="#333">Ch. 4</text><text x="667.5" y="355" font-size="9" text-anchor="middle" fill="#999">~15 m²</text>
+        </g>
+        <g id="legend">
+          <text x="50" y="500" font-size="12" font-weight="700" fill="#333">Légende</text>
+          <rect x="50" y="515" width="15" height="15" fill="#d4e8d0"/><text x="75" y="527" font-size="11" fill="#333">Pièces de vie</text>
+          <rect x="250" y="515" width="15" height="15" fill="#e8e0d8"/><text x="275" y="527" font-size="11" fill="#333">Chambres</text>
+          <rect x="450" y="515" width="15" height="15" fill="#f0e8e0"/><text x="475" y="527" font-size="11" fill="#333">Cuisine</text>
+        </g>
+      </svg>
+    </div>
+
+    <div id="view-3d" class="view"></div>
+
+    <div id="view-360" class="view"></div>
+  </div>
+
+  <div id="info-panel">
+    <div class="panel-title">Infos</div>
+    <div class="default-view">
+      <h3>Maison bourgeoise 235 m²</h3>
+      <p>Tours (37000)</p><br>
+      <strong>Surface : ~235 m²</strong>
+      <p>Construction : 1849 · État : Entièrement rénové</p><br>
+      <p><em>Demeure bourgeoise de 235 m² dans le cœur historique du Vieux Tours, mêlant charme d'antan et confort moderne. RDC avec cuisine aménagée, salon aux cheminées d'époque et hauteur impressionnante, ouvert sur jardin sud-ouest. Quatre étages proposent cinq chambres, quatre salles de bain privatives, et un appartement indépendant en dernier étage. Caves voûtées, garage deux places.</em></p>
+    </div>
+    <div class="global-stats">
+      <strong>Tours, Centre-Val de Loire</strong><br>
+      235 m² · 7 pièces · 5 chambres · 4 salles de bain<br>
+      Année construction : 1849
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`button[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById(`view-${tab}`).classList.add('active');
+
+  if (tab === '3d') {
+    setTimeout(() => init3D(), 100);
+  }
+  if (tab === '360') {
+    setTimeout(() => init360(), 100);
+  }
+}
+
+let scene3d, camera3d, renderer3d, cube3d;
+function init3D() {
+  if (scene3d) return;
+  const view3d = document.getElementById('view-3d');
+  view3d.innerHTML = '';
+
+  scene3d = new THREE.Scene();
+  scene3d.background = new THREE.Color(0xf0ede8);
+  camera3d = new THREE.PerspectiveCamera(60, view3d.clientWidth / view3d.clientHeight, 0.1, 1000);
+  camera3d.position.set(0, 1.4, 3);
+
+  renderer3d = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer3d.setSize(view3d.clientWidth, view3d.clientHeight);
+  renderer3d.setPixelRatio(window.devicePixelRatio);
+  view3d.appendChild(renderer3d.domElement);
+
+  const light = new THREE.HemisphereLight(0xffffff, 0x888888, 1);
+  scene3d.add(light);
+
+  const geometry = new THREE.BoxGeometry(4, 2.8, 6);
+  const material = new THREE.MeshPhongMaterial({ color: 0xcccccc });
+  cube3d = new THREE.Mesh(geometry, material);
+  scene3d.add(cube3d);
+
+  let animate = () => {
+    cube3d.rotation.y += 0.005;
+    renderer3d.render(scene3d, camera3d);
+    requestAnimationFrame(animate);
+  };
+  animate();
+
+  window.addEventListener('resize', () => {
+    if (renderer3d) {
+      const w = view3d.clientWidth;
+      const h = view3d.clientHeight;
+      renderer3d.setSize(w, h);
+      camera3d.aspect = w / h;
+      camera3d.updateProjectionMatrix();
+    }
+  });
+}
+
+let scene360, camera360, renderer360;
+function init360() {
+  if (scene360) return;
+  const view360 = document.getElementById('view-360');
+  view360.innerHTML = '';
+
+  scene360 = new THREE.Scene();
+  camera360 = new THREE.PerspectiveCamera(75, view360.clientWidth / view360.clientHeight, 0.1, 1000);
+  camera360.position.set(0, 0, 0);
+
+  renderer360 = new THREE.WebGLRenderer({ antialias: true });
+  renderer360.setSize(view360.clientWidth, view360.clientHeight);
+  view360.appendChild(renderer360.domElement);
+
+  const loader = new THREE.TextureLoader();
+  const texture = loader.load('./panorama-salon.png', (tex) => {
+    const geometry = new THREE.SphereGeometry(50, 64, 32);
+    const material = new THREE.MeshBasicMaterial({ map: tex, side: THREE.BackSide });
+    const sphere = new THREE.Mesh(geometry, material);
+    scene360.add(sphere);
+    renderer360.render(scene360, camera360);
+  }, undefined, () => {
+    console.log('Image not loaded, using placeholder');
+    const geometry = new THREE.SphereGeometry(50, 64, 32);
+    const material = new THREE.MeshBasicMaterial({ color: 0x222222, side: THREE.BackSide });
+    const sphere = new THREE.Mesh(geometry, material);
+    scene360.add(sphere);
+    renderer360.render(scene360, camera360);
+  });
+
+  let isDown = false, mx = 0, my = 0;
+  renderer360.domElement.addEventListener('mousedown', (e) => { isDown = true; mx = e.clientX; my = e.clientY; });
+  renderer360.domElement.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    const dx = (e.clientX - mx) * 0.01;
+    const dy = (e.clientY - my) * 0.01;
+    camera360.rotation.order = 'YXZ';
+    camera360.rotation.y -= dx;
+    camera360.rotation.x -= dy;
+  });
+  renderer360.domElement.addEventListener('mouseup', () => { isDown = false; });
+
+  let loop = () => {
+    renderer360.render(scene360, camera360);
+    requestAnimationFrame(loop);
+  };
+  loop();
+
+  window.addEventListener('resize', () => {
+    if (renderer360) {
+      const w = view360.clientWidth;
+      const h = view360.clientHeight;
+      renderer360.setSize(w, h);
+      camera360.aspect = w / h;
+      camera360.updateProjectionMatrix();
+    }
+  });
+}
+</script>
+
+</body>
+</html>
