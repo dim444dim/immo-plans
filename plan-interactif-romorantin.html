@@ -4,6 +4,48 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plan Interactif — Maison 170 m² — Romorantin-Lanthenay</title>
+
+  <meta name="description" content="Visite 3D interactive d'une maison de 170m² à Romorantin-Lanthenay. Plan 2D, vue 3D, panorama 360° et calculateur de financement. 265 000€.">
+  <meta name="keywords" content="maison romorantin, visite 3D, immobilier, maison 170m2">
+
+  <!-- Open Graph (Facebook, WhatsApp, etc) -->
+  <meta property="og:title" content="Plan Interactif — Maison 170 m² — Romorantin-Lanthenay">
+  <meta property="og:description" content="Visite 3D interactive. Découvrez chaque pièce en 360°, mesurez les surfaces et calculez votre financement.">
+  <meta property="og:image" content="https://immo-plans-ept40hxxf-dim-s-projects4.vercel.app/screenshot-romorantin.png">
+  <meta property="og:url" content="https://immo-plans-ept40hxxf-dim-s-projects4.vercel.app/plan-interactif-romorantin.html">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Visite 3D — Maison Romorantin">
+  <meta name="twitter:description" content="Découvrez la maison en 3D interactive">
+  <meta name="twitter:image" content="https://via.placeholder.com/1200x630?text=Visite+3D+Romorantin">
+
+  <!-- Schema.org (Google Rich Snippets) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "RealEstateProperty",
+    "name": "Maison 170m² - Romorantin-Lanthenay",
+    "description": "Visite 3D interactive d'une maison avec plan, 3D et panorama 360°",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Romorantin-Lanthenay",
+      "addressLocality": "Romorantin-Lanthenay",
+      "postalCode": "41200",
+      "addressCountry": "FR"
+    },
+    "price": "265000",
+    "priceCurrency": "EUR",
+    "floorSize": {
+      "@type": "QuantitativeValue",
+      "value": "170",
+      "unitCode": "MTK"
+    },
+    "numberOfRooms": "5"
+  }
+  </script>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
@@ -147,6 +189,36 @@
       #info-panel { width: 100%; border-left: none; border-top: 1px solid #e4e7ec; max-height: 220px; min-width: unset; }
     }
   </style>
+
+  <style>
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column !important;
+        height: auto !important;
+      }
+
+      #view-2d, #view-3d, #view-360 {
+        min-height: 300px !important;
+      }
+
+      #room-info-panel {
+        width: 100% !important;
+        max-height: 50vh !important;
+        overflow-y: auto !important;
+        order: 2;
+      }
+
+      .main-container > div:first-child {
+        order: 1;
+        min-height: 50vh !important;
+      }
+
+      #tabs {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -161,7 +233,7 @@
 </div>
 
 <!-- ══ BODY ══ -->
-<div id="body">
+<div id="body" class="main-container" style="display: flex; height: 100vh; gap: 0; flex-wrap: wrap;">
   <div id="views">
 
     <!-- ════════════════ VUE 2D ════════════════ -->
@@ -389,6 +461,8 @@
         <button class="btn3d on"  id="b-etage"     onclick="toggle3d('etage')">Étage</button>
         <button class="btn3d on"  id="b-toit"      onclick="toggle3d('toit')">Toiture</button>
         <button class="btn3d off" id="b-interieur" onclick="toggleInterieur()">Vue intérieure</button>
+        <button class="btn3d off btn3d-theme" data-theme="architectural" onclick="applyThemeToScene('architectural')">Architectural</button>
+        <button class="btn3d active btn3d-theme" data-theme="minimalist"  onclick="applyThemeToScene('minimalist')">Minimaliste</button>
       </div>
       <div id="diag-3d"></div>
     </div>
@@ -404,25 +478,106 @@
   </div>
 
   <!-- ══ PANNEAU INFO ══ -->
-  <div id="info-panel">
-    <div class="panel-title">Maison 170 m² — Romorantin-Lanthenay</div>
-    <div id="default-view" class="default-view">
-      <div class="icon">🏠</div>
-      <h3>Cliquez sur une pièce</h3>
-      <p>Survolez puis cliquez sur n'importe quelle pièce pour découvrir ses caractéristiques.</p>
-    </div>
-    <div id="room-panels"></div>
-    <div class="global-stats">
-      <div>Surface totale : ~170 m²</div>
-      <div>RDC ~85 m² · Étage ~85 m²</div>
-      <div style="font-size:10px;margin-top:4px;color:#d0d5e0;">Romorantin-Lanthenay (41200)</div>
+  <div id="room-info-panel" style="width: 300px; height: 100%; background: white; border-left: 1px solid #e0e6ed; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column;">
+
+<!-- QR CODE MODAL -->
+  <div id="qr-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: white; padding: 2rem; border-radius: 12px; text-align: center; max-width: 400px; position: relative;">
+      <button onclick="closeQRModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer;">✕</button>
+      <h3 style="margin: 0 0 1rem; color: #2c3e50;">Partager cette visite</h3>
+      <div id="qrcode-container" style="margin: 1.5rem 0; background: #f5f7fa; padding: 1rem; border-radius: 8px;"></div>
+      <p style="margin: 0 0 1rem; color: #7f8c8d; font-size: 0.9rem;">Scannez pour accéder à la visite interactive</p>
+      <button onclick="printQR()" style="width: 100%; padding: 0.75rem; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;">🖨️ Imprimer</button>
     </div>
   </div>
+
+  <!-- DEFAULT VIEW -->
+  <div id="default-info">
+    <h2 style="margin: 0 0 1rem; font-size: 1.5rem; color: #667eea;">📍 Infos annonce</h2>
+
+    <!-- BOUTONS ACTION (QR + Contact) -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+      <button onclick="showQRModal()" style="flex: 1; padding: 0.75rem; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.9rem;">📱 QR Code</button>
+      <button onclick="toggleContactForm()" style="flex: 1; padding: 0.75rem; background: #764ba2; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.9rem;">💬 Contacter</button>
+    </div>
+
+    <div style="background: #f5f7fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+      <p style="margin: 0 0 0.5rem; color: #7f8c8d; font-size: 0.9rem;">PRIX</p>
+      <p style="margin: 0; font-size: 1.8rem; font-weight: bold; color: #2c3e50;">265 000 €</p>
+    </div>
+
+    <div style="background: #f5f7fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+      <p style="margin: 0 0 0.5rem; color: #7f8c8d; font-size: 0.9rem;">SURFACE</p>
+      <p style="margin: 0; font-size: 1.8rem; font-weight: bold; color: #2c3e50;">170 m²</p>
+    </div>
+
+    <p style="margin: 0 0 1rem; color: #7f8c8d; font-size: 0.9rem;"><strong>📍 Romorantin-Lanthenay, 41200</strong></p>
+    <p style="margin: 0; color: #555; font-size: 0.95rem;">Cliquez sur une pièce pour voir les détails</p>
+  </div>
+
+  <!-- ROOM DETAILS VIEW (Hidden by default) -->
+  <div id="room-details" style="display: none;">
+    <button onclick="showDefaultInfo()" style="background: none; border: none; color: #667eea; cursor: pointer; font-size: 1.2rem; padding: 0 0 1rem 0;">← Retour</button>
+    <h3 id="room-name" style="margin: 0 0 0.5rem; color: #2c3e50;"></h3>
+    <span id="room-badge" style="display: inline-block; background: #667eea; color: white; padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.85rem; margin-bottom: 1rem;"></span>
+    <div style="background: #f5f7fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+      <p style="margin: 0 0 0.5rem; color: #7f8c8d; font-size: 0.9rem;">SURFACE</p>
+      <p id="room-surface" style="margin: 0; font-size: 1.3rem; font-weight: bold;"></p>
+    </div>
+    <p id="room-orientation" style="margin: 0 0 1rem; color: #7f8c8d; font-size: 0.9rem;"></p>
+    <p id="room-desc" style="margin: 0 0 1rem; color: #555; line-height: 1.6;"></p>
+    <div id="room-features" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e0e6ed;"></div>
+  </div>
+
+  <!-- CALCULATEUR MENSUALITÉ -->
+  <div style="margin-top: auto; padding-top: 1.5rem; border-top: 1px solid #e0e6ed;">
+    <h4 style="margin: 0 0 1rem; color: #2c3e50; font-size: 1rem;">💰 Calculateur financement</h4>
+    <div style="margin-bottom: 0.75rem;">
+      <label style="display: block; font-size: 0.85rem; color: #7f8c8d; margin-bottom: 0.3rem;">Apport (€)</label>
+      <input type="number" id="apport" value="50000" style="width: 100%; padding: 0.5rem; border: 1px solid #e0e6ed; border-radius: 4px;">
+    </div>
+    <div style="margin-bottom: 0.75rem;">
+      <label style="display: block; font-size: 0.85rem; color: #7f8c8d; margin-bottom: 0.3rem;">Durée (ans)</label>
+      <input type="number" id="duree" value="20" style="width: 100%; padding: 0.5rem; border: 1px solid #e0e6ed; border-radius: 4px;">
+    </div>
+    <div style="margin-bottom: 1rem;">
+      <label style="display: block; font-size: 0.85rem; color: #7f8c8d; margin-bottom: 0.3rem;">Taux (%)</label>
+      <input type="number" id="taux" value="4.5" step="0.1" style="width: 100%; padding: 0.5rem; border: 1px solid #e0e6ed; border-radius: 4px;">
+    </div>
+    <button onclick="calculerMensualite()" style="width: 100%; padding: 0.75rem; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">Calculer</button>
+    <div id="resultat-mensualite" style="margin-top: 1rem; padding: 1rem; background: #f0f4ff; border-radius: 4px; display: none;">
+      <p style="margin: 0 0 0.5rem; color: #7f8c8d; font-size: 0.9rem;">MENSUALITÉ ESTIMÉE</p>
+      <p id="mensualite-value" style="margin: 0; font-size: 1.5rem; font-weight: bold; color: #667eea;"></p>
+    </div>
+  </div>
+
+  <!-- CONTACT FORM SECTION -->
+  <div id="contact-section" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e0e6ed; display: none;">
+    <h4 style="margin: 0 0 1rem; color: #2c3e50; font-size: 1rem;">💬 Intéressé par cette propriété?</h4>
+
+    <form id="contact-form" style="display: flex; flex-direction: column; gap: 0.75rem;">
+      <input type="text" placeholder="Votre nom" id="form-name" required style="padding: 0.75rem; border: 1px solid #e0e6ed; border-radius: 6px; font-size: 0.95rem;">
+
+      <input type="email" placeholder="Votre email" id="form-email" required style="padding: 0.75rem; border: 1px solid #e0e6ed; border-radius: 6px; font-size: 0.95rem;">
+
+      <textarea placeholder="Votre message" id="form-message" rows="3" style="padding: 0.75rem; border: 1px solid #e0e6ed; border-radius: 6px; font-size: 0.95rem; font-family: inherit; resize: none;"></textarea>
+
+      <button type="submit" style="padding: 0.75rem; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;">Envoyer mon intérêt</button>
+    </form>
+
+    <div id="contact-success" style="display: none; padding: 1rem; background: #d4edda; color: #155724; border-radius: 6px; margin-top: 1rem; text-align: center;">
+      <p style="margin: 0; font-weight: 500;">✅ Merci! Nous vous recontacterons bientôt.</p>
+    </div>
+  </div>
+</div>
+</div>
 </div>
 
 <!-- Three.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/objects/Sky.js"></script>
 
 
 <script>
@@ -431,6 +586,43 @@
 // ══════════════════════════════════════════════════════
 //  DONNÉES PIÈCES (partagées 2D + 3D)
 // ══════════════════════════════════════════════════════
+
+// HOTSPOT STYLES
+const hotspotCSS = `
+  .hotspot {
+    width: 24px !important;
+    height: 24px !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: 3px solid white !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6) !important;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .hotspot:hover {
+    width: 32px !important;
+    height: 32px !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.8) !important;
+  }
+
+  .hotspot::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+  }
+`;
+
+// Ajoute le CSS au document
+const style = document.createElement('style');
+style.textContent = hotspotCSS;
+document.head.appendChild(style);
+
 const ROOMS = {
   sejour:        { name:'Séjour',          badge:'RDC',   badgeBg:'#e8f2ff', badgeColor:'#4a90e2', surface:'~30 m²', level:'Rez-de-chaussée', orientation:'Nord / Ouest', desc:'Grande pièce de vie lumineuse avec triple fenêtrage. Poêle à bois au centre.', features:['Poêle à bois','3 fenêtres','Parquet','Lumineux'] },
   sam:           { name:'Salle à Manger',  badge:'RDC',   badgeBg:'#e8fff2', badgeColor:'#27ae60', surface:'~15 m²', level:'Rez-de-chaussée', orientation:'Nord',        desc:'Espace repas convivial en communication directe avec le séjour et la cuisine.', features:['Parquet','Ouvert','Lumineux'] },
@@ -445,6 +637,20 @@ const ROOMS = {
   sdb:           { name:'Grande SDB',      badge:'Étage', badgeBg:'#e0fff9', badgeColor:'#1abc9c', surface:'~10 m²', level:'1er (combles)',    orientation:null,           desc:'Salle de bain complète : baignoire, douche séparée et double vasque.', features:['Baignoire','Douche','Double vasque','Carrelage'] },
   sdb2:          { name:'SDB 2 / WC',      badge:'Étage', badgeBg:'#e8f4ff', badgeColor:'#3498db', surface:'~5 m²',  level:'1er (combles)',    orientation:null,           desc:'Deuxième salle de bain compacte avec douche et WC.', features:['Douche','WC','Carrelage'] }
 };
+
+const THEME_CONFIG = {
+  architectural: {
+    skyHorizon: 0xb0ccde, skyZenith: 0x1e4a8a,
+    wallOut: 0xd8cbb8, wallIn: 0xf0eae0, ground: 0x8aac68, roof: 0x7a5030,
+    skyParams: { turbidity: 3, rayleigh: 2.5, elevation: 44, azimuth: 220 }
+  },
+  minimalist: {
+    skyHorizon: 0xd0e8ff, skyZenith: 0x1030c8,
+    wallOut: 0xf4f2ee, wallIn: 0xfcfaf8, ground: 0x7ab855, roof: 0x3d4a55,
+    skyParams: { turbidity: 1.0, rayleigh: 4.5, elevation: 65, azimuth: 175 }
+  }
+};
+let currentTheme = 'minimalist';
 
 // Générer les panneaux HTML
 const roomPanels = document.getElementById('room-panels');
@@ -487,6 +693,154 @@ function deactivateRoom() {
   document.querySelectorAll('.room-info').forEach(el => el.classList.remove('active'));
   defaultView.style.display = 'flex';
 }
+
+function showRoomInfo(roomKey) {
+  const room = ROOMS[roomKey];
+  if (!room) return;
+
+  document.getElementById('default-info').style.display = 'none';
+  document.getElementById('room-details').style.display = 'block';
+
+  document.getElementById('room-name').textContent = room.name;
+  document.getElementById('room-badge').textContent = room.badge;
+  document.getElementById('room-surface').textContent = room.surface;
+  document.getElementById('room-orientation').textContent = `📐 ${room.orientation}`;
+  document.getElementById('room-desc').textContent = room.desc;
+
+  const featuresList = room.features.map(f => `<li style="margin-bottom: 0.5rem; color: #555;">✓ ${f}</li>`).join('');
+  document.getElementById('room-features').innerHTML = `<ul style="margin: 0; padding-left: 1.5rem;">${featuresList}</ul>`;
+}
+
+function showDefaultInfo() {
+  document.getElementById('default-info').style.display = 'block';
+  document.getElementById('room-details').style.display = 'none';
+}
+
+function calculerMensualite() {
+  const prixTotal = 265000;
+  const apport = parseFloat(document.getElementById('apport').value) || 0;
+  const duree = parseFloat(document.getElementById('duree').value) || 1;
+  const taux = parseFloat(document.getElementById('taux').value) || 0;
+
+  const principal = prixTotal - apport;
+  const tauxMois = taux / 100 / 12;
+  const nbMois = duree * 12;
+
+  const mensualite = principal * (tauxMois * Math.pow(1 + tauxMois, nbMois)) / (Math.pow(1 + tauxMois, nbMois) - 1);
+
+  document.getElementById('resultat-mensualite').style.display = 'block';
+  document.getElementById('mensualite-value').textContent = Math.round(mensualite).toLocaleString('fr-FR') + ' € / mois';
+}
+
+// QR CODE FUNCTIONS
+function showQRModal() {
+  const url = window.location.href;
+  const qrContainer = document.getElementById('qrcode-container');
+
+  qrContainer.innerHTML = '';
+
+  new QRCode(qrContainer, {
+    text: url,
+    width: 250,
+    height: 250,
+    colorDark: "#667eea",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  const modal = document.getElementById('qr-modal');
+  modal.style.display = 'flex';
+}
+
+function closeQRModal() {
+  document.getElementById('qr-modal').style.display = 'none';
+}
+
+function printQR() {
+  const canvas = document.querySelector('#qrcode-container canvas');
+  if (!canvas) return;
+  const qrImage = canvas.toDataURL('image/png');
+
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>QR Code - Visite 3D</title>
+        <style>
+          body { text-align: center; padding: 2rem; font-family: Arial; }
+          img { width: 300px; height: 300px; margin: 1rem 0; }
+          h2 { color: #667eea; }
+          p { color: #666; }
+        </style>
+      </head>
+      <body>
+        <h2>Visite 3D Immobilière</h2>
+        <img src="${qrImage}" alt="QR Code">
+        <p>Scannez pour accéder à la visite interactive</p>
+        <p style="font-size: 0.9rem; color: #999;">Adresse: Romorantin-Lanthenay (41200)</p>
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.print();
+}
+
+// CONTACT FORM FUNCTIONS
+function toggleContactForm() {
+  const contactSection = document.getElementById('contact-section');
+  const isVisible = contactSection.style.display !== 'none';
+  contactSection.style.display = isVisible ? 'none' : 'block';
+}
+
+function handleContactForm(e) {
+  e.preventDefault();
+
+  const name = document.getElementById('form-name').value.trim();
+  const email = document.getElementById('form-email').value.trim();
+  const message = document.getElementById('form-message').value.trim();
+
+  if (!name || !email || !message) {
+    alert('Veuillez remplir tous les champs');
+    return;
+  }
+
+  if (!email.includes('@')) {
+    alert('Email invalide');
+    return;
+  }
+
+  fetch('https://formspree.io/f/xaqzwlwq', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, message })
+  })
+  .then(response => {
+    if (response.ok) {
+      document.getElementById('contact-form').style.display = 'none';
+      document.getElementById('contact-success').style.display = 'block';
+
+      setTimeout(() => {
+        document.getElementById('contact-form').reset();
+        document.getElementById('contact-form').style.display = 'block';
+        document.getElementById('contact-success').style.display = 'none';
+        document.getElementById('contact-section').style.display = 'none';
+      }, 3000);
+    } else {
+      alert('Erreur lors de l\'envoi. Réessayez.');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Erreur de connexion');
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('contact-form');
+  if (form) {
+    form.addEventListener('submit', handleContactForm);
+  }
+});
 
 // ══════════════════════════════════════════════════════
 //  VUE 2D — interactions SVG
@@ -563,6 +917,56 @@ const clickables3d = [];
 let selectedMesh = null;
 let G, M3d, vis;
 let animId;
+let skyMesh = null, skyGlslUniforms = null, skyObj = null;
+let ambientLight = null;
+const roomFloorMesh = {}; // roomId → dalle de sol (pour highlight depuis sprite ou hitbox)
+
+function makeSkyTex(themeName) {
+  const cfg = THEME_CONFIG[themeName], sp = cfg.skyParams;
+  const W = 2048, H = 1024;
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  const hc = n => `rgb(${(n>>16)&255},${(n>>8)&255},${n&255})`;
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0.00, hc(cfg.skyZenith));
+  grad.addColorStop(0.44, hc(cfg.skyHorizon));
+  grad.addColorStop(0.50, hc(cfg.skyHorizon));
+  grad.addColorStop(0.54, hc(cfg.skyHorizon)); // continuité couleur sous l'horizon
+  grad.addColorStop(0.70, '#5a8a4a');
+  grad.addColorStop(1.00, '#2a4820');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+  if (sp.elevation > -5) {
+    const sx = (sp.azimuth % 360 / 360) * W;
+    const sy = H * 0.5 - (sp.elevation / 90) * H * 0.46;
+    const glow = ctx.createRadialGradient(sx, sy, 0, sx, sy, 200);
+    glow.addColorStop(0,   'rgba(255,255,210,0.78)');
+    glow.addColorStop(0.3, 'rgba(255,240,150,0.30)');
+    glow.addColorStop(1,   'rgba(255,220,100,0)');
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+    ctx.beginPath(); ctx.arc(sx, sy, 26, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,240,1)'; ctx.fill();
+  }
+  const haze = ctx.createLinearGradient(0, H * 0.38, 0, H * 0.50);
+  haze.addColorStop(0, 'rgba(255,255,255,0)');
+  haze.addColorStop(1, 'rgba(255,255,255,0.20)');
+  ctx.fillStyle = haze; ctx.fillRect(0, 0, W, H);
+  return new THREE.CanvasTexture(cv);
+}
+
+function makeGrassTex() {
+  const c = document.createElement('canvas'); c.width = c.height = 256;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#5a9e38'; ctx.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 4000; i++) {
+    const x = Math.random() * 256, y = Math.random() * 256;
+    const v = (Math.random() - 0.5) * 60;
+    ctx.fillStyle = `rgb(${(50 + v * 0.4)|0},${(158 + v)|0},${(38 + v * 0.2)|0})`;
+    ctx.fillRect(x|0, y|0, (1 + Math.random() * 2)|0, (3 + Math.random() * 3)|0);
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(14, 11);
+  return t;
+}
 
 function initThree() {
   if (typeof THREE === 'undefined') {
@@ -575,11 +979,11 @@ function initThree() {
   const container = document.getElementById('view-3d');
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xf0ede8);
+  scene.background = new THREE.Color(THEME_CONFIG[currentTheme].skyHorizon);
 
   const W3 = container.clientWidth || window.innerWidth;
   const H3 = container.clientHeight || window.innerHeight;
-  camera = new THREE.PerspectiveCamera(45, W3 / H3, 0.1, 300);
+  camera = new THREE.PerspectiveCamera(45, W3 / H3, 0.1, 2000);
   camera.position.set(4, 15, -22);
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -602,8 +1006,18 @@ function initThree() {
   raycaster = new THREE.Raycaster();
   mouse = new THREE.Vector2();
 
+  // ── CIEL — texture canvas équirectangulaire + disque soleil ──
+  skyMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(900, 48, 24),
+    new THREE.MeshBasicMaterial({ map: makeSkyTex(currentTheme), side: THREE.BackSide, depthWrite: false, depthTest: false })
+  );
+  skyMesh.renderOrder = -1;
+  scene.add(skyMesh);
+  scene.background = null;
+
   // Lumières
-  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+  scene.add(ambientLight);
   const sun = new THREE.DirectionalLight(0xfff6e0, 1.3);
   sun.position.set(18, 32, 8); sun.castShadow = true;
   sun.shadow.mapSize.width = sun.shadow.mapSize.height = 2048;
@@ -622,11 +1036,12 @@ function initThree() {
   function mat(hex, opts) { return new THREE.MeshPhongMaterial(Object.assign({ color: hex, shininess: 18 }, opts || {})); }
   M3d = {
     wallOut: new THREE.MeshPhongMaterial({ color: 0xe0d6c4, shininess: 22, transparent: true, opacity: 1.0, side: THREE.DoubleSide }),
-    wallIn: mat(0xece7dc), garage: mat(0xd0cec2),
+    wallIn: new THREE.MeshPhongMaterial({ color: 0xece7dc, shininess: 18, transparent: true, opacity: 1.0 }),
+    garage: mat(0xd0cec2),
     hall: mat(0xf0f0d0), sejour: mat(0xc2e6bc), sam: mat(0xffd09a),
     cuisine: mat(0xfce49c), wc: mat(0xa8d8f0),
     sdb: mat(0xa8d8f0), garSol: mat(0xd8d8d0), couloir: mat(0xf0eed8),
-    roof: mat(0x8c5a38, { side: THREE.DoubleSide }),
+    roof: mat(0x8c5a38, { side: THREE.DoubleSide, transparent: true, opacity: 0.35 }),
     velux: mat(0x88d8f5, { transparent: true, opacity: 0.72 }),
     door: mat(0x7a5030), win: mat(0x88d5f2, { transparent: true, opacity: 0.52 }),
     stair: mat(0x888888), island: mat(0xd4b080), stove: mat(0x1e1e1e),
@@ -646,12 +1061,12 @@ function initThree() {
     mesh.userData.room = roomId; mesh.userData.origColor = hex;
     grp.add(mesh);
     if (roomId) {
+      roomFloorMesh[roomId] = mesh; // map pour lookup depuis sprite/hitbox
       clickables3d.push(mesh);
-      // Volume invisible surélevé pour le raycast (depuis caméra haute, les dalles à Y=0.16 sont trop loin)
-      const hitH = 5;
+      // Hitbox h=3.0 centrée y+1.5 : depuis l'extérieur, la géométrie garantit 0 faux clic inter-pièces
       const hitM = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false });
-      const hitMesh = new THREE.Mesh(new THREE.BoxGeometry(w, hitH, d), hitM);
-      hitMesh.position.set(x, y + hitH * 0.5 + 0.3, z);
+      const hitMesh = new THREE.Mesh(new THREE.BoxGeometry(w, 3.0, d), hitM);
+      hitMesh.position.set(x, y + 1.5, z);
       hitMesh.userData.room = roomId; hitMesh.userData.origColor = hex; hitMesh.userData.floorMesh = mesh;
       grp.add(hitMesh);
       clickables3d.push(hitMesh);
@@ -671,7 +1086,7 @@ function initThree() {
       s.rotation.y = -a; s.castShadow = true; grp.add(s);
     }
   }
-  function makeLabel(text, x, y, z, grpName) {
+  function makeLabel(text, x, y, z, grpName, roomId) {
     const canvas = document.createElement('canvas');
     canvas.width = 320; canvas.height = 80;
     const ctx = canvas.getContext('2d');
@@ -685,6 +1100,7 @@ function initThree() {
     ctx.fillText(text, 160, 40);
     const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas), depthTest: false, transparent: true }));
     sprite.scale.set(3.0, 0.75, 1); sprite.position.set(x, y, z); sprite.renderOrder = 999;
+    if (roomId) { sprite.userData.room = roomId; clickables3d.push(sprite); }
     G[grpName].add(sprite);
   }
 
@@ -692,10 +1108,16 @@ function initThree() {
   const F0 = FT / 2, W0 = FT + WH / 2, EB = FT + WH, EF = EB + FT / 2, EW = EB + FT + WH / 2, TB = EB + FT + WH;
   const SR = FT + 0.01, SE = EF + 0.01;
 
-  // Terrain
+  // Terrain — herbe (texture CDN ou canvas fallback)
   const gnd = new THREE.Mesh(new THREE.PlaneGeometry(70, 55), M3d.ground);
   gnd.rotation.x = -Math.PI / 2; gnd.position.set(3, -0.01, 4); gnd.receiveShadow = true;
   scene.add(gnd);
+  new THREE.TextureLoader().load(
+    'https://cdn.jsdelivr.net/npm/three@0.134.0/examples/textures/terrain/grasslight-big.jpg',
+    tex => { tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(14, 11); M3d.ground.map = tex; M3d.ground.needsUpdate = true; },
+    undefined,
+    ()  => { M3d.ground.map = makeGrassTex(); M3d.ground.needsUpdate = true; }
+  );
 
   // ── RDC ──
   box(13, FT, 9, M3d.wallIn,  6.5, F0, 4.5, G.rdc);
@@ -733,22 +1155,22 @@ function initThree() {
   cyl(0.08, 0.08, 2.5, M3d.stove, 5.3,  FT + 1.9,  5.5, G.rdc);
   staircase(1.5, 3.0, FT, G.rdc);
   const LR = FT + 1.7;
-  makeLabel('Entrée / Hall',  3.5,   LR, 1.25, 'rdc');
-  makeLabel('Séjour',         3.2,   LR, 5.8,  'rdc');
-  makeLabel('Salle à manger', 9.0,   LR, 2.5,  'rdc');
-  makeLabel('Cuisine + Îlot', 10.0,  LR, 7.0,  'rdc');
-  makeLabel('WC',            12.25,  LR, 1.0,  'rdc');
-  makeLabel('Garage',        -2.5,   LR, 3.0,  'rdc');
+  makeLabel('Entrée / Hall',  3.5,   LR, 1.25, 'rdc', 'entree');
+  makeLabel('Séjour',         3.2,   LR, 5.8,  'rdc', 'sejour');
+  makeLabel('Salle à manger', 9.0,   LR, 2.5,  'rdc', 'sam');
+  makeLabel('Cuisine + Îlot', 10.0,  LR, 7.0,  'rdc', 'cuisine');
+  makeLabel('WC',            12.25,  LR, 1.0,  'rdc', 'wc');
+  makeLabel('Garage',        -2.5,   LR, 3.0,  'rdc', 'garage');
 
   // ── ÉTAGE ──
   box(13, FT, 9, M3d.wallIn, 6.5, EF, 4.5, G.etage);
-  floorBox(4.5, 0.02, 3,   0xe0ccf0, 2.25,  SE, 1.5,  G.etage, 'ch-principale');
-  floorBox(4.5, 0.02, 3,   0xe0ccf0, 6.75,  SE, 1.5,  G.etage, 'ch2');
-  floorBox(4,   0.02, 3,   0xe0ccf0, 11.0,  SE, 1.5,  G.etage, 'ch3');
+  floorBox(4.5, 0.02, 3,   0xd4b8e8, 2.25,  SE, 1.5,  G.etage, 'ch-principale');
+  floorBox(4.5, 0.02, 3,   0xc8a8e0, 6.75,  SE, 1.5,  G.etage, 'ch2');
+  floorBox(4,   0.02, 3,   0xa8c4e4, 11.0,  SE, 1.5,  G.etage, 'ch3');
   floorBox(13,  0.02, 1,   0xf0eed8, 6.5,   SE, 3.5,  G.etage, null);
-  floorBox(3.5, 0.02, 5,   0xa8d8f0, 1.75,  SE, 6.5,  G.etage, 'sdb');
-  floorBox(5,   0.02, 5,   0xe0ccf0, 6.0,   SE, 6.5,  G.etage, 'ch4');
-  floorBox(3,   0.02, 2.5, 0xa8d8f0, 11.5,  SE, 7.75, G.etage, 'sdb2');
+  floorBox(3.5, 0.02, 5,   0x98d8cc, 1.75,  SE, 6.5,  G.etage, 'sdb');
+  floorBox(5,   0.02, 5,   0xa8e0d0, 6.0,   SE, 6.5,  G.etage, 'ch4');
+  floorBox(3,   0.02, 2.5, 0xa8c8e8, 11.5,  SE, 7.75, G.etage, 'sdb2');
   floorBox(4.5, 0.02, 2.5, 0xf0eed8, 10.75, SE, 5.25, G.etage, null);
   // Murs ext. étage
   box(13, WH, WT, M3d.wallOut,  6.5, EW, 0,   G.etage);
@@ -770,13 +1192,13 @@ function initThree() {
   box(1.5, 1.1, 0.09, M3d.win, 11.0, EW, 9, G.etage);
   staircase(1.5, 3.5, EB + FT, G.etage);
   const LE = EB + FT + 1.7;
-  makeLabel('Couloir / Palier',   6.5,  LE, 3.5,  'etage');
-  makeLabel('Ch. Principale',     2.25, LE, 1.5,  'etage');
-  makeLabel('Chambre 2',          6.75, LE, 1.5,  'etage');
-  makeLabel('Chambre 3',         11.0,  LE, 1.5,  'etage');
-  makeLabel('Grande SDB',         1.75, LE, 6.5,  'etage');
-  makeLabel('Chambre 4',          6.0,  LE, 6.5,  'etage');
-  makeLabel('SDB2 / WC',         11.5,  LE, 7.75, 'etage');
+  makeLabel('Couloir / Palier',   6.5,  LE, 3.5,  'etage', null);
+  makeLabel('Ch. Principale',     2.25, LE, 1.5,  'etage', 'ch-principale');
+  makeLabel('Chambre 2',          6.75, LE, 1.5,  'etage', 'ch2');
+  makeLabel('Chambre 3',         11.0,  LE, 1.5,  'etage', 'ch3');
+  makeLabel('Grande SDB',         1.75, LE, 6.5,  'etage', 'sdb');
+  makeLabel('Chambre 4',          6.0,  LE, 6.5,  'etage', 'ch4');
+  makeLabel('SDB2 / WC',         11.5,  LE, 7.75, 'etage', 'sdb2');
 
   // ── TOITURE ──
   const FAITG = 3.8;
@@ -816,19 +1238,35 @@ function initThree() {
   vis = { rdc: true, etage: true, toit: true };
 }
 
+function _getFloor(mesh) {
+  // Sprite cliqué → lookup direct par roomId ; hitbox/dalle → userData.floorMesh ou mesh lui-même
+  if (mesh.userData.floorMesh) return mesh.userData.floorMesh;
+  const id = mesh.userData.room;
+  if (id && roomFloorMesh[id]) return roomFloorMesh[id];
+  return mesh;
+}
 function highlight3D(mesh, id) {
   if (selectedMesh) {
-    const prev = selectedMesh.userData.floorMesh || selectedMesh;
-    prev.material.color.setHex(prev.userData.origColor);
+    const prev = _getFloor(selectedMesh);
+    if (prev.material && prev.material.color) {
+      prev.material.color.setHex(prev.userData.origColor !== undefined ? prev.userData.origColor : 0xffffff);
+      if (prev.material.emissive) prev.material.emissive.setHex(0x000000);
+    }
   }
   selectedMesh = mesh;
-  const floor = mesh.userData.floorMesh || mesh;
-  floor.material.color.setHex(0xffdd44);
+  const floor = _getFloor(mesh);
+  if (floor.material && floor.material.color) {
+    floor.material.color.setHex(0xffee00);
+    if (floor.material.emissive) floor.material.emissive.setHex(0x443300);
+  }
 }
 function unhighlight3D() {
   if (selectedMesh) {
-    const floor = selectedMesh.userData.floorMesh || selectedMesh;
-    floor.material.color.setHex(floor.userData.origColor);
+    const floor = _getFloor(selectedMesh);
+    if (floor.material && floor.material.color) {
+      floor.material.color.setHex(floor.userData.origColor !== undefined ? floor.userData.origColor : 0xffffff);
+      if (floor.material.emissive) floor.material.emissive.setHex(0x000000);
+    }
     selectedMesh = null;
   }
 }
@@ -862,9 +1300,39 @@ window.toggle3d = function(k) {
 let interiorMode = false;
 window.toggleInterieur = function() {
   interiorMode = !interiorMode;
-  M3d.wallOut.opacity = interiorMode ? 0.15 : 1.0;
-  M3d.wallOut.needsUpdate = true;
+  M3d.wallOut.opacity = interiorMode ? 0.10 : 1.0;  M3d.wallOut.needsUpdate = true;
+  M3d.wallIn.opacity  = interiorMode ? 0.10 : 1.0;  M3d.wallIn.needsUpdate  = true;
+  M3d.roof.opacity    = interiorMode ? 0.0  : 0.35; M3d.roof.needsUpdate    = true;
+  if (ambientLight) ambientLight.intensity = interiorMode ? 0.35 : 0.7;
   document.getElementById('b-interieur').className = 'btn3d ' + (interiorMode ? 'active' : 'off');
+};
+
+window.applyThemeToScene = function(themeName) {
+  const cfg = THEME_CONFIG[themeName];
+  if (!cfg) return;
+  currentTheme = themeName;
+
+  // Ciel : regénère la texture canvas
+  if (skyMesh) {
+    if (skyMesh.material.map) skyMesh.material.map.dispose();
+    skyMesh.material.map = makeSkyTex(themeName);
+    skyMesh.material.needsUpdate = true;
+  }
+
+  // Matériaux maison
+  if (M3d) {
+    M3d.wallOut.color.setHex(cfg.wallOut); M3d.wallOut.needsUpdate = true;
+    M3d.wallIn.color.setHex(cfg.wallIn);   M3d.wallIn.needsUpdate = true;
+    M3d.ground.color.setHex(cfg.ground);   M3d.ground.needsUpdate = true;
+    M3d.roof.color.setHex(cfg.roof);       M3d.roof.needsUpdate = true;
+  }
+
+  // Boutons
+  document.querySelectorAll('.btn3d-theme').forEach(b => {
+    b.classList.toggle('active', b.dataset.theme === themeName);
+    b.classList.toggle('off',    b.dataset.theme !== themeName);
+    b.classList.remove('on');
+  });
 };
 
 // ══════════════════════════════════════════════════════

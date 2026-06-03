@@ -1,26 +1,359 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plans interactifs immobilier</title>
-<style>
-  body { font-family: system-ui, sans-serif; max-width: 700px; margin: 60px auto; padding: 0 20px; color: #222; }
-  h1 { font-size: 1.4rem; margin-bottom: 8px; }
-  p { color: #666; margin-bottom: 32px; }
-  ul { list-style: none; padding: 0; }
-  li { margin-bottom: 12px; }
-  a { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; background: #f5f5f5; border-radius: 8px; text-decoration: none; color: #222; font-weight: 500; transition: background 0.15s; }
-  a:hover { background: #e8e8e8; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visite 3D Immobilière — Plans Interactifs</title>
+    <meta name="description" content="Transformez vos annonces immobilières avec des visites 3D interactives. Plan 2D, vue 3D, panorama 360° et calculateur de financement.">
+    <meta property="og:title" content="Visite 3D Immobilière — Démos en direct">
+    <meta property="og:description" content="Plan 2D • Vue 3D • Panorama 360° • Calculateur financement">
+    <meta property="og:url" content="https://immo-plans-ept40hxxf-dim-s-projects4.vercel.app">
+    <meta property="og:type" content="website">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #2c3e50; }
+
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .hero p { font-size: 1.2rem; opacity: 0.9; margin-bottom: 1rem; }
+        .hero .subtitle { font-size: 1rem; opacity: 0.8; margin-bottom: 2rem; }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .demos {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .demos h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            color: #667eea;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .demo-card {
+            background: white;
+            border: 1px solid #e0e6ed;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .demo-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .demo-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .demo-content {
+            padding: 1.5rem;
+        }
+
+        .demo-content h3 {
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .demo-content p {
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .demo-link {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .demo-link:hover {
+            text-decoration: underline;
+        }
+
+        .features {
+            background: #f5f7fa;
+            padding: 4rem 2rem;
+            margin: 4rem 0;
+        }
+
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-item {
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-item h3 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-item p {
+            color: #7f8c8d;
+        }
+
+        .pricing {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .pricing h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            color: #667eea;
+        }
+
+        .price-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .price-card {
+            background: white;
+            border: 2px solid #e0e6ed;
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .price-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .price-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .price {
+            font-size: 2rem;
+            color: #667eea;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .price-card ul {
+            list-style: none;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .price-card li {
+            padding: 0.5rem 0;
+            color: #7f8c8d;
+        }
+
+        .price-card li:before {
+            content: "✓ ";
+            color: #27ae60;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .pricing-note {
+            text-align: center;
+            color: #7f8c8d;
+            margin-top: 2rem;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.8rem; }
+            .hero p { font-size: 1rem; }
+            .demos h2, .pricing h2 { font-size: 1.5rem; }
+        }
+    </style>
 </head>
 <body>
-<h1>Plans interactifs immobilier</h1>
-<p>Plans 2D, vues 3D et visites 360° pour des annonces LeBonCoin.</p>
-<ul>
-  <li><a href="plan-interactif-romorantin.html">🏠 Romorantin — 170 m², 265 000 €</a></li>
-  <li><a href="plan-interactif-niort.html">🏠 Niort</a></li>
-  <li><a href="plan-interactif-tours.html">🏠 Tours</a></li>
-</ul>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1>🏠 Visite 3D Immobilière</h1>
+        <p>Transformez vos annonces avec des visites interactives</p>
+        <p class="subtitle">Plan 2D • Vue 3D • Panorama 360° • Calculateur financement</p>
+        <a href="#demos" class="cta-button">Voir les démos →</a>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features">
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">📐</div>
+                <h3>Plan 2D Interactif</h3>
+                <p>Visualisez la maison en plan, cliquez sur chaque pièce pour les détails</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🎨</div>
+                <h3>Vue 3D Fluide</h3>
+                <p>Naviguez en 3D isométrique, rotate et zoom sur les pièces</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">360°</div>
+                <h3>Panorama 360°</h3>
+                <p>Visite immersive dans chaque pièce, comme si vous y étiez</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">💰</div>
+                <h3>Calculateur Financement</h3>
+                <p>Vos clients calculent leur mensualité en temps réel</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📱</div>
+                <h3>Mobile-Friendly</h3>
+                <p>Fonctionne parfaitement sur téléphone et tablette</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📧</div>
+                <h3>Lead Capture</h3>
+                <p>Formulaire de contact intégré, prospects vous contactent directement</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- DÉMOS -->
+    <section class="demos" id="demos">
+        <h2>📍 Démos en direct</h2>
+        <div class="demo-grid">
+            <div class="demo-card">
+                <div class="demo-image">🏘️</div>
+                <div class="demo-content">
+                    <h3>Romorantin</h3>
+                    <p>Maison 170m² • 265 000€</p>
+                    <a href="plan-interactif-romorantin.html" class="demo-link">Voir la visite →</a>
+                </div>
+            </div>
+            <div class="demo-card">
+                <div class="demo-image">🏠</div>
+                <div class="demo-content">
+                    <h3>Niort</h3>
+                    <p>Maison 177m² • 352 000€</p>
+                    <a href="plan-interactif-niort.html" class="demo-link">Voir la visite →</a>
+                </div>
+            </div>
+            <div class="demo-card">
+                <div class="demo-image">🔑</div>
+                <div class="demo-content">
+                    <h3>Votre maison</h3>
+                    <p>Demandez une démo personnalisée</p>
+                    <a href="plan-interactif-romorantin.html" class="demo-link">Voir plus →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="pricing">
+        <h2>💳 Tarification simple</h2>
+        <div class="price-cards">
+            <div class="price-card">
+                <h3>Basic</h3>
+                <div class="price">150€</div>
+                <ul>
+                    <li>Plan 2D interactif</li>
+                    <li>Vue 3D fluide</li>
+                    <li>Calculateur financement</li>
+                    <li>QR code shareable</li>
+                    <li>Formulaire contact</li>
+                </ul>
+            </div>
+            <div class="price-card">
+                <h3>Pro</h3>
+                <div class="price">250€</div>
+                <ul>
+                    <li>Tout de Basic +</li>
+                    <li>Panorama 360° réel</li>
+                    <li>Photos immobilière</li>
+                    <li>Branding custom</li>
+                    <li>Analytics intégré</li>
+                </ul>
+            </div>
+            <div class="price-card">
+                <h3>Premium</h3>
+                <div class="price">500€</div>
+                <ul>
+                    <li>Tout de Pro +</li>
+                    <li>Rendu Blender 3D</li>
+                    <li>Drone photo</li>
+                    <li>CRM integration</li>
+                    <li>Support prioritaire</li>
+                </ul>
+            </div>
+        </div>
+        <p class="pricing-note">⚡ Livraison en 24-48h • Pas de frais cachés</p>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2024 Visite 3D Immobilière | Tous droits réservés</p>
+        <p style="font-size: 0.9rem; margin-top: 1rem; opacity: 0.8;">Créé pour les agents immobiliers qui veulent se démarquer</p>
+    </footer>
 </body>
 </html>
