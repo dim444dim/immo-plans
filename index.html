@@ -14,6 +14,8 @@
   <meta name="twitter:title" content="ImmoViz 3D — Votre annonce immobilière, enfin remarquée">
   <meta name="twitter:image" content="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=630&fit=crop">
   <link rel="canonical" href="https://dim444dim.github.io/immo-plans/">
+  <meta name="theme-color" content="#0d0d0d">
+  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=85&fit=crop" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
@@ -30,9 +32,7 @@
     *{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
     body{font-family:-apple-system,'Segoe UI',sans-serif;background:#0d0d0d;color:#f0f0f0;line-height:1.6;overflow-x:hidden;cursor:none}
-
     @media(hover:none){body{cursor:auto}}
-
     /* ── CURSEUR CUSTOM ── */
     .custom-cursor-dot, .custom-cursor-ring{position:fixed;pointer-events:none;z-index:9999;will-change:transform}
     .custom-cursor-dot{width:8px;height:8px;background:var(--cyan);border-radius:50%;box-shadow:0 0 8px rgba(0,229,255,.6);opacity:1;transition:opacity .2s}
@@ -40,10 +40,8 @@
     .custom-cursor-dot.hov{opacity:0}
     .custom-cursor-ring.hov{width:48px;height:48px;background:rgba(0,229,255,.1);opacity:.8}
     a{text-decoration:none}
-
     /* Italic serif — signature Skelvia */
     em{font-family:'Playfair Display',Georgia,serif;font-style:italic;color:var(--cyan)}
-
     /* ── FOND PARALLAX ── */
     #page-bg{
       position:fixed;inset:0;
@@ -56,7 +54,6 @@
       content:'';position:absolute;inset:0;
       background:linear-gradient(to bottom,rgba(0,0,0,.45) 0%,rgba(0,0,0,.25) 30%,rgba(0,0,0,.6) 65%,rgba(0,0,0,.85) 100%);
     }
-
     /* ── NAV PILL ── */
     nav{
       position:fixed;top:1rem;left:50%;transform:translateX(-50%);
@@ -80,7 +77,6 @@
 
     /* ── SHIMMER ── */
     @keyframes shimmer{from{left:-80%}to{left:130%}}
-
     /* ── BOUTONS ── */
     .btn-p{
       background:var(--cyan);color:#000;
@@ -101,11 +97,9 @@
     .btn-g::before{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transform:skewX(-20deg)}
     .btn-g:hover{color:#fff;border-color:rgba(255,255,255,.55)}
     .btn-g:hover::before{animation:shimmer .55s ease-out forwards}
-
     /* ── LAYOUT ── */
     .wrap{max-width:980px;margin:0 auto;padding:0 1.75rem}
     section{padding:6rem 1.75rem}
-
     /* ── ANIMATIONS ── */
     @keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
     @keyframes wordIn{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
@@ -121,7 +115,6 @@
     .reveal{opacity:0;transform:translateY(26px);transition:opacity .72s cubic-bezier(.22,1,.36,1),transform .72s cubic-bezier(.22,1,.36,1)}
     .reveal.v{opacity:1;transform:translateY(0)}
     .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
-
     /* ── SECTION TAG ── */
     .stag{
       display:flex;align-items:center;gap:.65rem;
@@ -129,7 +122,6 @@
       text-transform:uppercase;letter-spacing:2px;margin-bottom:1.1rem;
     }
     .stag::before{content:'';width:22px;height:2px;background:var(--cyan);flex-shrink:0}
-
     /* ── TYPOGRAPHY ── */
     h1{
       font-family:'Inter Tight',-apple-system,sans-serif;
@@ -138,7 +130,6 @@
     }
     h2{font-family:'Inter Tight',-apple-system,sans-serif;font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;letter-spacing:-2px;line-height:1.08;margin-bottom:.75rem}
     .sub{color:var(--muted);font-size:1rem;max-width:540px;margin-bottom:3rem;line-height:1.75}
-
     /* ── HERO ── */
     .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:5.5rem;padding-top:5rem}
     .hero-inner{max-width:980px;margin:0 auto;padding:0 1.75rem}
@@ -151,11 +142,9 @@
     }
     .bdot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:blink 2s infinite}
     @keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.75)}}
-
     .hsub{font-size:1.05rem;color:rgba(255,255,255,.65);max-width:520px;margin-bottom:2.25rem;line-height:1.75}
     .hsub strong{color:#fff}
     .cta-row{display:flex;gap:.9rem;align-items:center;flex-wrap:wrap}
-
     /* Galerie inline dans le hero */
     .hgallery{
       display:flex;gap:.6rem;margin-top:2.5rem;flex-wrap:wrap;
@@ -175,7 +164,6 @@
     }
     .hstat strong{display:block;font-size:1.55rem;font-weight:800}
     .hstat span{font-size:.76rem;color:var(--muted)}
-
     /* ── POUR QUI ── */
     .pourqui{
       background:rgba(255,255,255,.05);
@@ -208,7 +196,6 @@
       border-color:rgba(0,229,255,.4);
       background:rgba(0,229,255,.08);
     }
-
     /* ── CARDS ── */
     .glass{
       background:rgba(8,6,4,.65);border:1px solid rgba(255,255,255,.1);
@@ -222,7 +209,6 @@
       border-color:rgba(0,229,255,.3);
       box-shadow:0 16px 40px rgba(0,0,0,.35);
     }
-
     /* ── PROBLÈMES ── */
     .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:1.2rem}
     .pcard{padding:1.75rem}
@@ -504,6 +490,8 @@
     @media(max-width:480px){
       h1{letter-spacing:-1px}
     }
+    /* ── FOCUS VISIBLE ── */
+    a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[role="slider"]:focus-visible,.faqq:focus-visible,.fradio:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:4px}
   </style>
 </head>
 <body>
@@ -580,7 +568,7 @@
 
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobile-menu">
-  <button class="mmclose" id="mmclose">✕</button>
+  <button class="mmclose" id="mmclose" aria-label="Fermer le menu">✕</button>
   <a href="#problemes">Problèmes</a>
   <a href="#solution">Méthode</a>
   <a href="#demos">Démos</a>
@@ -808,7 +796,7 @@
       </ul>
       <div class="ab-stat ab-stat-red">↓ 2.3% de taux de clic moyen</div>
     </div>
-    <div class="ab-divider" id="ab-div">
+    <div class="ab-divider" id="ab-div" role="slider" aria-valuenow="50" aria-valuemin="5" aria-valuemax="95" aria-label="Comparer avant/après" tabindex="0">
       <div class="ab-handle">↔</div>
     </div>
     <div class="ab-after">
@@ -944,24 +932,24 @@
     <h2 class="reveal">On a les <em>réponses.</em></h2>
     <div class="faqlist reveal" style="margin-top:2rem">
       <div class="faqitem">
-        <button class="faqq">De quoi avez-vous besoin pour commencer ?<span class="faqbtn">+</span></button>
-        <div class="faqa">Juste l'annonce de votre bien (texte ou URL LeBonCoin) et quelques photos si vous souhaitez la visite 360°. Tout le reste est géré de mon côté.</div>
+        <button class="faqq" aria-expanded="false">De quoi avez-vous besoin pour commencer ?<span class="faqbtn">+</span></button>
+        <div class="faqa" aria-hidden="true">Juste l'annonce de votre bien (texte ou URL LeBonCoin) et quelques photos si vous souhaitez la visite 360°. Tout le reste est géré de mon côté.</div>
       </div>
       <div class="faqitem">
-        <button class="faqq">Comment intégrer le plan dans mon annonce LeBonCoin ?<span class="faqbtn">+</span></button>
-        <div class="faqa">Je vous fournis une URL publique à coller dans la description. Pour un compte professionnel (avec SIRET), le lien peut être mis dans le champ "visite virtuelle" dédié.</div>
+        <button class="faqq" aria-expanded="false">Comment intégrer le plan dans mon annonce LeBonCoin ?<span class="faqbtn">+</span></button>
+        <div class="faqa" aria-hidden="true">Je vous fournis une URL publique à coller dans la description. Pour un compte professionnel (avec SIRET), le lien peut être mis dans le champ "visite virtuelle" dédié.</div>
       </div>
       <div class="faqitem">
-        <button class="faqq">Ai-je besoin d'un appareil photo 360° ?<span class="faqbtn">+</span></button>
-        <div class="faqa">Non. Un iPhone ou Android suffit avec l'application Google Street View (gratuite). Ou je gère la visite 360° de façon procédurale sans aucune photo de votre part.</div>
+        <button class="faqq" aria-expanded="false">Ai-je besoin d'un appareil photo 360° ?<span class="faqbtn">+</span></button>
+        <div class="faqa" aria-hidden="true">Non. Un iPhone ou Android suffit avec l'application Google Street View (gratuite). Ou je gère la visite 360° de façon procédurale sans aucune photo de votre part.</div>
       </div>
       <div class="faqitem">
-        <button class="faqq">Combien de temps mon URL reste-t-elle active ?<span class="faqbtn">+</span></button>
-        <div class="faqa">6 mois minimum. Si votre bien n'est pas vendu au bout de 6 mois, je renouvelle gratuitement l'hébergement.</div>
+        <button class="faqq" aria-expanded="false">Combien de temps mon URL reste-t-elle active ?<span class="faqbtn">+</span></button>
+        <div class="faqa" aria-hidden="true">6 mois minimum. Si votre bien n'est pas vendu au bout de 6 mois, je renouvelle gratuitement l'hébergement.</div>
       </div>
       <div class="faqitem">
-        <button class="faqq">Quand dois-je payer ?<span class="faqbtn">+</span></button>
-        <div class="faqa">Après livraison et validation du résultat. Si le rendu ne vous convient pas, vous ne payez rien.</div>
+        <button class="faqq" aria-expanded="false">Quand dois-je payer ?<span class="faqbtn">+</span></button>
+        <div class="faqa" aria-hidden="true">Après livraison et validation du résultat. Si le rendu ne vous convient pas, vous ne payez rien.</div>
       </div>
     </div>
   </div>
@@ -1265,8 +1253,19 @@
     btn.addEventListener('click', () => {
       const item = btn.parentElement;
       const was = item.classList.contains('open');
-      document.querySelectorAll('.faqitem').forEach(i => i.classList.remove('open'));
-      if (!was) item.classList.add('open');
+      document.querySelectorAll('.faqitem').forEach(i => {
+        i.classList.remove('open');
+        const q = i.querySelector('.faqq');
+        const a = i.querySelector('.faqa');
+        if (q) q.setAttribute('aria-expanded', 'false');
+        if (a) a.setAttribute('aria-hidden', 'true');
+      });
+      if (!was) {
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+        const ans = item.querySelector('.faqa');
+        if (ans) ans.setAttribute('aria-hidden', 'false');
+      }
     });
   });
 
@@ -1407,6 +1406,7 @@
       pct = Math.max(5, Math.min(95, pct));
       div.style.left = pct + '%';
       after.style.clipPath = 'inset(0 0 0 ' + pct + '%)';
+      div.setAttribute('aria-valuenow', Math.round(pct));
     }
 
     let dragging = false;
@@ -1419,6 +1419,15 @@
     window.addEventListener('touchmove', e => {
       if (dragging) setPos(e.touches[0].clientX);
     }, { passive: true });
+
+    div.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      const rect = wrap.getBoundingClientRect();
+      const cur = parseFloat(div.style.left) || 50;
+      const step = e.shiftKey ? 10 : 5;
+      setPos(rect.left + (Math.max(5, Math.min(95, cur + (e.key === 'ArrowLeft' ? -step : step))) / 100) * rect.width);
+      e.preventDefault();
+    });
   })();
 
   // ── FORMULAIRE MODAL ──

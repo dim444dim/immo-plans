@@ -25,3 +25,16 @@
 - [x] 4A — Formulaire modal : champs prénom/email/URL/budget/message, validation, mailto structuré, état succès — 2026-06-09
 - [x] 4B — Sticky CTA bar : pill fixe bottom, apparaît après 520px scroll, masqué near-footer, ouvre formulaire modal — 2026-06-09
 - [x] 4C — Section Témoignages : 3 cards glass ★★★★★, placée avant CTA final — 2026-06-09
+
+## Vague 5
+- [x] 5A — Lighthouse / Core Web Vitals — 2026-06-09
+  - font-display:swap déjà présent dans l'URL Google Fonts ✅
+  - `<link rel="preload" as="image">` ajouté pour l'image hero Unsplash (LCP)
+  - Pas de `<img>` dans la page (fond en CSS background-image) → loading="lazy" N/A
+  - `<meta name="theme-color" content="#0d0d0d">` ajouté dans le head
+  - CSS inline minifié : ~12 lignes vides superflues supprimées entre sections
+- [x] 5B — Accessibilité clavier — 2026-06-09
+  - `:focus-visible` outline cyan ajouté sur a/button/input/textarea/select/[role="slider"]/.faqq/.fradio
+  - FAQ : `aria-expanded="false/true"` sur .faqq, `aria-hidden="true/false"` sur .faqa (HTML + JS)
+  - Slider avant/après : `role="slider"` aria-valuenow/min/max + tabindex="0" + navigation clavier ←→
+  - Mobile menu close : `aria-label="Fermer le menu"` ajouté (burger avait déjà aria-label="Menu")
