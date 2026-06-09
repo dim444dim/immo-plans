@@ -397,8 +397,11 @@
 
 <!-- LOADER -->
 <div id="loader">
-  <div class="loader-logo"><span class="loader-dot"></span>ImmoViz 3D</div>
-  <div class="loader-bar-track"><div class="loader-bar-fill"></div></div>
+  <div class="loader-logo">
+    <span style="width:8px;height:8px;border-radius:50%;background:#00e5ff;display:block"></span>
+    Immo<span>Viz</span> 3D
+  </div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
 </div>
 
 <!-- CURSEUR CUSTOM -->
@@ -443,9 +446,9 @@
     </div>
 
     <div class="hstats">
-      <div class="hstat"><strong>+40%</strong><span>de clics vs annonce simple</span></div>
-      <div class="hstat"><strong>48h</strong><span>délai de livraison</span></div>
-      <div class="hstat"><strong>150€</strong><span>offre de départ</span></div>
+      <div class="hstat"><strong data-count="40" data-suffix="%" data-prefix="+">+40%</strong><span>de clics vs annonce simple</span></div>
+      <div class="hstat"><strong data-count="48" data-suffix="h">48h</strong><span>délai de livraison</span></div>
+      <div class="hstat"><strong data-count="150" data-suffix="€">150€</strong><span>offre de départ</span></div>
       <div class="hstat"><strong>0€</strong><span>vs 3 500€/an Matterport</span></div>
     </div>
   </div>
@@ -561,19 +564,19 @@
     <div class="cgrid" style="margin-top:2.5rem">
       <div class="glass ccard reveal d1">
         <div class="cicon">⚡</div>
-        <div class="cnum">48h</div>
+        <div class="cnum" data-count="48" data-suffix="h">48h</div>
         <div class="clbl">Livraison garantie</div>
         <p class="cdesc">De l'annonce au plan interactif en ligne en moins de 48 heures. Sans déplacement, sans matériel spécial.</p>
       </div>
       <div class="glass ccard reveal d2">
         <div class="cicon">💰</div>
-        <div class="cnum">150€</div>
+        <div class="cnum" data-count="150" data-suffix="€">150€</div>
         <div class="clbl">Vs 3 500€/an</div>
         <p class="cdesc">Le même résultat que Matterport à moins de 5% du prix, sans abonnement, livré en une fois.</p>
       </div>
       <div class="glass ccard reveal d3">
         <div class="cicon">🔒</div>
-        <div class="cnum">100%</div>
+        <div class="cnum" data-count="100" data-suffix="%">100%</div>
         <div class="clbl">Propriétaire du fichier</div>
         <p class="cdesc">Le fichier HTML vous appartient pour toujours. Hébergement inclus 6 mois. Zéro dépendance externe.</p>
       </div>
@@ -728,17 +731,11 @@
 
 <script>
   // ── LOADER ──
-  (function(){
-    document.body.style.overflow = 'hidden';
-    var loader = document.getElementById('loader');
-    setTimeout(function(){
-      loader.classList.add('fade-out');
-      setTimeout(function(){
-        loader.style.display = 'none';
-        document.body.style.overflow = '';
-      }, 400);
-    }, 1200);
-  })();
+  window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('done');
+    }, 1300);
+  });
 
   // ── PARALLAX SOURIS (hero uniquement) ──
   (function(){
@@ -1035,6 +1032,31 @@
       if (el) el.style.animationDelay = (base + gap) + 's';
     });
   })();
+
+  // ── COMPTEURS ANIMÉS ──
+  function animCount(el) {
+    const target = +el.dataset.count;
+    const suffix = el.dataset.suffix || '';
+    const prefix = el.dataset.prefix || '';
+    const dur = 1800;
+    const start = performance.now();
+    function step(now) {
+      const p = Math.min((now - start) / dur, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = prefix + Math.round(ease * target) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  const countObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.target.dataset.count) {
+        animCount(e.target);
+        countObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('[data-count]').forEach(el => countObs.observe(el));
 
   // ── CURSEUR CUSTOM ──
   (function(){
