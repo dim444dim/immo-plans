@@ -26,6 +26,10 @@
 - [x] 4B — Sticky CTA bar : pill fixe bottom, apparaît après 520px scroll, masqué near-footer, ouvre formulaire modal — 2026-06-09
 - [x] 4C — Section Témoignages : 3 cards glass ★★★★★, placée avant CTA final — 2026-06-09
 
+## Vague 6
+- [x] 6A — Plausible Analytics : `<script defer data-domain="dim444dim.github.io/immo-plans">` ajouté dans `<head>` après meta theme-color — 2026-06-09
+- [x] 6B — Événements de conversion : 'Devis ouvert' (openForm), 'Devis envoyé' (+props budget), 'Demo cliquée' (.btn-demo), 'FAQ ouverte' (+props question) — wrapper `if (window.plausible)` sécurisé — 2026-06-09
+
 ## Vague 5
 - [x] 5A — Lighthouse / Core Web Vitals — 2026-06-09
   - font-display:swap déjà présent dans l'URL Google Fonts ✅

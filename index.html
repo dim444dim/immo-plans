@@ -15,6 +15,7 @@
   <meta name="twitter:image" content="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=630&fit=crop">
   <link rel="canonical" href="https://dim444dim.github.io/immo-plans/">
   <meta name="theme-color" content="#0d0d0d">
+  <script defer data-domain="dim444dim.github.io/immo-plans" src="https://plausible.io/js/script.js"></script>
   <link rel="preload" as="image" href="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=85&fit=crop" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1265,6 +1266,7 @@
         btn.setAttribute('aria-expanded', 'true');
         const ans = item.querySelector('.faqa');
         if (ans) ans.setAttribute('aria-hidden', 'false');
+        if (window.plausible) plausible('FAQ ouverte', {props: {question: btn.textContent.replace(/[+\-]$/, '').trim()}});
       }
     });
   });
@@ -1443,6 +1445,7 @@
       overlay.classList.add('open');
       document.body.style.overflow = 'hidden';
       setTimeout(() => document.getElementById('f-prenom') && document.getElementById('f-prenom').focus(), 100);
+      if (window.plausible) plausible('Devis ouvert');
     };
 
     function closeForm() {
@@ -1490,6 +1493,7 @@
       );
       window.open('mailto:dimitri444art@gmail.com?subject=' + subject + '&body=' + body, '_blank');
       box.classList.add('sent');
+      if (window.plausible) plausible('Devis envoyé', {props: {budget: budget}});
     });
 
     // Intercepter tous les CTAs "devis"
@@ -1544,6 +1548,13 @@
     if (close) close.addEventListener('click', closeMenu);
     menu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
   })();
+
+  // ── ANALYTICS DÉMOS ──
+  document.querySelectorAll('.btn-demo').forEach(a => {
+    a.addEventListener('click', () => {
+      if (window.plausible) plausible('Demo cliquée');
+    });
+  });
 </script>
 </body>
 </html>
