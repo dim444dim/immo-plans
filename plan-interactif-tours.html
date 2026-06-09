@@ -67,6 +67,23 @@
     #whatsapp-btn:hover { transform: scale(1.12) translateY(-3px); box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5); }
     #whatsapp-btn:active { transform: scale(0.96); }
     @media (max-width: 768px) { #whatsapp-btn { display: flex; } }
+
+    /* ── POP-UP EXIT INTENT ── */
+    #exit-popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(4px);z-index:10000;align-items:center;justify-content:center;padding:1rem;animation:exitFadeIn .3s ease-out forwards}
+    #exit-popup.show{display:flex}
+    @keyframes exitFadeIn{from{opacity:0}to{opacity:1}}
+    .exit-modal{background:rgba(20,20,30,.98);border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:420px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:exitSlideIn .3s cubic-bezier(.22,1,.36,1) forwards}
+    @keyframes exitSlideIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+    .exit-modal h2{font-family:Arial,sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:.5rem;color:#fff}
+    .exit-modal p{font-size:.95rem;color:rgba(255,255,255,.65);margin-bottom:1.75rem;line-height:1.6}
+    .exit-close{position:absolute;top:1.25rem;right:1.25rem;background:none;border:1px solid rgba(255,255,255,.15);border-radius:8px;color:rgba(255,255,255,.5);font-size:.9rem;cursor:pointer;padding:.35rem .6rem;transition:color .2s,border-color .2s;width:32px;height:32px;display:flex;align-items:center;justify-content:center}
+    .exit-close:hover{color:#fff;border-color:rgba(255,255,255,.4)}
+    .exit-buttons{display:flex;gap:.75rem;flex-direction:column}
+    .exit-btn{padding:.85rem 1.5rem;border-radius:50px;font-weight:700;font-size:.95rem;border:none;cursor:pointer;transition:all .2s;text-align:center;display:inline-flex;align-items:center;justify-content:center}
+    .exit-btn-yes{background:#25d366;color:#fff;box-shadow:0 4px 16px rgba(37,211,102,.3)}
+    .exit-btn-yes:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,.4)}
+    .exit-btn-no{background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15)}
+    .exit-btn-no:hover{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)}
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
 
@@ -267,8 +284,104 @@ function init360() {
     }
   });
 }
+
+// ── EXIT INTENT POP-UP ──
+(function(){
+  console.log('[EXIT INTENT] Initializing...');
+  const isMobile = window.innerWidth < 768;
+  console.log(`[EXIT INTENT] isMobile = ${isMobile} (width: ${window.innerWidth})`);
+  if (isMobile) {
+    console.log('[EXIT INTENT] Skipping: mobile device');
+    return;
+  }
+
+  const popup = document.getElementById('exit-popup');
+  const closeBtn = document.getElementById('exit-close-btn');
+  const noBtn = document.getElementById('exit-btn-no');
+  const yesBtn = document.getElementById('exit-btn-yes');
+  console.log(`[EXIT INTENT] Elements found: popup=${!!popup}, closeBtn=${!!closeBtn}, noBtn=${!!noBtn}, yesBtn=${!!yesBtn}`);
+  if (!popup) {
+    console.log('[EXIT INTENT] Skipping: popup element not found');
+    return;
+  }
+
+  let lastMouseY = window.innerHeight;
+  let popupShown = localStorage.getItem('exitPopupShown');
+  console.log(`[EXIT INTENT] Initial popupShown = ${popupShown}`);
+
+  const handleMouseMove = (e) => {
+    if (popupShown || popup.classList.contains('show')) {
+      console.log(`[EXIT INTENT] Skipping mousemove: popupShown=${popupShown}, popup.show=${popup.classList.contains('show')}`);
+      return;
+    }
+
+    const currentY = e.clientY;
+    const isMovingUp = currentY < lastMouseY;
+    console.log(`[EXIT INTENT] mousemove: currentY=${currentY}, lastMouseY=${lastMouseY}, isMovingUp=${isMovingUp}`);
+    lastMouseY = currentY;
+
+    // Déclencher si souris remonte vers la barre adresse (y < 50 et mouvement vers le haut)
+    if (currentY < 50 && isMovingUp) {
+      console.log('[EXIT INTENT] Trigger condition met: showing popup');
+      showExitPopup();
+    }
+  };
+
+  window.addEventListener('mousemove', handleMouseMove, true);
+  document.addEventListener('mousemove', handleMouseMove, true);
+
+  // Déclencher aussi avec mouseLeave (quitter le viewport par le haut)
+  document.addEventListener('mouseleave', e => {
+    if (popupShown || popup.classList.contains('show')) return;
+    if (e.clientY < 0) {
+      showExitPopup();
+    }
+  }, true);
+
+  function showExitPopup() {
+    popupShown = true;
+    localStorage.setItem('exitPopupShown', 'true');
+    popup.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeExitPopup() {
+    popup.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  closeBtn.addEventListener('click', closeExitPopup);
+  noBtn.addEventListener('click', closeExitPopup);
+  yesBtn.addEventListener('click', () => {
+    const message = 'Bonjour, avant de partir j\'aimerais en savoir plus sur ImmoViz 3D';
+    const encodedMsg = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodedMsg}`;
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    closeExitPopup();
+  });
+
+  popup.addEventListener('click', e => {
+    if (e.target === popup) closeExitPopup();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && popup.classList.contains('show')) closeExitPopup();
+  });
+})();
 </script>
 
+<!-- EXIT INTENT POP-UP -->
+<div id="exit-popup">
+  <div class="exit-modal">
+    <button id="exit-close-btn" class="exit-close" aria-label="Fermer">✕</button>
+    <h2>Avant de partir — Aperçu gratuit 24h</h2>
+    <p>Pas d'engagement. Aucun frais cachés.</p>
+    <div class="exit-buttons">
+      <button id="exit-btn-yes" class="exit-btn exit-btn-yes">Oui, je suis intéressé</button>
+      <button id="exit-btn-no" class="exit-btn exit-btn-no">Non, fermer</button>
+    </div>
+  </div>
+</div>
 
 <button id="whatsapp-btn" title="Nous contacter sur WhatsApp">💬</button>
 </body>
