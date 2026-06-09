@@ -8,277 +8,364 @@
   <style>
     :root {
       --bg: #0d0d0d;
-      --surface: #161616;
-      --border: #2a2a2a;
       --cyan: #00e5ff;
       --cyan-dim: rgba(0,229,255,0.15);
       --text: #f0f0f0;
-      --muted: #888;
-      --white: #ffffff;
+      --muted: rgba(255,255,255,0.55);
+      --border: rgba(255,255,255,0.1);
+      --card: rgba(12,10,8,0.72);
+      --card-hover: rgba(20,16,12,0.82);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html { scroll-behavior: smooth; }
+
     body {
       font-family: -apple-system, 'Segoe UI', sans-serif;
-      background: var(--bg);
+      background: #0d0d0d;
       color: var(--text);
       line-height: 1.6;
+      overflow-x: hidden;
     }
 
     a { text-decoration: none; }
 
-    /* ── NAV ── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0;
-      background: transparent;
-      border-bottom: 1px solid transparent;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 0 2rem; height: 60px;
-      z-index: 100;
-      transition: background 0.4s, border-color 0.4s, backdrop-filter 0.4s;
+    /* ── FOND GLOBAL PARALLAX ── */
+    #page-bg {
+      position: fixed; inset: 0;
+      /* Remplacez par votre vraie photo : background-image: url('votre-photo.jpg'); */
+      background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=85&fit=crop');
+      background-size: cover;
+      background-position: center;
+      transform-origin: center bottom;
+      z-index: -2;
+      transition: transform 0.05s linear;
     }
-    nav.scrolled {
-      background: rgba(13,13,13,0.92);
-      border-bottom-color: var(--border);
-      backdrop-filter: blur(12px);
-    }
-    .logo { font-weight: 800; font-size: 1.1rem; color: var(--white); letter-spacing: -0.5px; }
-    .logo span { color: var(--cyan); }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a { color: rgba(255,255,255,0.7); font-size: 0.875rem; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--white); }
-    .nav-cta {
-      background: var(--cyan); color: #000 !important;
-      padding: 0.45rem 1.1rem; border-radius: 6px;
-      font-weight: 700; font-size: 0.8rem;
-    }
-
-    /* ── WRAPPER ── */
-    .wrap { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
-
-    /* ── HERO ── */
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex; flex-direction: column; justify-content: center;
-      overflow: hidden;
-    }
-
-    /* Fond hero — remplacez le gradient par url('votre-photo.jpg') center/cover no-repeat */
-    .hero-bg {
-      position: absolute; inset: 0;
-      background:
-        linear-gradient(135deg, #0f1923 0%, #1a1208 35%, #0d1520 70%, #050505 100%);
-      animation: kenBurns 10s ease-out forwards;
-      z-index: 0;
-    }
-    .hero-bg::after {
+    #page-bg::after {
       content: '';
       position: absolute; inset: 0;
       background: linear-gradient(
         to bottom,
-        rgba(0,0,0,0.25) 0%,
-        rgba(0,0,0,0.15) 40%,
-        rgba(13,13,13,0.88) 100%
+        rgba(0,0,0,0.35) 0%,
+        rgba(0,0,0,0.2) 30%,
+        rgba(0,0,0,0.55) 70%,
+        rgba(0,0,0,0.75) 100%
       );
     }
 
-    .hero-inner {
-      position: relative; z-index: 1;
-      padding: 5rem 1.5rem 4rem; max-width: 900px; margin: 0 auto;
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 1rem; left: 50%; transform: translateX(-50%);
+      background: rgba(15,12,9,0.75);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(16px);
+      display: flex; align-items: center; gap: 2rem;
+      padding: 0.6rem 1.25rem;
+      border-radius: 50px;
+      z-index: 100;
+      transition: background 0.3s;
+      white-space: nowrap;
+    }
+    .logo { font-weight: 800; font-size: 1rem; color: #fff; letter-spacing: -0.5px; }
+    .logo span { color: var(--cyan); }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,0.65); font-size: 0.85rem; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta {
+      background: var(--cyan); color: #000 !important;
+      padding: 0.45rem 1.1rem; border-radius: 50px;
+      font-weight: 700; font-size: 0.8rem;
+      position: relative; overflow: hidden;
+    }
+    .nav-cta::before {
+      content: '';
+      position: absolute; top: 0; left: -80%;
+      width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
+      transform: skewX(-20deg);
+    }
+    .nav-cta:hover::before { animation: shimmer 0.55s ease-out forwards; }
+
+    /* ── WRAPPER ── */
+    .wrap { max-width: 960px; margin: 0 auto; padding: 0 1.75rem; }
+
+    /* ── SHIMMER KEYFRAME ── */
+    @keyframes shimmer {
+      from { left: -80%; }
+      to   { left: 130%; }
     }
 
-    /* Stagger d'entrée — chaque enfant direct du hero-inner */
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding-bottom: 6rem;
+    }
+    .hero-inner { max-width: 960px; margin: 0 auto; padding: 0 1.75rem; }
+
     .hero-inner > * {
       opacity: 0;
-      animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
-    .hero-inner .badge    { animation-delay: 0.15s; }
-    .hero-inner h1        { animation-delay: 0.35s; }
-    .hero-inner .hero-sub { animation-delay: 0.55s; }
-    .hero-inner .cta-row  { animation-delay: 0.75s; }
-    .hero-inner .hero-stats { animation-delay: 0.95s; }
+    .hero-inner .badge    { animation-delay: 0.2s; }
+    .hero-inner h1        { animation-delay: 0.4s; }
+    .hero-inner .hero-sub { animation-delay: 0.6s; }
+    .hero-inner .cta-row  { animation-delay: 0.8s; }
+    .hero-inner .hero-proof { animation-delay: 1.0s; }
 
-    @keyframes kenBurns {
-      from { transform: scale(1.07); }
-      to   { transform: scale(1); }
-    }
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(22px); }
+      from { opacity: 0; transform: translateY(24px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
     .badge {
       display: inline-block;
       background: var(--cyan-dim);
-      border: 1px solid rgba(0,229,255,0.35);
+      border: 1px solid rgba(0,229,255,0.4);
       color: var(--cyan);
       padding: 0.3rem 0.9rem;
       border-radius: 20px; font-size: 0.75rem;
-      letter-spacing: 0.5px; margin-bottom: 1.75rem;
+      letter-spacing: 0.5px; margin-bottom: 1.5rem;
     }
 
     h1 {
-      font-size: clamp(2.4rem, 5.5vw, 4rem);
-      font-weight: 800; line-height: 1.08;
-      letter-spacing: -1.5px; margin-bottom: 1.5rem;
-      text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+      font-size: clamp(2.6rem, 6vw, 4.5rem);
+      font-weight: 800; line-height: 1.06;
+      letter-spacing: -2px; margin-bottom: 1.25rem;
+      text-shadow: 0 2px 30px rgba(0,0,0,0.6);
     }
     h1 em { color: var(--cyan); font-style: italic; }
 
     .hero-sub {
-      font-size: 1.05rem; color: rgba(255,255,255,0.7);
-      max-width: 560px; margin-bottom: 2.5rem; line-height: 1.75;
-      text-shadow: 0 1px 10px rgba(0,0,0,0.5);
+      font-size: 1.05rem; color: var(--muted);
+      max-width: 540px; margin-bottom: 2rem; line-height: 1.75;
     }
-    .hero-sub strong { color: var(--white); }
+    .hero-sub strong { color: #fff; }
 
     .cta-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
 
+    /* Bouton primaire avec shimmer */
     .btn-primary {
       background: var(--cyan); color: #000;
-      padding: 0.9rem 2rem; border-radius: 8px;
-      font-weight: 700; font-size: 1rem;
-      transition: transform 0.15s, box-shadow 0.15s;
-      display: inline-block;
+      padding: 0.9rem 2rem; border-radius: 50px;
+      font-weight: 700; font-size: 0.95rem;
+      position: relative; overflow: hidden;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute; top: 0; left: -80%;
+      width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
+      transform: skewX(-20deg);
     }
     .btn-primary:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 28px rgba(0,229,255,0.35);
     }
-    .btn-link { color: rgba(255,255,255,0.6); font-size: 0.875rem; transition: color 0.2s; }
-    .btn-link:hover { color: var(--white); }
+    .btn-primary:hover::before { animation: shimmer 0.55s ease-out forwards; }
 
-    .hero-stats {
-      display: flex; gap: 2.5rem; flex-wrap: wrap;
-      margin-top: 3.5rem; padding-top: 2rem;
-      border-top: 1px solid rgba(255,255,255,0.12);
+    .btn-ghost {
+      color: rgba(255,255,255,0.65);
+      font-size: 0.875rem;
+      padding: 0.9rem 1.5rem;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50px;
+      transition: color 0.2s, border-color 0.2s;
     }
-    .stat strong { display: block; font-size: 1.6rem; font-weight: 800; color: var(--white); }
-    .stat span { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
+    .btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,0.5); }
+
+    .hero-proof {
+      display: flex; gap: 2.5rem; align-items: center;
+      margin-top: 3rem; padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      flex-wrap: wrap;
+    }
+    .proof-stat strong { display: block; font-size: 1.6rem; font-weight: 800; }
+    .proof-stat span { font-size: 0.78rem; color: var(--muted); }
+
+    /* ── SECTION TAG avec trait ── */
+    .section-tag {
+      display: flex; align-items: center; gap: 0.65rem;
+      font-size: 0.7rem; font-weight: 700;
+      color: var(--cyan); text-transform: uppercase;
+      letter-spacing: 2px; margin-bottom: 1rem;
+    }
+    .section-tag::before {
+      content: '';
+      width: 22px; height: 2px;
+      background: var(--cyan); flex-shrink: 0;
+    }
+
+    h2 {
+      font-size: clamp(1.9rem, 4vw, 2.8rem);
+      font-weight: 800; letter-spacing: -1.5px;
+      line-height: 1.1; margin-bottom: 0.75rem;
+    }
+    h2 em { color: var(--cyan); font-style: italic; }
+
+    .section-sub { color: var(--muted); font-size: 1rem; max-width: 540px; margin-bottom: 3rem; }
 
     /* ── SCROLL REVEAL ── */
     .reveal {
-      opacity: 0;
-      transform: translateY(28px);
+      opacity: 0; transform: translateY(28px);
       transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
     }
     .reveal.visible { opacity: 1; transform: translateY(0); }
-    .reveal-delay-1 { transition-delay: 0.1s; }
-    .reveal-delay-2 { transition-delay: 0.2s; }
-    .reveal-delay-3 { transition-delay: 0.3s; }
+    .d1 { transition-delay: 0.1s; }
+    .d2 { transition-delay: 0.2s; }
+    .d3 { transition-delay: 0.3s; }
 
-    /* ── SECTION BASE ── */
-    section { padding: 5rem 1.5rem; }
-    .section-tag {
-      font-size: 0.7rem; font-weight: 700;
-      color: var(--cyan); text-transform: uppercase;
-      letter-spacing: 2px; margin-bottom: 0.75rem;
+    /* ── SECTIONS ── */
+    section { padding: 6rem 1.75rem; }
+
+    /* ── PROBLÈMES (cartes verre fumé) ── */
+    .problems-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.25rem; margin-bottom: 3rem;
     }
-    h2 {
-      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
-      font-weight: 800; letter-spacing: -1px;
-      line-height: 1.15; margin-bottom: 0.75rem;
+    .problem-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      border-radius: 16px; padding: 1.75rem;
+      transition: background 0.25s, transform 0.25s, border-color 0.25s;
     }
-    .section-sub { color: var(--muted); font-size: 1rem; max-width: 540px; margin-bottom: 3rem; }
+    .problem-card:hover {
+      background: var(--card-hover);
+      transform: translateY(-3px);
+      border-color: rgba(0,229,255,0.25);
+    }
+    .problem-icon {
+      width: 44px; height: 44px;
+      background: rgba(0,229,255,0.12);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; margin-bottom: 1.1rem;
+    }
+    .problem-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .problem-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
+
+    /* ── BANDEROLE ── */
+    .banderole {
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 2rem 1.75rem;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 2rem; flex-wrap: wrap;
+    }
+    .banderole h3 { font-size: clamp(1.1rem, 2.5vw, 1.4rem); font-weight: 700; }
+    .banderole p { font-size: 0.875rem; color: var(--muted); margin-top: 0.25rem; }
+
+    /* Bouton outline shimmer */
+    .btn-outline-shimmer {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff; padding: 0.8rem 1.75rem;
+      border-radius: 50px; font-size: 0.9rem; font-weight: 600;
+      position: relative; overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      white-space: nowrap;
+    }
+    .btn-outline-shimmer::before {
+      content: '';
+      position: absolute; top: 0; left: -80%;
+      width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transform: skewX(-20deg);
+    }
+    .btn-outline-shimmer:hover {
+      border-color: rgba(255,255,255,0.6);
+      box-shadow: 0 0 20px rgba(255,255,255,0.08);
+    }
+    .btn-outline-shimmer:hover::before { animation: shimmer 0.55s ease-out forwards; }
 
     /* ── DÉMOS ── */
-    .demos { background: var(--surface); }
     .demos-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
       gap: 1.25rem;
     }
     .demo-card {
-      background: var(--bg);
+      background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 12px; overflow: hidden;
+      backdrop-filter: blur(12px);
+      border-radius: 16px; overflow: hidden;
       transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
     }
     .demo-card:hover {
-      border-color: var(--cyan);
+      border-color: rgba(0,229,255,0.4);
       transform: translateY(-4px);
-      box-shadow: 0 12px 30px rgba(0,229,255,0.1);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
     }
     .demo-thumb {
-      height: 160px;
-      background: linear-gradient(135deg, #1a1a2e 0%, #0f2027 100%);
+      height: 150px;
+      background: linear-gradient(135deg, rgba(0,30,40,0.8) 0%, rgba(0,10,20,0.9) 100%);
       display: flex; align-items: center; justify-content: center;
-      font-size: 2.5rem; border-bottom: 1px solid var(--border);
+      font-size: 2.5rem;
+      border-bottom: 1px solid var(--border);
     }
     .demo-info { padding: 1.25rem; }
     .demo-info h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
     .demo-info p { font-size: 0.8rem; color: var(--muted); margin-bottom: 1rem; }
     .demo-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
     .tag {
-      font-size: 0.7rem; padding: 0.2rem 0.5rem;
+      font-size: 0.7rem; padding: 0.2rem 0.55rem;
       border-radius: 4px; background: var(--cyan-dim);
-      color: var(--cyan); border: 1px solid rgba(0,229,255,0.25);
+      color: var(--cyan); border: 1px solid rgba(0,229,255,0.2);
     }
     .btn-demo {
       display: block; text-align: center;
       border: 1px solid var(--border); color: var(--muted);
-      padding: 0.6rem; border-radius: 6px; font-size: 0.85rem;
+      padding: 0.6rem; border-radius: 8px; font-size: 0.85rem;
       transition: border-color 0.2s, color 0.2s;
     }
     .btn-demo:hover { border-color: var(--cyan); color: var(--cyan); }
 
-    /* ── PROBLÈMES ── */
-    .problems-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.25rem;
-    }
-    .problem-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 10px; padding: 1.75rem;
-      transition: border-color 0.25s;
-    }
-    .problem-card:hover { border-color: rgba(0,229,255,0.3); }
-    .problem-icon { font-size: 1.6rem; margin-bottom: 1rem; }
-    .problem-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .problem-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
-
     /* ── SOLUTION ── */
-    .solution { background: var(--surface); }
     .features-grid {
       display: grid; grid-template-columns: 1fr 1fr;
-      gap: 1rem; margin-bottom: 2.5rem;
+      gap: 1rem; margin-bottom: 2rem;
     }
     .feature {
-      display: flex; gap: 0.75rem; align-items: flex-start;
-      padding: 1.25rem; background: var(--bg);
-      border: 1px solid var(--border); border-radius: 8px;
-      transition: border-color 0.25s;
+      display: flex; gap: 0.85rem; align-items: flex-start;
+      padding: 1.25rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      border-radius: 12px;
+      transition: border-color 0.2s, background 0.2s;
     }
-    .feature:hover { border-color: rgba(0,229,255,0.3); }
+    .feature:hover { border-color: rgba(0,229,255,0.3); background: var(--card-hover); }
     .check-box {
-      width: 20px; height: 20px; flex-shrink: 0;
+      width: 22px; height: 22px; flex-shrink: 0;
       background: var(--cyan-dim);
       border: 1px solid rgba(0,229,255,0.5);
-      border-radius: 4px;
+      border-radius: 5px;
       display: flex; align-items: center; justify-content: center;
       color: var(--cyan); font-size: 0.7rem; font-weight: 700;
     }
     .feature-text h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.2rem; }
     .feature-text p { font-size: 0.8rem; color: var(--muted); }
-    .solution-note {
-      text-align: center; color: var(--muted); font-size: 0.875rem;
-      padding: 1rem; border: 1px solid var(--border);
-      border-radius: 8px; background: var(--bg);
-    }
 
     /* ── COMPARATIF ── */
-    .compare-table {
-      width: 100%; border-collapse: collapse;
-      margin-top: 2rem; border-radius: 10px; overflow: hidden;
+    .compare-wrap {
+      background: var(--card);
+      backdrop-filter: blur(12px);
       border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
     }
+    .compare-table { width: 100%; border-collapse: collapse; }
     .compare-table th {
       padding: 1rem; text-align: center;
       font-size: 0.8rem; font-weight: 700;
-      background: var(--surface); border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid var(--border);
       color: var(--muted);
     }
     .compare-table th.hl { color: var(--cyan); }
@@ -286,9 +373,8 @@
       padding: 0.85rem 1rem; text-align: center;
       border-bottom: 1px solid var(--border);
       font-size: 0.875rem; color: var(--muted);
-      background: var(--bg);
     }
-    .compare-table td:first-child { text-align: left; color: var(--white); }
+    .compare-table td:first-child { text-align: left; color: #fff; }
     .compare-table tr:last-child td { border-bottom: none; }
     .ok { color: var(--cyan); }
     .no { color: #ff4d4d; }
@@ -296,21 +382,23 @@
     /* ── TARIFS ── */
     .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
     .pricing-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 2rem; position: relative;
-      transition: transform 0.25s, box-shadow 0.25s;
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 2rem; position: relative;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
     }
-    .pricing-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.3); }
-    .pricing-card.featured { border-color: var(--cyan); }
+    .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+    .pricing-card.featured { border-color: rgba(0,229,255,0.5); }
     .featured-badge {
       position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
       background: var(--cyan); color: #000;
       font-size: 0.65rem; font-weight: 700;
-      padding: 0.2rem 0.8rem; border-radius: 20px;
+      padding: 0.2rem 0.9rem; border-radius: 20px;
       text-transform: uppercase; letter-spacing: 1px;
     }
     .price-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem; }
-    .price { font-size: 2.8rem; font-weight: 800; line-height: 1; color: var(--white); }
+    .price { font-size: 2.8rem; font-weight: 800; line-height: 1; }
     .price sup { font-size: 1.2rem; vertical-align: super; }
     .price-desc { font-size: 0.8rem; color: var(--muted); margin: 0.5rem 0 1.5rem; }
     .price-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.75rem; }
@@ -319,24 +407,33 @@
     .btn-card-primary {
       display: block; text-align: center;
       background: var(--cyan); color: #000;
-      padding: 0.8rem; border-radius: 8px;
+      padding: 0.8rem; border-radius: 50px;
       font-weight: 700; font-size: 0.9rem;
+      position: relative; overflow: hidden;
       transition: opacity 0.2s, transform 0.15s;
     }
-    .btn-card-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn-card-primary::before {
+      content: '';
+      position: absolute; top: 0; left: -80%; width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
+      transform: skewX(-20deg);
+    }
+    .btn-card-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-card-primary:hover::before { animation: shimmer 0.55s ease-out forwards; }
     .btn-card-outline {
       display: block; text-align: center;
       border: 1px solid var(--border); color: var(--muted);
-      padding: 0.8rem; border-radius: 8px;
-      font-size: 0.9rem; transition: border-color 0.2s, color 0.2s;
+      padding: 0.8rem; border-radius: 50px; font-size: 0.9rem;
+      transition: border-color 0.2s, color 0.2s;
     }
     .btn-card-outline:hover { border-color: var(--cyan); color: var(--cyan); }
 
     /* ── FAQ ── */
-    .faq { background: var(--surface); }
     .faq-list {
-      display: flex; flex-direction: column;
-      border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+      background: var(--card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
     }
     .faq-item { border-bottom: 1px solid var(--border); }
     .faq-item:last-child { border-bottom: none; }
@@ -344,27 +441,27 @@
       width: 100%; background: none; border: none;
       padding: 1.25rem 1.5rem;
       display: flex; justify-content: space-between; align-items: center;
-      cursor: pointer; color: var(--white);
+      cursor: pointer; color: #fff;
       font-size: 0.9rem; font-weight: 500; text-align: left;
       transition: background 0.2s;
     }
-    .faq-q:hover { background: rgba(255,255,255,0.03); }
+    .faq-q:hover { background: rgba(255,255,255,0.04); }
     .faq-icon { color: var(--cyan); font-size: 1.2rem; transition: transform 0.3s; flex-shrink: 0; }
     .faq-item.open .faq-icon { transform: rotate(45deg); }
-    .faq-a {
-      display: none; padding: 0 1.5rem 1.25rem;
-      color: var(--muted); font-size: 0.875rem; line-height: 1.75;
-    }
+    .faq-a { display: none; padding: 0 1.5rem 1.25rem; color: var(--muted); font-size: 0.875rem; line-height: 1.75; }
     .faq-item.open .faq-a { display: block; }
 
     /* ── CTA FINAL ── */
     .cta-final {
-      text-align: center; background: var(--surface);
-      border: 1px solid var(--border); border-radius: 16px;
-      padding: 4rem 2rem; margin: 0 1.5rem 5rem;
+      text-align: center;
+      background: rgba(10,8,6,0.7);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 5rem 2rem; margin: 0 1.75rem 6rem;
     }
     .cta-final h2 { margin-bottom: 0.75rem; }
-    .cta-final p { color: var(--muted); margin-bottom: 2rem; font-size: 0.95rem; }
+    .cta-final p { color: var(--muted); margin-bottom: 2rem; }
     .cta-final .cta-row { justify-content: center; }
 
     /* ── FOOTER ── */
@@ -375,114 +472,135 @@
     }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 640px) {
+    @media (max-width: 700px) {
+      nav { top: 0.5rem; padding: 0.5rem 1rem; gap: 1rem; }
       .nav-links { display: none; }
       .features-grid { grid-template-columns: 1fr; }
       .pricing-grid { grid-template-columns: 1fr; }
-      .hero-stats { gap: 1.5rem; }
-      .cta-final { margin: 0 0 4rem; border-radius: 0; border-left: none; border-right: none; }
+      .banderole { flex-direction: column; align-items: flex-start; }
+      .cta-final { margin: 0 0 4rem; border-radius: 0; }
     }
   </style>
 </head>
 <body>
 
+<!-- FOND PARALLAX GLOBAL -->
+<div id="page-bg"></div>
+
 <!-- NAV -->
-<nav id="navbar">
+<nav>
   <div class="logo">Immo<span>Viz</span> 3D</div>
   <ul class="nav-links">
     <li><a href="#demos">Démos</a></li>
     <li><a href="#solution">Solution</a></li>
     <li><a href="#tarifs">Tarifs</a></li>
     <li><a href="#faq">FAQ</a></li>
-    <li><a href="mailto:dimitri444art@gmail.com" class="nav-cta">Devis gratuit →</a></li>
   </ul>
+  <a href="mailto:dimitri444art@gmail.com" class="nav-cta">Devis gratuit →</a>
 </nav>
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-bg"></div>
   <div class="hero-inner">
     <div class="badge">Plan 2D · Vue 3D · Visite 360°</div>
 
     <h1>Votre bien se vend<br><em>40% plus vite</em><br>avec un plan 3D interactif</h1>
 
     <p class="hero-sub">
-      Livrable HTML autonome · Plan 2D interactif + Vue 3D + Panorama 360°
+      Livrable HTML autonome · Plan 2D + Vue 3D + Panorama 360°
       à coller dans votre annonce LeBonCoin.<br>
       <strong>Livré en 48h · À partir de 150€ · Sans abonnement</strong>
     </p>
 
     <div class="cta-row">
-      <a href="mailto:dimitri444art@gmail.com?subject=Devis plan 3D immobilier" class="btn-primary">Demander un devis gratuit →</a>
-      <a href="#demos" class="btn-link">Voir les exemples ↓</a>
+      <a href="mailto:dimitri444art@gmail.com?subject=Devis plan 3D immobilier" class="btn-primary">
+        Demander un devis gratuit →
+      </a>
+      <a href="#demos" class="btn-ghost">Voir les exemples</a>
     </div>
 
-    <div class="hero-stats">
-      <div class="stat">
-        <strong>+40%</strong>
-        <span>de clics vs annonce simple</span>
-      </div>
-      <div class="stat">
-        <strong>48h</strong>
-        <span>délai de livraison</span>
-      </div>
-      <div class="stat">
-        <strong>150€</strong>
-        <span>offre de départ</span>
-      </div>
-      <div class="stat">
-        <strong>0€</strong>
-        <span>d'abonnement (vs 3500€/an Matterport)</span>
-      </div>
+    <div class="hero-proof">
+      <div class="proof-stat"><strong>+40%</strong><span>de clics vs annonce simple</span></div>
+      <div class="proof-stat"><strong>48h</strong><span>délai de livraison</span></div>
+      <div class="proof-stat"><strong>150€</strong><span>offre de départ</span></div>
+      <div class="proof-stat"><strong>0€</strong><span>vs 3 500€/an Matterport</span></div>
     </div>
   </div>
 </div>
 
+<!-- PROBLÈMES -->
+<section id="problemes">
+  <div class="wrap">
+    <p class="section-tag reveal">Pourquoi maintenant</p>
+    <h2 class="reveal">Votre annonce se noie<br>dans les <em>résultats</em></h2>
+    <p class="section-sub reveal">LeBonCoin affiche des milliers de biens. Sans visuel fort, les acheteurs passent à côté du vôtre.</p>
+
+    <div class="problems-grid">
+      <div class="problem-card reveal d1">
+        <div class="problem-icon">📸</div>
+        <h3>Photos pas suffisantes</h3>
+        <p>Des photos font voir le bien, un plan 3D le fait <em>vivre</em>. Les acheteurs se projettent mieux, décident plus vite.</p>
+      </div>
+      <div class="problem-card reveal d2">
+        <div class="problem-icon">👁️</div>
+        <h3>Visites inutiles</h3>
+        <p>Des acquéreurs se déplacent sans être vraiment intéressés. Un plan précis filtre les curieux et attire les profils sérieux.</p>
+      </div>
+      <div class="problem-card reveal d3">
+        <div class="problem-icon">💸</div>
+        <h3>Matterport coûte 3 500€/an</h3>
+        <p>Les outils pros sont hors de portée pour un particulier. Notre livrable produit le même résultat pour 150€, sans abonnement.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BANDEROLE -->
+<div class="banderole">
+  <div>
+    <h3>Vous vous reconnaissez dans l'un de ces points ?</h3>
+    <p>La solution ImmoViz 3D a été conçue précisément pour ça.</p>
+  </div>
+  <a href="#solution" class="btn-outline-shimmer">Découvrir la solution →</a>
+</div>
+
 <!-- DÉMOS -->
-<section class="demos" id="demos">
+<section id="demos">
   <div class="wrap">
     <p class="section-tag reveal">Exemples réels</p>
-    <h2 class="reveal">Voyez le résultat avant de commander</h2>
+    <h2 class="reveal">Voyez le résultat<br>avant de commander</h2>
     <p class="section-sub reveal">Chaque livrable est un fichier HTML autonome — aucun logiciel requis, fonctionne dans n'importe quel navigateur.</p>
 
     <div class="demos-grid">
-      <div class="demo-card reveal reveal-delay-1">
+      <div class="demo-card reveal d1">
         <div class="demo-thumb">🏡</div>
         <div class="demo-info">
           <h3>Maison — Romorantin</h3>
           <p>170 m² · 12 pièces · 265 000 €</p>
           <div class="demo-tags">
-            <span class="tag">Plan 2D</span>
-            <span class="tag">Vue 3D</span>
-            <span class="tag">360°</span>
+            <span class="tag">Plan 2D</span><span class="tag">Vue 3D</span><span class="tag">360°</span>
           </div>
           <a href="plan-interactif-romorantin.html" class="btn-demo" target="_blank">Voir la démo →</a>
         </div>
       </div>
-
-      <div class="demo-card reveal reveal-delay-2">
+      <div class="demo-card reveal d2">
         <div class="demo-thumb">🏠</div>
         <div class="demo-info">
           <h3>Maison — Niort</h3>
           <p>130 m² · 9 pièces</p>
           <div class="demo-tags">
-            <span class="tag">Plan 2D</span>
-            <span class="tag">Vue 3D</span>
-            <span class="tag">360°</span>
+            <span class="tag">Plan 2D</span><span class="tag">Vue 3D</span><span class="tag">360°</span>
           </div>
           <a href="plan-interactif-niort.html" class="btn-demo" target="_blank">Voir la démo →</a>
         </div>
       </div>
-
-      <div class="demo-card reveal reveal-delay-3">
+      <div class="demo-card reveal d3">
         <div class="demo-thumb">🏙️</div>
         <div class="demo-info">
           <h3>Appartement — Tours</h3>
           <p>Plan interactif complet</p>
           <div class="demo-tags">
-            <span class="tag">Plan 2D</span>
-            <span class="tag">Vue 3D</span>
-            <span class="tag">360°</span>
+            <span class="tag">Plan 2D</span><span class="tag">Vue 3D</span><span class="tag">360°</span>
           </div>
           <a href="plan-interactif-tours.html" class="btn-demo" target="_blank">Voir la démo →</a>
         </div>
@@ -491,121 +609,69 @@
   </div>
 </section>
 
-<!-- PROBLÈMES -->
-<section id="problemes">
-  <div class="wrap">
-    <p class="section-tag reveal">Le problème</p>
-    <h2 class="reveal">Votre annonce se noie dans les résultats</h2>
-    <p class="section-sub reveal">LeBonCoin affiche des milliers de biens. Sans visuel fort, les acheteurs passent à côté du vôtre.</p>
-
-    <div class="problems-grid">
-      <div class="problem-card reveal reveal-delay-1">
-        <div class="problem-icon">📸</div>
-        <h3>Photos pas suffisantes</h3>
-        <p>Des photos font voir le bien, un plan 3D interactif fait le <em>vivre</em>. Les acheteurs visualisent mieux, se projettent plus vite.</p>
-      </div>
-      <div class="problem-card reveal reveal-delay-2">
-        <div class="problem-icon">👁️</div>
-        <h3>Visites inutiles</h3>
-        <p>Des acquéreurs se déplacent sans être vraiment intéressés. Un plan précis filtre les curieux et attire des profils sérieux.</p>
-      </div>
-      <div class="problem-card reveal reveal-delay-3">
-        <div class="problem-icon">💸</div>
-        <h3>Matterport coûte 3 500€/an</h3>
-        <p>Les outils pros sont hors de prix pour un particulier. Notre solution livre le même résultat pour 150€, sans abonnement.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- SOLUTION -->
-<section class="solution" id="solution">
+<section id="solution">
   <div class="wrap">
     <p class="section-tag reveal">La solution</p>
-    <h2 class="reveal">Un livrable clé en main<br>en 48 heures</h2>
-    <p class="section-sub reveal">Vous envoyez les infos de votre bien. Je livre un fichier HTML complet, prêt à partager, sans aucun logiciel requis.</p>
+    <h2 class="reveal">Un livrable clé en main<br>en <em>48 heures</em></h2>
+    <p class="section-sub reveal">Vous envoyez l'annonce. Je livre un fichier HTML complet, prêt à partager.</p>
 
     <div class="features-grid">
-      <div class="feature reveal reveal-delay-1">
+      <div class="feature reveal d1">
         <div class="check-box">✓</div>
-        <div class="feature-text">
-          <h4>Plan 2D interactif</h4>
-          <p>Toutes les pièces cliquables avec surfaces et détails</p>
-        </div>
+        <div class="feature-text"><h4>Plan 2D interactif</h4><p>Pièces cliquables avec surfaces et détails</p></div>
       </div>
-      <div class="feature reveal reveal-delay-2">
+      <div class="feature reveal d2">
         <div class="check-box">✓</div>
-        <div class="feature-text">
-          <h4>Vue 3D navigable</h4>
-          <p>Rotation libre, zoom, exploration du volume</p>
-        </div>
+        <div class="feature-text"><h4>Vue 3D navigable</h4><p>Rotation libre, zoom, exploration du volume</p></div>
       </div>
-      <div class="feature reveal reveal-delay-1">
+      <div class="feature reveal d1">
         <div class="check-box">✓</div>
-        <div class="feature-text">
-          <h4>Visite 360° intégrée</h4>
-          <p>Panoramas pièce par pièce si vous fournissez les photos</p>
-        </div>
+        <div class="feature-text"><h4>Visite 360° intégrée</h4><p>Panoramas pièce par pièce (photos fournies)</p></div>
       </div>
-      <div class="feature reveal reveal-delay-2">
+      <div class="feature reveal d2">
         <div class="check-box">✓</div>
-        <div class="feature-text">
-          <h4>Fichier autonome</h4>
-          <p>Un seul .html — zéro dépendance, zéro abonnement</p>
-        </div>
+        <div class="feature-text"><h4>Fichier autonome</h4><p>Un seul .html — zéro dépendance, zéro abonnement</p></div>
       </div>
     </div>
-
-    <p class="solution-note reveal">
-      📎 Hébergement gratuit sur GitHub Pages ou Netlify · URL publique en 5 min · Compatible LeBonCoin
-    </p>
   </div>
 </section>
+
+<!-- BANDEROLE 2 -->
+<div class="banderole">
+  <div>
+    <h3>Hébergement inclus 6 mois</h3>
+    <p>URL publique sur GitHub Pages ou Netlify — compatible LeBonCoin et partage direct.</p>
+  </div>
+  <a href="#tarifs" class="btn-outline-shimmer">Voir les tarifs →</a>
+</div>
 
 <!-- COMPARATIF -->
 <section id="comparatif">
   <div class="wrap">
     <p class="section-tag reveal">Comparatif</p>
-    <h2 class="reveal">Pourquoi choisir ImmoViz 3D ?</h2>
+    <h2 class="reveal">Pourquoi choisir<br><em>ImmoViz 3D</em> ?</h2>
 
-    <table class="compare-table reveal">
-      <thead>
-        <tr>
-          <th style="text-align:left">Critère</th>
-          <th class="hl">ImmoViz 3D</th>
-          <th>Matterport</th>
-          <th>Simple photos</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Plan interactif 2D + 3D</td>
-          <td class="ok">✓</td><td class="ok">✓</td><td class="no">✗</td>
-        </tr>
-        <tr>
-          <td>Visite 360°</td>
-          <td class="ok">✓</td><td class="ok">✓</td><td class="no">✗</td>
-        </tr>
-        <tr>
-          <td>Prix</td>
-          <td class="ok" style="color:var(--cyan);font-weight:700">150€</td>
-          <td class="no">3 500€/an</td>
-          <td class="ok">Gratuit</td>
-        </tr>
-        <tr>
-          <td>Abonnement requis</td>
-          <td class="ok">Non</td><td class="no">Oui</td><td class="ok">Non</td>
-        </tr>
-        <tr>
-          <td>Délai de livraison</td>
-          <td class="ok">48h</td><td>Sur RDV</td><td>Immédiat</td>
-        </tr>
-        <tr>
-          <td>Partage URL public</td>
-          <td class="ok">✓</td><td class="ok">✓</td><td class="no">✗</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="compare-wrap reveal">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th style="text-align:left">Critère</th>
+            <th class="hl">ImmoViz 3D</th>
+            <th>Matterport</th>
+            <th>Simple photos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Plan interactif 2D + 3D</td><td class="ok">✓</td><td class="ok">✓</td><td class="no">✗</td></tr>
+          <tr><td>Visite 360°</td><td class="ok">✓</td><td class="ok">✓</td><td class="no">✗</td></tr>
+          <tr><td>Prix</td><td class="ok" style="color:var(--cyan);font-weight:700">150€</td><td class="no">3 500€/an</td><td class="ok">Gratuit</td></tr>
+          <tr><td>Abonnement requis</td><td class="ok">Non</td><td class="no">Oui</td><td class="ok">Non</td></tr>
+          <tr><td>Délai de livraison</td><td class="ok">48h</td><td>Sur RDV</td><td>Immédiat</td></tr>
+          <tr><td>Partage URL public</td><td class="ok">✓</td><td class="ok">✓</td><td class="no">✗</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </section>
 
@@ -617,22 +683,22 @@
     <p class="section-sub reveal">Pas d'abonnement. Pas de frais cachés. Vous payez une fois, le fichier est à vous pour toujours.</p>
 
     <div class="pricing-grid">
-      <div class="pricing-card reveal reveal-delay-1">
+      <div class="pricing-card reveal d1">
         <div class="price-label">Offre Essentielle</div>
         <div class="price"><sup>€</sup>150</div>
-        <p class="price-desc">Livraison en 48h · Paiement après livraison</p>
+        <p class="price-desc">Livraison 48h · Paiement après livraison</p>
         <ul class="price-features">
           <li>Plan 2D interactif (toutes pièces)</li>
           <li>Vue 3D navigable (rotation + zoom)</li>
           <li>Visite 360° (si photos fournies)</li>
           <li>Fichier HTML autonome</li>
-          <li>URL hébergée 6 mois (GitHub Pages)</li>
+          <li>URL hébergée 6 mois</li>
           <li>1 retouche incluse</li>
         </ul>
         <a href="mailto:dimitri444art@gmail.com?subject=Commande plan 3D - Offre Essentielle" class="btn-card-outline">Demander un devis</a>
       </div>
 
-      <div class="pricing-card featured reveal reveal-delay-2">
+      <div class="pricing-card featured reveal d2">
         <div class="featured-badge">Recommandé</div>
         <div class="price-label">Offre Photoréaliste</div>
         <div class="price"><sup>€</sup>450</div>
@@ -642,7 +708,7 @@
           <li>Modélisation Blender photoréaliste</li>
           <li>Textures et matériaux réalistes</li>
           <li>Rendu haute définition (4K)</li>
-          <li>Vidéo de présentation 30s incluse</li>
+          <li>Vidéo de présentation 30s</li>
           <li>3 retouches incluses</li>
         </ul>
         <a href="mailto:dimitri444art@gmail.com?subject=Commande plan 3D - Offre Photoréaliste" class="btn-card-primary">Demander un devis →</a>
@@ -652,11 +718,10 @@
 </section>
 
 <!-- FAQ -->
-<section class="faq" id="faq">
+<section id="faq">
   <div class="wrap">
     <p class="section-tag reveal">Questions fréquentes</p>
-    <h2 class="reveal">Tout ce que vous voulez savoir</h2>
-    <p class="section-sub reveal">Une autre question ? Écrivez-moi directement.</p>
+    <h2 class="reveal">Tout ce que vous<br>voulez savoir</h2>
 
     <div class="faq-list reveal">
       <div class="faq-item">
@@ -689,7 +754,9 @@
     <h2>Prêt à valoriser votre bien ?</h2>
     <p>Envoyez-moi votre annonce — je vous reviens sous 24h avec un aperçu gratuit.</p>
     <div class="cta-row">
-      <a href="mailto:dimitri444art@gmail.com?subject=Devis plan 3D immobilier" class="btn-primary">Obtenir mon devis gratuit →</a>
+      <a href="mailto:dimitri444art@gmail.com?subject=Devis plan 3D immobilier" class="btn-primary">
+        Obtenir mon devis gratuit →
+      </a>
     </div>
     <p style="margin-top:1.25rem;font-size:0.8rem;color:var(--muted)">Aperçu gratuit · Sans engagement · Paiement après livraison</p>
   </div>
@@ -701,13 +768,25 @@
 </footer>
 
 <script>
-  // Nav — transparent en haut, sombre au scroll
-  const navbar = document.getElementById('navbar');
+  // ── Parallax zoom au scroll ──
+  const bg = document.getElementById('page-bg');
+  let ticking = false;
   window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 60);
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const scrolled = window.scrollY;
+        const maxScroll = document.body.scrollHeight - window.innerHeight;
+        const progress = Math.min(scrolled / maxScroll, 1);
+        // zoom de 1 (haut) à 1.18 (bas)
+        const scale = 1 + progress * 0.18;
+        bg.style.transform = `scale(${scale})`;
+        ticking = false;
+      });
+      ticking = true;
+    }
   });
 
-  // Scroll reveal via IntersectionObserver
+  // ── Scroll reveal ──
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
@@ -715,11 +794,10 @@
         observer.unobserve(e.target);
       }
     });
-  }, { threshold: 0.12 });
-
+  }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  // FAQ accordion
+  // ── FAQ accordion ──
   document.querySelectorAll('.faq-q').forEach(btn => {
     btn.addEventListener('click', () => {
       const item = btn.parentElement;
