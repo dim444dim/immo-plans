@@ -641,6 +641,41 @@
 </footer>
 
 <script>
+  // ── PARALLAX SOURIS (hero uniquement) ──
+  (function(){
+    const heroEl = document.querySelector('.hero');
+    const heroInner = document.querySelector('.hero-inner');
+    let mx = 0, my = 0, cx = 0, cy = 0, raf = null;
+
+    document.addEventListener('mousemove', e => {
+      // -1 à +1 centré sur le milieu de l'écran
+      mx = (e.clientX / window.innerWidth  - 0.5) * 2;
+      my = (e.clientY / window.innerHeight - 0.5) * 2;
+      if (!raf) raf = requestAnimationFrame(update);
+    });
+
+    function update() {
+      raf = null;
+      // Lerp doux vers la cible
+      cx += (mx - cx) * 0.06;
+      cy += (my - cy) * 0.06;
+
+      // Fond : bouge dans le sens du curseur (amplitude 18px)
+      const scrollP = Math.min(window.scrollY / (document.body.scrollHeight - window.innerHeight || 1), 1);
+      const scl = 1 + scrollP * 0.18;
+      bg.style.transform = `scale(${scl}) translate(${cx * 18}px, ${cy * 12}px)`;
+
+      // Texte hero : bouge légèrement à l'opposé (effet de profondeur)
+      if (heroInner) {
+        heroInner.style.transform = `translate(${-cx * 8}px, ${-cy * 5}px)`;
+      }
+
+      if (Math.abs(mx - cx) > 0.001 || Math.abs(my - cy) > 0.001) {
+        raf = requestAnimationFrame(update);
+      }
+    }
+  })();
+
   // ── VIEWER 3D PLAN DE MAISON ──
   (function(){
     const canvas = document.getElementById('scene3d');
@@ -771,14 +806,19 @@
     }
   })();
 
-  // Parallax zoom au scroll
+  // Parallax zoom au scroll (géré dans le mousemove aussi — ici juste la mise à jour au scroll sans souris)
   const bg = document.getElementById('page-bg');
   let tk = false;
   window.addEventListener('scroll', () => {
     if (!tk) {
       requestAnimationFrame(() => {
-        const p = Math.min(window.scrollY / (document.body.scrollHeight - window.innerHeight), 1);
-        bg.style.transform = `scale(${1 + p * 0.18})`;
+        const p = Math.min(window.scrollY / (document.body.scrollHeight - window.innerHeight || 1), 1);
+        const scl = 1 + p * 0.18;
+        // On garde la translation souris actuelle en lisant le transform existant
+        const cur = bg.style.transform;
+        const t = cur.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
+        const tx = t ? t[1] : '0', ty = t ? t[2] : '0';
+        bg.style.transform = `scale(${scl}) translate(${tx}px, ${ty}px)`;
         tk = false;
       });
       tk = true;
