@@ -35,11 +35,9 @@
     body{font-family:-apple-system,'Segoe UI',sans-serif;background:#0d0d0d;color:#f0f0f0;line-height:1.6;overflow-x:hidden;cursor:none}
     @media(hover:none){body{cursor:auto}}
     /* ── CURSEUR CUSTOM ── */
-    .custom-cursor-dot, .custom-cursor-ring{position:fixed;pointer-events:none;z-index:9999;will-change:transform}
-    .custom-cursor-dot{width:8px;height:8px;background:var(--cyan);border-radius:50%;box-shadow:0 0 8px rgba(0,229,255,.6);opacity:1;transition:opacity .2s}
-    .custom-cursor-ring{width:32px;height:32px;border:2px solid var(--cyan);border-radius:50%;opacity:.6;transition:opacity .2s}
-    .custom-cursor-dot.hov{opacity:0}
-    .custom-cursor-ring.hov{width:48px;height:48px;background:rgba(0,229,255,.1);opacity:.8}
+    .custom-cursor-dot{position:fixed;pointer-events:none;z-index:9999;will-change:transform;width:12px;height:12px;background:var(--cyan);border-radius:50%;box-shadow:0 0 10px rgba(0,229,255,.7);opacity:1;transition:transform .15s,opacity .2s}
+    .custom-cursor-ring{display:none}
+    .custom-cursor-dot.hov{transform:scale(2) !important;opacity:.7}
     a{text-decoration:none}
     /* Italic serif — signature Skelvia */
     em{font-family:'Playfair Display',Georgia,serif;font-style:italic;color:var(--cyan)}
