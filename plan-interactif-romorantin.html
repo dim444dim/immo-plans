@@ -6,7 +6,25 @@
   <meta name="color-scheme" content="light dark">
   <script>
     (function(){var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
-  </script>
+  
+
+  // ── WHATSAPP BUTTON ──
+  const WHATSAPP_PHONE = '33767519437';
+  function initWhatsAppButton() {
+    const btn = document.getElementById('whatsapp-btn');
+    if (!btn) return;
+    btn.onclick = () => {
+      const msg = `Bonjour, je suis intéressé par Maison 170 m² — Romorantin-Lanthenay. Pouvez-vous me montrer le plan interactif ?`;
+      const url = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+    };
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initWhatsAppButton);
+  } else {
+    initWhatsAppButton();
+  }
+</script>
   <title>Plan Interactif — Maison 170 m² — Romorantin-Lanthenay</title>
 
   <meta name="description" content="Visite 3D interactive d'une maison de 170m² à Romorantin-Lanthenay. Plan 2D, vue 3D, panorama 360° et calculateur de financement. 265 000€.">
@@ -237,6 +255,31 @@
       #body { flex-direction: column; }
       #info-panel { width: 100%; border-left: none; border-top: 1px solid var(--border); max-height: 220px; min-width: unset; }
     }
+  
+    /* ── BOUTON WHATSAPP FLOTTANT ── */
+    #whatsapp-btn {
+      position: fixed;
+      bottom: max(20px, env(safe-area-inset-bottom));
+      right: max(20px, env(safe-area-inset-right));
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #25d366, #128c7e);
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 999;
+      box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+      border: none;
+      font-size: 24px;
+      transition: all 0.25s ease;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    #whatsapp-btn:hover { transform: scale(1.12) translateY(-3px); box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5); }
+    #whatsapp-btn:active { transform: scale(0.96); }
+    @media (max-width: 768px) { #whatsapp-btn { display: flex; } }
   </style>
 
   <style>
@@ -912,7 +955,9 @@ function printQR() {
         <img src="${qrImage}" alt="QR Code">
         <p>Scannez pour accéder à la visite interactive</p>
         <p style="font-size: 0.9rem; color: #999;">Adresse: Romorantin-Lanthenay (41200)</p>
-      </body>
+      
+<button id="whatsapp-btn" title="Nous contacter sur WhatsApp">💬</button>
+</body>
     </html>
   `);
   printWindow.document.close();

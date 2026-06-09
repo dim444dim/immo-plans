@@ -42,8 +42,51 @@
     .feature-tag { background: #f0f4ff; color: #4a6cf7; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
     .global-stats { margin-top: auto; padding-top: 16px; border-top: 1px solid #eef0f3; font-size: 11px; color: #bbb; text-align: center; line-height: 1.7; }
     @media (max-width: 860px) { #body { flex-direction: column; } #info-panel { width: 100%; border-left: none; border-top: 1px solid #e4e7ec; max-height: 220px; } }
+  
+    /* ── BOUTON WHATSAPP FLOTTANT ── */
+    #whatsapp-btn {
+      position: fixed;
+      bottom: max(20px, env(safe-area-inset-bottom));
+      right: max(20px, env(safe-area-inset-right));
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #25d366, #128c7e);
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 999;
+      box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+      border: none;
+      font-size: 24px;
+      transition: all 0.25s ease;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    #whatsapp-btn:hover { transform: scale(1.12) translateY(-3px); box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5); }
+    #whatsapp-btn:active { transform: scale(0.96); }
+    @media (max-width: 768px) { #whatsapp-btn { display: flex; } }
   </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
+
+  // ── WHATSAPP BUTTON ──
+  const WHATSAPP_PHONE = '33767519437';
+  function initWhatsAppButton() {
+    const btn = document.getElementById('whatsapp-btn');
+    if (!btn) return;
+    btn.onclick = () => {
+      const msg = `Bonjour, je suis intéressé par Maison bourgeoise 235 m² — Tours centre. Pouvez-vous me montrer le plan interactif ?`;
+      const url = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+    };
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initWhatsAppButton);
+  } else {
+    initWhatsAppButton();
+  }
+</script>
 </head>
 <body>
 
@@ -226,5 +269,7 @@ function init360() {
 }
 </script>
 
+
+<button id="whatsapp-btn" title="Nous contacter sur WhatsApp">💬</button>
 </body>
 </html>

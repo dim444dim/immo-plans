@@ -497,6 +497,19 @@
     }
     /* ── FOCUS VISIBLE ── */
     a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[role="slider"]:focus-visible,.faqq:focus-visible,.fradio:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:4px}
+
+    /* ── BOUTON WHATSAPP FLOTTANT ── */
+    #whatsapp-btn{
+      position:fixed;bottom:max(20px,env(safe-area-inset-bottom));right:max(20px,env(safe-area-inset-right));
+      width:56px;height:56px;border-radius:50%;
+      background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;display:none;
+      align-items:center;justify-content:center;cursor:pointer;z-index:999;
+      box-shadow:0 4px 16px rgba(37,211,102,.4);border:none;font-size:24px;
+      transition:all .25s ease;user-select:none;-webkit-user-select:none
+    }
+    #whatsapp-btn:hover{transform:scale(1.12) translateY(-3px);box-shadow:0 6px 24px rgba(37,211,102,.5)}
+    #whatsapp-btn:active{transform:scale(.96)}
+    @media(max-width:768px){#whatsapp-btn{display:flex}}
   </style>
 </head>
 <body>
@@ -1549,6 +1562,25 @@
       if (window.plausible) plausible('Demo cliquée');
     });
   });
+
+  // ── WHATSAPP BUTTON ──
+  const WHATSAPP_PHONE = '33767519437';
+  function initWhatsAppButton(){
+    const btn = document.getElementById('whatsapp-btn');
+    if(!btn) return;
+    btn.onclick=()=>{
+      const message='Bonjour, je suis intéressé par votre service ImmoViz 3D. Pouvez-vous me donner plus d\'informations ?';
+      const encodedMsg=encodeURIComponent(message);
+      const url=`https://wa.me/${WHATSAPP_PHONE}?text=${encodedMsg}`;
+      window.open(url,'_blank','noopener,noreferrer');
+      if(window.plausible) plausible('WhatsApp cliqué');
+    };
+  }
+  document.addEventListener('DOMContentLoaded', initWhatsAppButton);
+  if(document.readyState!=='loading') initWhatsAppButton();
 </script>
+
+<button id="whatsapp-btn" title="Nous contacter sur WhatsApp">💬</button>
+
 </body>
 </html>
