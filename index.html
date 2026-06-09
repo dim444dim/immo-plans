@@ -512,7 +512,6 @@
 
 <!-- CURSEUR CUSTOM -->
 <div class="custom-cursor-dot" id="cur-dot"></div>
-<div class="custom-cursor-ring" id="cur-ring"></div>
 
 <div id="page-bg"></div>
 
@@ -1371,46 +1370,23 @@
     if (isMobile) return;
 
     const dot = document.querySelector('.custom-cursor-dot');
-    const ring = document.querySelector('.custom-cursor-ring');
     const clickables = 'a, button, [role="button"], .btn-p, .btn-g, .glass';
 
-    let x = 0, y = 0, dotX = 0, dotY = 0, ringX = 0, ringY = 0;
-    const dotLerp = 0.18, ringLerp = 0.13;
-    let isHovering = false;
+    let x = 0, y = 0, dotX = 0, dotY = 0;
+    const dotLerp = 0.25;
 
-    document.addEventListener('mousemove', e => {
-      x = e.clientX;
-      y = e.clientY;
-    });
+    document.addEventListener('mousemove', e => { x = e.clientX; y = e.clientY; });
 
     function animate() {
       dotX += (x - dotX) * dotLerp;
       dotY += (y - dotY) * dotLerp;
-      ringX += (x - ringX) * ringLerp;
-      ringY += (y - ringY) * ringLerp;
-
       dot.style.transform = `translate(calc(-50% + ${Math.round(dotX)}px), calc(-50% + ${Math.round(dotY)}px))`;
-      ring.style.transform = `translate(calc(-50% + ${Math.round(ringX)}px), calc(-50% + ${Math.round(ringY)}px))`;
-
       requestAnimationFrame(animate);
     }
     animate();
 
-    document.addEventListener('mouseover', e => {
-      if (e.target.closest(clickables)) {
-        isHovering = true;
-        dot.classList.add('hov');
-        ring.classList.add('hov');
-      }
-    });
-
-    document.addEventListener('mouseout', e => {
-      if (e.target.closest(clickables)) {
-        isHovering = false;
-        dot.classList.remove('hov');
-        ring.classList.remove('hov');
-      }
-    });
+    document.addEventListener('mouseover', e => { if (e.target.closest(clickables)) dot.classList.add('hov'); });
+    document.addEventListener('mouseout',  e => { if (e.target.closest(clickables)) dot.classList.remove('hov'); });
   })();
 
   // ── AVANT / APRÈS SLIDER ──
