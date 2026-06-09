@@ -156,29 +156,50 @@
 
     /* ── POUR QUI ── */
     .pourqui{
-      background:rgba(10,8,6,.65);backdrop-filter:blur(10px);
-      border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-      padding:1rem 1.75rem;display:flex;align-items:center;gap:2rem;overflow-x:auto;
+      background:rgba(255,255,255,.05);
+      backdrop-filter:blur(16px);
+      border-top:1px solid rgba(255,255,255,.08);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      padding:1.1rem 1.75rem;
+      display:flex;align-items:center;gap:1.5rem;overflow-x:auto;
       scrollbar-width:none;
     }
     .pourqui::-webkit-scrollbar{display:none}
-    .pq-label{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:2px;white-space:nowrap}
-    .pq-sep{width:1px;height:18px;background:var(--border);flex-shrink:0}
+    .pq-label{
+      font-size:.65rem;font-weight:700;color:var(--cyan);
+      text-transform:uppercase;letter-spacing:2.5px;white-space:nowrap;
+      display:flex;align-items:center;gap:.5rem;
+    }
+    .pq-label::after{content:'';width:1px;height:18px;background:rgba(255,255,255,.15);display:block}
     .pq-items{display:flex;gap:.5rem;flex-wrap:nowrap}
     .pq-item{
-      white-space:nowrap;font-size:.82rem;color:rgba(255,255,255,.6);
-      padding:.32rem .8rem;border-radius:20px;border:1px solid transparent;
-      transition:color .2s,border-color .2s;
+      white-space:nowrap;font-size:.8rem;
+      color:rgba(255,255,255,.55);
+      padding:.35rem .9rem;border-radius:20px;
+      border:1px solid rgba(255,255,255,.1);
+      background:rgba(255,255,255,.04);
+      transition:color .2s,border-color .2s,background .2s;
+      cursor:default;
     }
-    .pq-item:hover{color:#fff;border-color:rgba(255,255,255,.2)}
+    .pq-item:hover{
+      color:#fff;
+      border-color:rgba(0,229,255,.4);
+      background:rgba(0,229,255,.08);
+    }
 
     /* ── CARDS ── */
     .glass{
-      background:var(--card);border:1px solid var(--border);
-      backdrop-filter:blur(14px);border-radius:16px;
-      transition:background .25s,transform .25s,border-color .25s;
+      background:rgba(8,6,4,.65);border:1px solid rgba(255,255,255,.1);
+      backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+      border-radius:16px;
+      transition:background .3s,transform .3s,border-color .3s,box-shadow .3s;
     }
-    .glass:hover{background:var(--card2);transform:translateY(-3px);border-color:rgba(0,229,255,.25)}
+    .glass:hover{
+      background:rgba(14,10,6,.78);
+      transform:translateY(-4px);
+      border-color:rgba(0,229,255,.3);
+      box-shadow:0 16px 40px rgba(0,0,0,.35);
+    }
 
     /* ── PROBLÈMES ── */
     .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:1.2rem}
@@ -189,12 +210,15 @@
 
     /* ── BANDEROLE ── */
     .band{
-      background:rgba(255,255,255,.07);backdrop-filter:blur(8px);
-      border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-      padding:1.9rem 1.75rem;display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap;
+      background:rgba(255,255,255,.06);
+      backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+      border-top:1px solid rgba(255,255,255,.1);
+      border-bottom:1px solid rgba(255,255,255,.1);
+      padding:2rem 1.75rem;
+      display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap;
     }
     .band h3{font-size:clamp(1.1rem,2.5vw,1.4rem);font-weight:700}
-    .band p{font-size:.875rem;color:var(--muted);margin-top:.25rem}
+    .band p{font-size:.875rem;color:var(--muted);margin-top:.3rem}
 
     /* ── VIEWER 3D ── */
     .viewer3d-section{padding:5rem 0;text-align:center}
