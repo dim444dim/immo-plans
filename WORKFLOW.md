@@ -11,4 +11,6 @@
 - [x] 1B fix — IIFE enveloppée dans DOMContentLoaded — 2026-06-09
 
 ## Vague 2
+- [x] 2A — Slider Avant/Après — 2026-06-09
 - [x] 2B — Section Comment ça marche — 2026-06-09
+- [x] 2C — SVG miniatures démos — 2026-06-09

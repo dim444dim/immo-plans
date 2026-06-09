@@ -304,6 +304,22 @@
     .clbl{font-size:.85rem;font-weight:700;margin:.35rem 0}
     .cdesc{font-size:.8rem;color:var(--muted);line-height:1.6}
 
+    /* ── AVANT / APRÈS ── */
+    .ab-wrap{position:relative;height:320px;overflow:hidden;border-radius:16px;max-width:900px;margin:2.5rem auto 0;user-select:none}
+    .ab-before,.ab-after{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;padding:2rem}
+    .ab-before{background:linear-gradient(135deg,rgba(80,10,10,.92) 0%,rgba(30,5,5,.95) 100%)}
+    .ab-after{background:linear-gradient(135deg,rgba(0,40,55,.92) 0%,rgba(0,15,25,.95) 100%);clip-path:inset(0 0 0 50%)}
+    .ab-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;padding:.3rem .9rem;border-radius:20px}
+    .ab-label-before{background:rgba(255,60,60,.15);border:1px solid rgba(255,80,80,.35);color:rgba(255,160,160,.9)}
+    .ab-label-after{background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.3);color:var(--cyan)}
+    .ab-list{list-style:none;display:flex;flex-direction:column;gap:.55rem;text-align:center}
+    .ab-list li{font-size:.9rem;color:rgba(255,255,255,.75)}
+    .ab-stat{font-size:1.1rem;font-weight:800;letter-spacing:-.5px}
+    .ab-stat-red{color:rgba(255,100,100,.9)}
+    .ab-stat-cyan{color:var(--cyan)}
+    .ab-divider{position:absolute;top:0;left:50%;width:3px;height:100%;background:var(--cyan);cursor:ew-resize;transform:translateX(-50%);z-index:10;box-shadow:0 0 12px rgba(0,229,255,.5)}
+    .ab-handle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:.9rem;color:#000;font-weight:700;box-shadow:0 2px 12px rgba(0,0,0,.4)}
+
     /* ── CTA INTERMÉDIAIRE ── */
     .ctamid{text-align:center;padding:6rem 1.75rem}
     .urgbadge{
@@ -627,6 +643,35 @@
   </div>
 </section>
 
+<!-- AVANT / APRÈS -->
+<section id="avantapres">
+  <div class="wrap" style="text-align:center">
+    <p class="stag reveal" style="justify-content:center">Avant / Après</p>
+    <h2 class="reveal">La différence, <em>en un coup d'œil.</em></h2>
+  </div>
+  <div class="ab-wrap reveal">
+    <div class="ab-before">
+      <div class="ab-label ab-label-before">Sans ImmoViz 3D</div>
+      <ul class="ab-list">
+        <li>📷 3 photos classiques</li>
+        <li>Annonce LeBonCoin standard</li>
+      </ul>
+      <div class="ab-stat ab-stat-red">↓ 2.3% de taux de clic moyen</div>
+    </div>
+    <div class="ab-divider" id="ab-div">
+      <div class="ab-handle">↔</div>
+    </div>
+    <div class="ab-after">
+      <div class="ab-label ab-label-after">Avec ImmoViz 3D</div>
+      <ul class="ab-list">
+        <li>🏡 Plan 2D + Vue 3D + 360°</li>
+        <li>Annonce avec visite interactive</li>
+      </ul>
+      <div class="ab-stat ab-stat-cyan">↑ +40% de taux de clic</div>
+    </div>
+  </div>
+</section>
+
 <!-- CTA INTERMÉDIAIRE -->
 <div class="ctamid">
   <div class="urgbadge reveal"><span class="udot"></span>Disponibilités limitées · 2 commandes par semaine</div>
@@ -684,7 +729,13 @@
         </div>
       </div>
       <div class="glass dcard dside reveal d3">
-        <div class="dthumb">🏙️</div>
+        <div class="dthumb"><svg viewBox="0 0 120 80" width="90" height="60">
+  <rect x="5" y="5" width="70" height="38" rx="2" fill="rgba(0,229,255,.06)" stroke="#00e5ff" stroke-width="1.5"/>
+  <rect x="5" y="48" width="42" height="24" rx="2" fill="rgba(0,229,255,.06)" stroke="#00e5ff" stroke-width="1.5"/>
+  <line x1="35" y1="5" x2="35" y2="43" stroke="#00e5ff" stroke-width="1" opacity=".4"/>
+  <line x1="5" y1="25" x2="75" y2="25" stroke="#00e5ff" stroke-width="1" opacity=".4"/>
+  <text x="60" y="76" font-size="8" fill="rgba(255,255,255,.4)" text-anchor="middle" font-family="sans-serif">Appartement</text>
+</svg></div>
         <div class="dbody">
           <h3>Appartement — Tours</h3>
           <p class="dmeta">Plan interactif complet</p>
@@ -1145,6 +1196,33 @@
         ring.classList.remove('hov');
       }
     });
+  })();
+
+  // ── AVANT / APRÈS SLIDER ──
+  (function(){
+    const wrap  = document.querySelector('.ab-wrap');
+    const div   = document.getElementById('ab-div');
+    const after = document.querySelector('.ab-after');
+    if (!wrap || !div || !after) return;
+
+    function setPos(clientX) {
+      const rect = wrap.getBoundingClientRect();
+      let pct = (clientX - rect.left) / rect.width * 100;
+      pct = Math.max(5, Math.min(95, pct));
+      div.style.left = pct + '%';
+      after.style.clipPath = 'inset(0 0 0 ' + pct + '%)';
+    }
+
+    let dragging = false;
+    div.addEventListener('mousedown',  e => { dragging = true; e.preventDefault(); });
+    window.addEventListener('mouseup', () => dragging = false);
+    window.addEventListener('mousemove', e => { if (dragging) setPos(e.clientX); });
+
+    div.addEventListener('touchstart', () => { dragging = true; }, { passive: true });
+    window.addEventListener('touchend', () => dragging = false);
+    window.addEventListener('touchmove', e => {
+      if (dragging) setPos(e.touches[0].clientX);
+    }, { passive: true });
   })();
 </script>
 </body>
