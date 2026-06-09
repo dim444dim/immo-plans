@@ -9,3 +9,6 @@
 ## Corrections Débrief V1
 - [x] 1A fix — @media(hover:none) cursor:auto mobile — 2026-06-09
 - [x] 1B fix — IIFE enveloppée dans DOMContentLoaded — 2026-06-09
+
+## Vague 2
+- [x] 2B — Section Comment ça marche — 2026-06-09
