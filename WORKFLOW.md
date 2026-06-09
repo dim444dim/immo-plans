@@ -20,3 +20,8 @@
 - [x] 3A — Optimisation mobile : burger menu, breakpoints 740/640/480px, statbox unsticky, ab-wrap 240px, iframe-shell 340px, h1 letter-spacing -1px mobile — 2026-06-09
 - [x] 3B — Meta OG + SEO : og:title/description/url/type/image, twitter:card/title/image, canonical — 2026-06-09
 - [x] 3C — Polish final : scroll-margin-top 80px sur toutes sections nav, footer liens sociaux (WhatsApp/LinkedIn placeholders), console propre — 2026-06-09
+
+## Vague 4
+- [x] 4A — Formulaire modal : champs prénom/email/URL/budget/message, validation, mailto structuré, état succès — 2026-06-09
+- [x] 4B — Sticky CTA bar : pill fixe bottom, apparaît après 520px scroll, masqué near-footer, ouvre formulaire modal — 2026-06-09
+- [x] 4C — Section Témoignages : 3 cards glass ★★★★★, placée avant CTA final — 2026-06-09

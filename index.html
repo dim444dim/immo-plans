@@ -417,6 +417,53 @@
     .process-step p{font-size:.85rem;color:var(--muted);line-height:1.65}
     .process-arrow{font-size:1.5rem;color:rgba(0,229,255,.4);flex-shrink:0}
 
+    /* ── MODAL FORMULAIRE ── */
+    .form-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center;padding:1rem}
+    .form-overlay.open{display:flex}
+    .form-box{background:rgba(14,11,8,.99);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:2.5rem;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;position:relative}
+    .form-box h3{font-family:'Inter Tight',sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-.5px;margin-bottom:.35rem}
+    .form-box .fsub{font-size:.85rem;color:var(--muted);margin-bottom:2rem;line-height:1.6}
+    .fclose{position:absolute;top:1.25rem;right:1.25rem;background:none;border:1px solid rgba(255,255,255,.15);border-radius:8px;color:rgba(255,255,255,.5);font-size:.9rem;cursor:pointer;padding:.35rem .6rem;transition:color .2s,border-color .2s}
+    .fclose:hover{color:#fff;border-color:rgba(255,255,255,.4)}
+    .frow{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .fgroup{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem}
+    .fgroup label{font-size:.78rem;font-weight:600;color:rgba(255,255,255,.7);letter-spacing:.2px}
+    .fgroup input,.fgroup textarea,.fgroup select{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:10px;color:#fff;font-size:.9rem;padding:.75rem 1rem;font-family:inherit;transition:border-color .2s,background .2s;width:100%}
+    .fgroup input:focus,.fgroup textarea:focus{outline:none;border-color:var(--cyan);background:rgba(0,229,255,.05)}
+    .fgroup textarea{resize:vertical;min-height:100px}
+    .fgroup input.err,.fgroup textarea.err{border-color:#ff5f57}
+    .fradios{display:flex;gap:.6rem;flex-wrap:wrap}
+    .fradio{display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:.55rem .9rem;cursor:pointer;transition:border-color .2s,background .2s;font-size:.85rem;user-select:none}
+    .fradio input{position:absolute;opacity:0;pointer-events:none}
+    .fradio.checked{border-color:var(--cyan);background:rgba(0,229,255,.08);color:var(--cyan)}
+    .fform-fields{transition:opacity .2s}
+    .form-box.sent .fform-fields{display:none}
+    .form-box.sent .form-success{display:flex}
+    .form-success{display:none;flex-direction:column;align-items:center;text-align:center;padding:3rem 1.5rem;gap:1rem}
+    .fsuccess-icon{font-size:3.5rem}
+    .fsuccess-title{font-family:'Inter Tight',sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-.5px}
+    .fsuccess-sub{font-size:.875rem;color:var(--muted);line-height:1.75;max-width:300px}
+    @media(max-width:560px){.frow{grid-template-columns:1fr}}
+
+    /* ── STICKY CTA ── */
+    .sticky-cta{position:fixed;bottom:-90px;left:50%;transform:translateX(-50%);background:rgba(14,11,8,.96);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(18px);border-radius:50px;display:flex;align-items:center;gap:1.25rem;padding:.6rem .75rem .6rem 1.4rem;z-index:90;white-space:nowrap;transition:bottom .45s cubic-bezier(.22,1,.36,1);box-shadow:0 8px 40px rgba(0,0,0,.5)}
+    .sticky-cta.visible{bottom:1.5rem}
+    .sticky-info strong{display:block;font-size:.85rem;font-weight:700;color:#fff}
+    .sticky-info span{font-size:.72rem;color:var(--muted)}
+    @media(max-width:480px){.sticky-info span{display:none}.sticky-cta{gap:.85rem;padding:.5rem .6rem .5rem 1.1rem}}
+
+    /* ── TÉMOIGNAGES ── */
+    .tgrid-t{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2.5rem}
+    .tcard-t{padding:1.75rem;position:relative;overflow:hidden}
+    .tquote-mark{font-family:'Playfair Display',serif;font-size:5rem;color:var(--cyan);opacity:.15;position:absolute;top:-.25rem;left:1rem;line-height:1;pointer-events:none}
+    .tquote{font-size:.9rem;color:rgba(255,255,255,.78);line-height:1.8;margin-bottom:1.5rem;margin-top:.75rem}
+    .tauthor{display:flex;align-items:center;gap:.75rem}
+    .tavatar{width:40px;height:40px;border-radius:50%;background:var(--cyan-dim);border:1px solid rgba(0,229,255,.3);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:var(--cyan);flex-shrink:0}
+    .tname{font-size:.875rem;font-weight:700}
+    .tcity{font-size:.75rem;color:var(--muted);margin-top:.1rem}
+    .tstars{color:#ffc107;font-size:.82rem;letter-spacing:.5px;margin-bottom:.4rem}
+    @media(max-width:740px){.tgrid-t{grid-template-columns:1fr}}
+
     /* ── SCROLL OFFSET NAV ── */
     #problemes,#solution,#demos,#faq,#tarifs,#process{scroll-margin-top:80px}
 
@@ -475,6 +522,61 @@
 <div class="custom-cursor-ring" id="cur-ring"></div>
 
 <div id="page-bg"></div>
+
+<!-- FORMULAIRE MODAL -->
+<div class="form-overlay" id="form-overlay" role="dialog" aria-modal="true" aria-label="Formulaire de devis">
+  <div class="form-box" id="form-box">
+    <button class="fclose" id="fclose" aria-label="Fermer">✕</button>
+    <div class="fform-fields">
+      <h3>Demander un devis <em>gratuit</em></h3>
+      <p class="fsub">Réponse sous 24h · Paiement uniquement après livraison · Aucun engagement</p>
+      <form id="devis-form" novalidate>
+        <div class="frow">
+          <div class="fgroup">
+            <label for="f-prenom">Prénom *</label>
+            <input type="text" id="f-prenom" name="prenom" placeholder="Marie" autocomplete="given-name">
+          </div>
+          <div class="fgroup">
+            <label for="f-email">Email *</label>
+            <input type="email" id="f-email" name="email" placeholder="marie@email.fr" autocomplete="email">
+          </div>
+        </div>
+        <div class="fgroup">
+          <label for="f-url">URL de votre annonce <span style="color:var(--muted);font-weight:400">(facultatif)</span></label>
+          <input type="url" id="f-url" name="url" placeholder="https://www.leboncoin.fr/...">
+        </div>
+        <div class="fgroup">
+          <label>Offre souhaitée</label>
+          <div class="fradios">
+            <label class="fradio checked"><input type="radio" name="budget" value="Essentielle 150€" checked>Essentielle — 150€</label>
+            <label class="fradio"><input type="radio" name="budget" value="Photoréaliste 450€">Photoréaliste — 450€</label>
+            <label class="fradio"><input type="radio" name="budget" value="Je ne sais pas encore">Je ne sais pas encore</label>
+          </div>
+        </div>
+        <div class="fgroup">
+          <label for="f-msg">Message <span style="color:var(--muted);font-weight:400">(facultatif)</span></label>
+          <textarea id="f-msg" name="message" placeholder="Décrivez votre bien en quelques mots..."></textarea>
+        </div>
+        <button type="submit" class="btn-p" style="width:100%;justify-content:center;margin-top:.5rem">Envoyer ma demande →</button>
+      </form>
+    </div>
+    <div class="form-success">
+      <div class="fsuccess-icon">✅</div>
+      <p class="fsuccess-title">Demande envoyée !</p>
+      <p class="fsuccess-sub">Je reviens vers vous sous 24h avec un aperçu gratuit de ce que je peux faire pour votre annonce.</p>
+      <a href="#" class="btn-g" id="fback" style="margin-top:.75rem;font-size:.85rem">Fermer</a>
+    </div>
+  </div>
+</div>
+
+<!-- STICKY CTA -->
+<div class="sticky-cta" id="sticky-cta">
+  <div class="sticky-info">
+    <strong>ImmoViz 3D</strong>
+    <span>Plan 2D + 3D · Livré en 48h</span>
+  </div>
+  <button class="btn-p" id="sticky-btn" style="padding:.5rem 1.1rem;font-size:.82rem">Devis gratuit →</button>
+</div>
 
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobile-menu">
@@ -860,6 +962,52 @@
       <div class="faqitem">
         <button class="faqq">Quand dois-je payer ?<span class="faqbtn">+</span></button>
         <div class="faqa">Après livraison et validation du résultat. Si le rendu ne vous convient pas, vous ne payez rien.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TÉMOIGNAGES -->
+<section id="temoignages">
+  <div class="wrap">
+    <p class="stag reveal" style="justify-content:center">Ils ont vendu plus vite</p>
+    <h2 class="reveal" style="text-align:center">Ce que disent<br><em>nos clients.</em></h2>
+    <div class="tgrid-t">
+      <div class="glass tcard-t reveal d1">
+        <div class="tquote-mark">"</div>
+        <div class="tstars">★★★★★</div>
+        <p class="tquote">En deux jours j'avais mon plan en ligne. Dès la mise à jour de l'annonce, les appels ont augmenté et j'ai eu une offre sérieuse en moins d'une semaine.</p>
+        <div class="tauthor">
+          <div class="tavatar">SL</div>
+          <div>
+            <div class="tname">Sophie L.</div>
+            <div class="tcity">Romorantin · Maison 170 m²</div>
+          </div>
+        </div>
+      </div>
+      <div class="glass tcard-t reveal d2">
+        <div class="tquote-mark">"</div>
+        <div class="tstars">★★★★★</div>
+        <p class="tquote">J'avais des doutes au début, mais le résultat est bluffant. Les acheteurs arrivent déjà informés, les visites sont beaucoup plus qualifiées.</p>
+        <div class="tauthor">
+          <div class="tavatar">MR</div>
+          <div>
+            <div class="tname">Marc R.</div>
+            <div class="tcity">Niort · Maison 130 m²</div>
+          </div>
+        </div>
+      </div>
+      <div class="glass tcard-t reveal d3">
+        <div class="tquote-mark">"</div>
+        <div class="tstars">★★★★★</div>
+        <p class="tquote">Service impeccable, délai respecté, et le plan 3D rend l'appartement vraiment attractif. Je recommande à tous ceux qui veulent se démarquer sur LeBonCoin.</p>
+        <div class="tauthor">
+          <div class="tavatar">AC</div>
+          <div>
+            <div class="tname">Aurélie C.</div>
+            <div class="tcity">Tours · Appartement 85 m²</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1271,6 +1419,98 @@
     window.addEventListener('touchmove', e => {
       if (dragging) setPos(e.touches[0].clientX);
     }, { passive: true });
+  })();
+
+  // ── FORMULAIRE MODAL ──
+  (function(){
+    const overlay = document.getElementById('form-overlay');
+    const box     = document.getElementById('form-box');
+    const form    = document.getElementById('devis-form');
+    const fclose  = document.getElementById('fclose');
+    const fback   = document.getElementById('fback');
+    if (!overlay) return;
+
+    window.openForm = function() {
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => document.getElementById('f-prenom') && document.getElementById('f-prenom').focus(), 100);
+    };
+
+    function closeForm() {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    fclose.addEventListener('click', closeForm);
+    if (fback) fback.addEventListener('click', e => { e.preventDefault(); closeForm(); });
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeForm(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeForm(); });
+
+    // Radios custom
+    overlay.querySelectorAll('.fradio').forEach(label => {
+      label.addEventListener('click', () => {
+        overlay.querySelectorAll('.fradio').forEach(l => l.classList.remove('checked'));
+        label.classList.add('checked');
+      });
+    });
+
+    // Soumission
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const prenom  = document.getElementById('f-prenom').value.trim();
+      const email   = document.getElementById('f-email').value.trim();
+      const url     = document.getElementById('f-url').value.trim();
+      const message = document.getElementById('f-msg').value.trim();
+      const budget  = form.querySelector('.fradio.checked input')?.value || 'Non précisé';
+
+      let valid = true;
+      [document.getElementById('f-prenom'), document.getElementById('f-email')].forEach(el => el.classList.remove('err'));
+
+      if (!prenom) { document.getElementById('f-prenom').classList.add('err'); valid = false; }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById('f-email').classList.add('err'); valid = false; }
+      if (!valid) return;
+
+      const subject = encodeURIComponent('Devis ImmoViz 3D — ' + prenom);
+      const body = encodeURIComponent(
+        'Bonjour,\n\nJe souhaite un devis ImmoViz 3D.\n\n' +
+        'Prénom : ' + prenom + '\nEmail : ' + email +
+        '\nOffre : ' + budget +
+        (url ? '\nURL annonce : ' + url : '') +
+        (message ? '\n\nMessage :\n' + message : '') +
+        '\n\n---\nEnvoyé depuis immoviz3d.fr'
+      );
+      window.open('mailto:dimitri444art@gmail.com?subject=' + subject + '&body=' + body, '_blank');
+      box.classList.add('sent');
+    });
+
+    // Intercepter tous les CTAs "devis"
+    document.querySelectorAll('a[href*="Devis"], a[href*="devis"]').forEach(a => {
+      if (!a.closest('#form-overlay') && !a.closest('.mobile-menu')) {
+        a.addEventListener('click', e => { e.preventDefault(); openForm(); });
+      }
+    });
+  })();
+
+  // ── STICKY CTA ──
+  (function(){
+    const bar = document.getElementById('sticky-cta');
+    const btn = document.getElementById('sticky-btn');
+    if (!bar) return;
+    if (btn) btn.addEventListener('click', () => window.openForm && openForm());
+
+    let visible = false;
+    function update() {
+      const scrollY = window.scrollY;
+      const docH    = document.body.scrollHeight;
+      const winH    = window.innerHeight;
+      const nearBottom = scrollY + winH > docH - 120;
+      const shouldShow = scrollY > 520 && !nearBottom;
+      if (shouldShow !== visible) {
+        visible = shouldShow;
+        bar.classList.toggle('visible', visible);
+      }
+    }
+    window.addEventListener('scroll', update, { passive: true });
   })();
 
   // ── BURGER MENU MOBILE ──
