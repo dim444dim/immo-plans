@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ImmoViz 3D — Plan interactif pour votre annonce LeBonCoin</title>
   <meta name="description" content="Plan 2D + Vue 3D + Visite 360° pour valoriser votre bien. Livré en 48h à partir de 150€.">
+  <meta property="og:title" content="ImmoViz 3D — Votre annonce immobilière, enfin remarquée">
+  <meta property="og:description" content="Plan 2D + Vue 3D + Visite 360° livré en 48h à partir de 150€. Sans abonnement.">
+  <meta property="og:url" content="https://dim444dim.github.io/immo-plans/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=630&fit=crop">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ImmoViz 3D — Votre annonce immobilière, enfin remarquée">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=630&fit=crop">
+  <link rel="canonical" href="https://dim444dim.github.io/immo-plans/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
@@ -408,10 +417,28 @@
     .process-step p{font-size:.85rem;color:var(--muted);line-height:1.65}
     .process-arrow{font-size:1.5rem;color:rgba(0,229,255,.4);flex-shrink:0}
 
+    /* ── SCROLL OFFSET NAV ── */
+    #problemes,#solution,#demos,#faq,#tarifs,#process{scroll-margin-top:80px}
+
+    /* ── BURGER ── */
+    .burger{display:none;background:none;border:1px solid rgba(255,255,255,.22);border-radius:8px;width:36px;height:36px;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:0;flex-shrink:0}
+    .burger span{display:block;width:18px;height:2px;background:#fff;border-radius:2px;transition:transform .25s,opacity .2s}
+    .burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .burger.open span:nth-child(2){opacity:0}
+    .burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+    .mobile-menu{display:none;position:fixed;inset:0;background:rgba(8,6,4,.97);backdrop-filter:blur(20px);z-index:98;flex-direction:column;align-items:center;justify-content:center;gap:2rem}
+    .mobile-menu.open{display:flex}
+    .mobile-menu a{color:rgba(255,255,255,.8);font-size:1.5rem;font-weight:700;font-family:'Inter Tight',sans-serif;letter-spacing:-.5px;transition:color .2s}
+    .mobile-menu a:hover{color:var(--cyan)}
+    .mobile-menu .btn-p{font-size:.95rem;margin-top:.75rem}
+    .mmclose{position:absolute;top:1.5rem;right:1.5rem;background:none;border:1px solid rgba(255,255,255,.15);border-radius:8px;color:rgba(255,255,255,.5);font-size:1rem;cursor:pointer;padding:.4rem .65rem;transition:color .2s,border-color .2s}
+    .mmclose:hover{color:#fff;border-color:rgba(255,255,255,.4)}
+
     /* ── RESPONSIVE ── */
     @media(max-width:740px){
       .nav-links{display:none}
       .msplit{grid-template-columns:1fr}
+      .statbox{position:relative;top:auto}
       .cgrid{grid-template-columns:1fr}
       .dgrid{grid-template-columns:1fr}
       .dmain{grid-row:auto}
@@ -419,6 +446,16 @@
       .band{flex-direction:column;align-items:flex-start}
       .process-grid{flex-direction:column}
       .process-arrow{transform:rotate(90deg)}
+    }
+    @media(max-width:640px){
+      nav{padding:.4rem .75rem;gap:.75rem}
+      .burger{display:flex}
+      .ab-wrap{height:240px}
+      .iframe-shell{height:340px}
+      #demo-frame{height:calc(340px - 36px)}
+    }
+    @media(max-width:480px){
+      h1{letter-spacing:-1px}
     }
   </style>
 </head>
@@ -439,6 +476,16 @@
 
 <div id="page-bg"></div>
 
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mmclose" id="mmclose">✕</button>
+  <a href="#problemes">Problèmes</a>
+  <a href="#solution">Méthode</a>
+  <a href="#demos">Démos</a>
+  <a href="#faq">FAQ</a>
+  <a href="mailto:dimitri444art@gmail.com" class="btn-p">Devis gratuit →</a>
+</div>
+
 <!-- NAV PILL -->
 <nav>
   <div class="logo"><span class="logo-dot"></span>ImmoViz 3D</div>
@@ -449,6 +496,7 @@
     <li><a href="#faq">FAQ</a></li>
   </ul>
   <a href="mailto:dimitri444art@gmail.com" class="nav-cta">Devis gratuit →</a>
+  <button class="burger" id="burger-btn" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 
 <!-- HERO -->
@@ -834,7 +882,7 @@
 </div>
 
 <footer>
-  <p>© 2026 ImmoViz 3D &nbsp;·&nbsp; <a href="mailto:dimitri444art@gmail.com" style="color:var(--muted)">dimitri444art@gmail.com</a></p>
+  <p>© 2026 ImmoViz 3D &nbsp;·&nbsp; <a href="mailto:dimitri444art@gmail.com" style="color:var(--muted)">Email</a> &nbsp;·&nbsp; <a href="https://wa.me/" style="color:var(--muted)">WhatsApp</a> &nbsp;·&nbsp; <a href="https://linkedin.com/in/" style="color:var(--muted)">LinkedIn</a></p>
 </footer>
 
 <script>
@@ -1223,6 +1271,29 @@
     window.addEventListener('touchmove', e => {
       if (dragging) setPos(e.touches[0].clientX);
     }, { passive: true });
+  })();
+
+  // ── BURGER MENU MOBILE ──
+  (function(){
+    const btn   = document.getElementById('burger-btn');
+    const menu  = document.getElementById('mobile-menu');
+    const close = document.getElementById('mmclose');
+    if (!btn || !menu) return;
+
+    function openMenu() {
+      menu.classList.add('open');
+      btn.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMenu() {
+      menu.classList.remove('open');
+      btn.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    btn.addEventListener('click', () => menu.classList.contains('open') ? closeMenu() : openMenu());
+    if (close) close.addEventListener('click', closeMenu);
+    menu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
   })();
 </script>
 </body>
