@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Votre livrable ImmoViz 3D est prêt !</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+  <style>
+    :root{--cyan:#00e5ff;--muted:rgba(255,255,255,.55);--border:rgba(255,255,255,.1);--card:rgba(8,6,4,.78)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:-apple-system,'Segoe UI',sans-serif;background:#0d0d0d;color:#f0f0f0;line-height:1.6;min-height:100vh}
+    a{text-decoration:none}
+    em{font-family:'Playfair Display',Georgia,serif;font-style:italic;color:var(--cyan)}
+
+    /* BG */
+    #page-bg{position:fixed;inset:0;background-image:url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80&fit=crop');background-size:cover;background-position:center;z-index:-2;filter:brightness(0.35) saturate(0.6) sepia(0.2)}
+    #page-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.55) 0%,rgba(0,0,0,.4) 40%,rgba(0,0,0,.8) 100%)}
+
+    /* LAYOUT */
+    .wrap{max-width:660px;margin:0 auto;padding:0 1.75rem}
+
+    /* NAV MINI */
+    nav{position:fixed;top:1rem;left:50%;transform:translateX(-50%);background:rgba(12,9,6,.82);border:1px solid rgba(255,255,255,.13);backdrop-filter:blur(18px);display:flex;align-items:center;gap:.75rem;padding:.5rem 1.1rem;border-radius:50px;z-index:100;white-space:nowrap}
+    .logo{font-weight:800;font-size:.95rem;color:#fff;letter-spacing:-.5px;display:flex;align-items:center;gap:.4rem}
+    .logo-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan)}
+    .nav-badge{font-size:.72rem;color:var(--cyan);background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.25);padding:.2rem .7rem;border-radius:20px}
+
+    /* HERO SECTION */
+    .hero{padding:8rem 0 4rem;text-align:center}
+    .success-ring{width:80px;height:80px;border-radius:50%;border:2px solid rgba(0,229,255,.4);background:rgba(0,229,255,.08);display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin:0 auto 1.75rem;animation:pulse 2.5s infinite}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,229,255,.25)}50%{box-shadow:0 0 0 18px rgba(0,229,255,0)}}
+    .hero h1{font-family:'Inter Tight',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:800;letter-spacing:-2px;line-height:1.1;margin-bottom:1rem}
+    .hero p{color:var(--muted);font-size:1rem;line-height:1.75;max-width:480px;margin:0 auto 2.5rem}
+
+    /* BOUTON PRINCIPAL */
+    .btn-primary{display:inline-flex;align-items:center;gap:.6rem;background:var(--cyan);color:#000;padding:1rem 2.25rem;border-radius:50px;font-weight:800;font-size:1rem;font-family:'Inter Tight',sans-serif;letter-spacing:-.3px;position:relative;overflow:hidden;transition:transform .15s,box-shadow .2s}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,229,255,.35)}
+    .btn-primary::before{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);transform:skewX(-20deg)}
+    @keyframes shimmer{from{left:-80%}to{left:130%}}
+    .btn-primary:hover::before{animation:shimmer .55s ease-out forwards}
+    .btn-sec{display:inline-flex;align-items:center;gap:.5rem;color:rgba(255,255,255,.65);padding:.85rem 1.75rem;border-radius:50px;border:1px solid rgba(255,255,255,.2);font-size:.9rem;font-weight:500;transition:color .2s,border-color .2s}
+    .btn-sec:hover{color:#fff;border-color:rgba(255,255,255,.5)}
+
+    /* CARD BIEN */
+    .bien-card{background:rgba(8,6,4,.82);border:1px solid rgba(0,229,255,.25);border-radius:16px;padding:1.5rem;margin-bottom:2.5rem;display:flex;align-items:center;gap:1.25rem;backdrop-filter:blur(14px)}
+    .bien-icon{font-size:2rem;flex-shrink:0}
+    .bien-name{font-size:1.05rem;font-weight:700;margin-bottom:.2rem}
+    .bien-meta{font-size:.82rem;color:var(--muted)}
+
+    /* ÉTAPES */
+    .steps-section{padding:3rem 0 2rem}
+    .steps-section h2{font-family:'Inter Tight',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-.5px;margin-bottom:1.75rem;text-align:center}
+    .steps{display:flex;flex-direction:column;gap:.75rem}
+    .step{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;display:flex;gap:1.1rem;align-items:flex-start;backdrop-filter:blur(12px)}
+    .step-num{width:32px;height:32px;border-radius:50%;background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.35);color:var(--cyan);font-weight:800;font-size:.85rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Inter Tight',sans-serif}
+    .step h3{font-size:.9rem;font-weight:700;margin-bottom:.3rem}
+    .step p{font-size:.82rem;color:var(--muted);line-height:1.65}
+    .step code{background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.2);color:var(--cyan);padding:.15rem .5rem;border-radius:4px;font-size:.8rem;word-break:break-all}
+
+    /* URL BOX */
+    .url-box{background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.25);border-radius:10px;padding:1rem 1.25rem;margin-top:.75rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+    .url-text{font-size:.82rem;color:var(--cyan);flex:1;word-break:break-all;font-family:monospace}
+    .copy-btn{background:none;border:1px solid rgba(0,229,255,.3);color:var(--cyan);border-radius:6px;padding:.3rem .7rem;font-size:.75rem;cursor:pointer;white-space:nowrap;transition:background .2s}
+    .copy-btn:hover{background:rgba(0,229,255,.1)}
+    .copy-btn.copied{color:#28c840;border-color:#28c840}
+
+    /* SECTION RETOUCHE */
+    .retouche{background:rgba(8,6,4,.7);border:1px solid var(--border);border-radius:16px;padding:1.75rem;margin:2rem 0;backdrop-filter:blur(12px);display:flex;gap:1.25rem;align-items:flex-start}
+    .retouche-icon{font-size:1.5rem;flex-shrink:0;margin-top:.15rem}
+    .retouche h3{font-size:.95rem;font-weight:700;margin-bottom:.4rem}
+    .retouche p{font-size:.83rem;color:var(--muted);line-height:1.7;margin-bottom:1rem}
+
+    /* FOOTER */
+    footer{text-align:center;padding:2.5rem 1.75rem;color:var(--muted);font-size:.8rem;border-top:1px solid var(--border)}
+    footer a{color:var(--muted);transition:color .2s}
+    footer a:hover{color:#fff}
+
+    /* ANIMATIONS */
+    .fade-in{opacity:0;transform:translateY(20px);animation:fadeUp .7s cubic-bezier(.22,1,.36,1) forwards}
+    .d1{animation-delay:.1s}.d2{animation-delay:.25s}.d3{animation-delay:.4s}.d4{animation-delay:.55s}
+    @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+
+    @media(max-width:560px){
+      .bien-card{flex-direction:column;align-items:flex-start;gap:.75rem}
+      .url-box{flex-direction:column;align-items:flex-start}
+      .retouche{flex-direction:column;gap:.75rem}
+    }
+  </style>
+</head>
+<body>
+
+<div id="page-bg"></div>
+
+<nav>
+  <div class="logo"><span class="logo-dot"></span>ImmoViz 3D</div>
+  <span class="nav-badge">Livraison</span>
+</nav>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="success-ring fade-in">✅</div>
+    <h1 class="fade-in d1">Votre plan est <em>en ligne !</em></h1>
+    <p class="fade-in d2" id="hero-sub">Bonjour&nbsp;! Votre plan interactif est prêt. Voici tout ce dont vous avez besoin pour le publier sur LeBonCoin.</p>
+
+    <!-- CARTE DU BIEN -->
+    <div class="bien-card fade-in d2" id="bien-card" style="display:none">
+      <span class="bien-icon">🏡</span>
+      <div>
+        <div class="bien-name" id="bien-name">—</div>
+        <div class="bien-meta">Plan 2D · Vue 3D · Visite 360°</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap" class="fade-in d3">
+      <a id="plan-link" href="#" class="btn-primary" target="_blank">Voir mon plan →</a>
+      <a href="mailto:dimitri444art@gmail.com" class="btn-sec">Contacter</a>
+    </div>
+  </div>
+
+  <!-- ÉTAPES LEBONCOIN -->
+  <section class="steps-section fade-in d3">
+    <h2>Publier sur LeBonCoin <em>en 3 étapes</em></h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <h3>Copiez votre URL</h3>
+          <p>Voici l'adresse publique de votre plan interactif. Copiez-la en un clic.</p>
+          <div class="url-box">
+            <span class="url-text" id="plan-url">—</span>
+            <button class="copy-btn" id="copy-btn" onclick="copyUrl()">Copier</button>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <h3>Collez dans votre annonce</h3>
+          <p>Sur LeBonCoin, modifiez votre annonce et collez l'URL dans le champ <strong>Description</strong> (ou dans "Visite virtuelle" si vous avez un compte pro avec SIRET).</p>
+          <p style="margin-top:.5rem;font-size:.8rem;color:var(--muted)">Exemple de phrase à copier dans la description :</p>
+          <div class="url-box" style="margin-top:.5rem">
+            <span class="url-text" id="phrase-copy">🏡 Plan interactif 3D disponible : [coller votre URL ici]</span>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <h3>Publiez et attendez les appels</h3>
+          <p>Sauvegardez l'annonce. Vos acheteurs peuvent maintenant explorer votre bien en 3D avant de vous contacter — seuls les profils sérieux passent à l'appel.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RETOUCHE INCLUSE -->
+  <div class="retouche fade-in d4">
+    <span class="retouche-icon">✏️</span>
+    <div>
+      <h3>1 retouche incluse dans votre offre</h3>
+      <p>Vous souhaitez ajuster une surface, corriger un nom de pièce, ou modifier un détail ? C'est inclus. Envoyez simplement un email avec les corrections.</p>
+      <a href="mailto:dimitri444art@gmail.com?subject=Retouche plan ImmoViz 3D" class="btn-sec" style="font-size:.85rem;padding:.6rem 1.25rem">Demander une retouche →</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 ImmoViz 3D &nbsp;·&nbsp; <a href="mailto:dimitri444art@gmail.com">dimitri444art@gmail.com</a> &nbsp;·&nbsp; <a href="index.html">Retour au site</a></p>
+</footer>
+
+<script>
+  // Lecture des paramètres URL : ?nom=Marie&plan=plan-interactif-romorantin.html&bien=Maison%20170m%C2%B2
+  (function(){
+    const params = new URLSearchParams(window.location.search);
+    const nom    = params.get('nom')  || '';
+    const plan   = params.get('plan') || '';
+    const bien   = params.get('bien') || '';
+
+    // Personnalisation du message
+    if (nom) {
+      document.getElementById('hero-sub').innerHTML =
+        'Bonjour&nbsp;<strong>' + nom + '</strong>&nbsp;! Votre plan interactif est prêt. Voici tout ce dont vous avez besoin pour le publier sur LeBonCoin.';
+    }
+
+    // Carte du bien
+    if (bien) {
+      document.getElementById('bien-name').textContent = bien;
+      document.getElementById('bien-card').style.display = 'flex';
+    }
+
+    // Lien vers le plan
+    const baseUrl = window.location.origin + window.location.pathname.replace('livraison.html', '');
+    const planUrl = plan
+      ? baseUrl + plan
+      : 'https://dim444dim.github.io/immo-plans/plan-interactif-romorantin.html';
+
+    document.getElementById('plan-link').href = planUrl;
+    document.getElementById('plan-url').textContent = planUrl;
+    document.getElementById('phrase-copy').textContent = '🏡 Plan interactif 3D disponible : ' + planUrl;
+  })();
+
+  function copyUrl() {
+    const url = document.getElementById('plan-url').textContent;
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = '✓ Copié';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copier'; btn.classList.remove('copied'); }, 2000);
+    }).catch(() => {
+      // fallback
+      const ta = document.createElement('textarea');
+      ta.value = url;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      document.getElementById('copy-btn').textContent = '✓ Copié';
+    });
+  }
+</script>
+</body>
+</html>

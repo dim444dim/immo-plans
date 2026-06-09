@@ -26,6 +26,10 @@
 - [x] 4B — Sticky CTA bar : pill fixe bottom, apparaît après 520px scroll, masqué near-footer, ouvre formulaire modal — 2026-06-09
 - [x] 4C — Section Témoignages : 3 cards glass ★★★★★, placée avant CTA final — 2026-06-09
 
+## Vague 7
+- [x] 7A — Métadonnées démos corrigées : Niort 177m²·11 pièces·Marais Poitevin, Tours Maison bourgeoise 235m²·Tours centre, hcard hero Tours mis à jour — 2026-06-09
+- [x] 7B — livraison.html : page client post-commande, params URL ?nom=&plan=&bien=, URL copiable en 1 clic, 3 étapes LeBonCoin, retouche incluse — 2026-06-09
+
 ## Vague 6
 - [x] 6A — Plausible Analytics : `<script defer data-domain="dim444dim.github.io/immo-plans">` ajouté dans `<head>` après meta theme-color — 2026-06-09
 - [x] 6B — Événements de conversion : 'Devis ouvert' (openForm), 'Devis envoyé' (+props budget), 'Demo cliquée' (.btn-demo), 'FAQ ouverte' (+props question) — wrapper `if (window.plausible)` sécurisé — 2026-06-09
