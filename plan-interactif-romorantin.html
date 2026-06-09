@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    (function(){var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
+  </script>
   <title>Plan Interactif — Maison 170 m² — Romorantin-Lanthenay</title>
 
   <meta name="description" content="Visite 3D interactive d'une maison de 170m² à Romorantin-Lanthenay. Plan 2D, vue 3D, panorama 360° et calculateur de financement. 265 000€.">
@@ -47,23 +51,68 @@
   </script>
 
   <style>
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f0f2f5;
+      --bg-3d: #f0ede8;
+      --text-primary: #111111;
+      --text-secondary: #666666;
+      --border: #e4e7ec;
+    }
+    [data-theme="dark"] {
+      --bg-primary: #1a1a2e;
+      --bg-secondary: #16213e;
+      --bg-3d: #0d0d1a;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b5c0;
+      --border: #2d3748;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg-primary: #1a1a2e;
+        --bg-secondary: #16213e;
+        --bg-3d: #0d0d1a;
+        --text-primary: #ffffff;
+        --text-secondary: #b0b5c0;
+        --border: #2d3748;
+      }
+    }
+    #dark-toggle {
+      background: var(--bg-primary); border: 1.5px solid var(--border);
+      border-radius: 8px; padding: 6px 10px; cursor: pointer;
+      font-size: 16px; transition: all 0.2s; line-height: 1;
+      flex-shrink: 0;
+    }
+    #dark-toggle:hover { opacity: 0.8; }
+    [data-theme="dark"] #hint3d { background: rgba(10,10,30,0.88) !important; color: var(--text-secondary) !important; }
+    [data-theme="dark"] #legend3d { background: rgba(10,10,30,0.9) !important; color: var(--text-secondary) !important; }
+    [data-theme="dark"] #legend3d h3 { color: var(--text-primary) !important; }
+    [data-theme="dark"] #room-info-panel { background: var(--bg-primary) !important; border-left: 1px solid var(--border) !important; }
+    [data-theme="dark"] #qr-modal > div { background: var(--bg-primary) !important; color: var(--text-primary) !important; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) #hint3d { background: rgba(10,10,30,0.88) !important; color: var(--text-secondary) !important; }
+      :root:not([data-theme="light"]) #legend3d { background: rgba(10,10,30,0.9) !important; color: var(--text-secondary) !important; }
+      :root:not([data-theme="light"]) #legend3d h3 { color: var(--text-primary) !important; }
+      :root:not([data-theme="light"]) #room-info-panel { background: var(--bg-primary) !important; border-left: 1px solid var(--border) !important; }
+      :root:not([data-theme="light"]) #qr-modal > div { background: var(--bg-primary) !important; color: var(--text-primary) !important; }
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-secondary); color: var(--text-primary); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
     /* ── HEADER ─────────────────────────────────────────── */
     #header {
-      height: 52px; background: #fff; border-bottom: 1px solid #e4e7ec;
+      height: 52px; background: var(--bg-primary); border-bottom: 1px solid var(--border);
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 20px; flex-shrink: 0; z-index: 100;
     }
-    #header h1 { font-size: 14px; font-weight: 700; color: #111; }
+    #header h1 { font-size: 14px; font-weight: 700; color: var(--text-primary); }
     #tabs { display: flex; gap: 4px; }
     .tab-btn {
       padding: 7px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
-      cursor: pointer; border: 1.5px solid #e4e7ec; background: #f8f9fb;
-      color: #888; transition: all 0.15s;
+      cursor: pointer; border: 1.5px solid var(--border); background: var(--bg-secondary);
+      color: var(--text-secondary); transition: all 0.15s;
     }
-    .tab-btn:hover { background: #f0f0f0; }
+    .tab-btn:hover { background: var(--bg-secondary); filter: brightness(0.95); }
     .tab-btn.active { background: #111; color: #fff; border-color: #111; }
 
     /* ── BODY ────────────────────────────────────────────── */
@@ -84,7 +133,7 @@
 
     /* Vue 3D — override display:flex et padding hérités de .view.active */
     #view-3d.active  { padding: 0 !important; overflow: hidden !important; display: block !important; }
-    #view-3d { background: #f0ede8; cursor: grab; }
+    #view-3d { background: var(--bg-3d); cursor: grab; }
     #view-3d:active { cursor: grabbing; }
     #view-3d canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
 
@@ -160,11 +209,11 @@
 
     /* ── PANNEAU INFO ────────────────────────────────────── */
     #info-panel {
-      width: 300px; min-width: 260px; background: #fff; border-left: 1px solid #e4e7ec;
+      width: 300px; min-width: 260px; background: var(--bg-primary); border-left: 1px solid var(--border);
       padding: 24px 18px 18px; overflow-y: auto; flex-shrink: 0;
       display: flex; flex-direction: column;
     }
-    .panel-title { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #b0b8c8; margin-bottom: 20px; letter-spacing: 0.9px; }
+    .panel-title { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 20px; letter-spacing: 0.9px; }
     .default-view { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px 0; }
     .default-view .icon { font-size: 38px; margin-bottom: 12px; opacity: 0.2; }
     .default-view h3 { font-size: 14px; color: #aaa; margin-bottom: 8px; font-weight: 600; }
@@ -173,20 +222,20 @@
     .room-info.active { display: block; }
     @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
     .room-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.6px; }
-    .room-name { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 14px; line-height: 1.2; }
-    .room-stats { background: #f8f9fb; border-radius: 10px; padding: 13px; margin-bottom: 14px; }
-    .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #eef0f3; }
+    .room-name { font-size: 22px; font-weight: 700; color: var(--text-primary); margin-bottom: 14px; line-height: 1.2; }
+    .room-stats { background: var(--bg-secondary); border-radius: 10px; padding: 13px; margin-bottom: 14px; }
+    .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--border); }
     .stat-row:last-child { border-bottom: none; }
-    .stat-label { font-size: 12px; color: #999; }
-    .stat-value { font-size: 13px; font-weight: 600; color: #222; }
-    .room-desc { font-size: 12px; color: #666; line-height: 1.65; margin-bottom: 14px; }
+    .stat-label { font-size: 12px; color: var(--text-secondary); }
+    .stat-value { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .room-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 14px; }
     .features-list { display: flex; flex-wrap: wrap; gap: 6px; }
     .feature-tag { background: #f0f4ff; color: #4a6cf7; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
-    .global-stats { margin-top: auto; padding-top: 16px; border-top: 1px solid #eef0f3; font-size: 11px; color: #bbb; text-align: center; line-height: 1.7; }
+    .global-stats { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-secondary); text-align: center; line-height: 1.7; }
 
     @media (max-width: 860px) {
       #body { flex-direction: column; }
-      #info-panel { width: 100%; border-left: none; border-top: 1px solid #e4e7ec; max-height: 220px; min-width: unset; }
+      #info-panel { width: 100%; border-left: none; border-top: 1px solid var(--border); max-height: 220px; min-width: unset; }
     }
   </style>
 
@@ -220,6 +269,29 @@
     }
   </style>
 
+  <style>
+    /* ── ACCESSIBILITÉ ── */
+    .skip-link {
+      position: absolute; top: -40px; left: 0;
+      background: #4a5bcf; color: white;
+      padding: 8px 16px; text-decoration: none;
+      font-weight: 600; z-index: 9999;
+      border-radius: 0 0 4px 0;
+      transition: top 0.15s;
+    }
+    .skip-link:focus { top: 0; }
+    button:focus, a:focus, input:focus, textarea:focus, select:focus {
+      outline: 2px solid #4a5bcf;
+      outline-offset: 2px;
+    }
+    .tab-btn:focus { outline: 2px solid #4a5bcf; outline-offset: 2px; }
+    .room-zone:focus { outline: 2px solid #ffcc00; outline-offset: 2px; }
+    .nav-btn-360:focus { outline: 2px solid white; outline-offset: 2px; }
+    .btn3d:focus { outline: 2px solid #4a5bcf; outline-offset: 2px; }
+    .form-label { display: block; font-size: 0.85rem; color: #555; margin-bottom: 0.3rem; font-weight: 500; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+  </style>
+
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-WBK9XWSGCT"></script>
   <script>
@@ -230,23 +302,25 @@
   </script>
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Aller au contenu principal</a>
 
 <!-- ══ HEADER ══ -->
-<div id="header">
+<header id="header" role="banner">
   <h1>Plan Interactif — Maison 170 m² — Romorantin-Lanthenay</h1>
-  <div id="tabs">
-    <button class="tab-btn active" data-tab="2d"  onclick="switchTab('2d')">Plan 2D</button>
-    <button class="tab-btn"        data-tab="3d"  onclick="switchTab('3d')">Vue 3D</button>
-    <button class="tab-btn"        data-tab="360" onclick="switchTab('360')">Visite 360°</button>
-  </div>
-</div>
+  <button id="dark-toggle" onclick="toggleDarkMode()" aria-label="Basculer le mode sombre">🌙</button>
+  <nav id="tabs" role="tablist" aria-label="Vues du bien">
+    <button class="tab-btn active" role="tab" aria-selected="true"  aria-controls="view-2d"  id="tab-2d"  data-tab="2d"  onclick="switchTab('2d')">Plan 2D</button>
+    <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="view-3d"  id="tab-3d"  data-tab="3d"  onclick="switchTab('3d')">Vue 3D</button>
+    <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="view-360" id="tab-360" data-tab="360" onclick="switchTab('360')">Visite 360°</button>
+  </nav>
+</header>
 
 <!-- ══ BODY ══ -->
-<div id="body" class="main-container" style="display: flex; height: 100vh; gap: 0; flex-wrap: wrap;">
+<main id="main-content" class="main-container" style="display: flex; height: 100vh; gap: 0; flex-wrap: wrap;">
   <div id="views">
 
     <!-- ════════════════ VUE 2D ════════════════ -->
-    <div id="view-2d" class="view active">
+    <div id="view-2d" class="view active" role="tabpanel" aria-labelledby="tab-2d" tabindex="0">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" style="background:#fff;font-family:Arial,sans-serif;">
         <text x="600" y="35" text-anchor="middle" font-size="18" font-weight="bold" fill="#111">Plan 2D — Maison 170 m² — Romorantin-Lanthenay</text>
 
@@ -437,24 +511,24 @@
         <rect id="ov-sdb2"           class="room-overlay" x="790" y="200" width="85"  height="80"  fill="#3498db" rx="2"/>
 
         <!-- ZONES CLIQUABLES 2D -->
-        <rect class="room-zone" data-room="sejour"        x="50"  y="80"  width="200" height="140" rx="2"/>
-        <rect class="room-zone" data-room="sam"           x="250" y="80"  width="140" height="140" rx="2"/>
-        <rect class="room-zone" data-room="cuisine"       x="250" y="220" width="140" height="125" rx="2"/>
-        <rect class="room-zone" data-room="entree"        x="50"  y="220" width="100" height="125" rx="2"/>
-        <rect class="room-zone" data-room="wc"            x="150" y="280" width="100" height="65"  rx="2"/>
-        <rect class="room-zone" data-room="garage"        x="390" y="245" width="140" height="100" rx="2"/>
-        <rect class="room-zone" data-room="ch-principale" x="620" y="160" width="170" height="185" rx="2"/>
-        <rect class="room-zone" data-room="ch2"           x="790" y="80"  width="85"  height="120" rx="2"/>
-        <rect class="room-zone" data-room="ch3"           x="875" y="80"  width="85"  height="120" rx="2"/>
-        <rect class="room-zone" data-room="ch4"           x="875" y="200" width="85"  height="145" rx="2"/>
-        <rect class="room-zone" data-room="sdb"           x="720" y="80"  width="70"  height="130" rx="2"/>
-        <rect class="room-zone" data-room="sdb2"          x="790" y="200" width="85"  height="80"  rx="2"/>
+        <rect class="room-zone" role="button" tabindex="0" aria-label="Séjour, ~30 m², Rez-de-chaussée"              data-room="sejour"        x="50"  y="80"  width="200" height="140" rx="2"/>
+        <rect class="room-zone" role="button" tabindex="0" aria-label="Salle à Manger, ~15 m², Rez-de-chaussée"     data-room="sam"           x="250" y="80"  width="140" height="140" rx="2"/>
+        <rect class="room-zone" role="button" tabindex="0" aria-label="Cuisine, ~20 m², Rez-de-chaussée"            data-room="cuisine"       x="250" y="220" width="140" height="125" rx="2"/>
+        <rect class="room-zone" role="button" tabindex="0" aria-label="Entrée / Hall, ~8 m², Rez-de-chaussée"       data-room="entree"        x="50"  y="220" width="100" height="125" rx="2"/>
+        <rect class="room-zone" role="button" tabindex="0" aria-label="WC, ~3 m², Rez-de-chaussée"                  data-room="wc"            x="150" y="280" width="100" height="65"  rx="2"/>
+        <rect class="room-zone" role="button" tabindex="0" aria-label="Garage, ~15 m², Rez-de-chaussée"             data-room="garage"        x="390" y="245" width="140" height="100" rx="2"/>
+        <rect class="room-zone" role="button" tabindex="0" aria-label="Chambre principale, ~18 m², Étage"           data-room="ch-principale" x="620" y="160" width="170" height="185" rx="2"/>
+        <rect class="room-zone" role="button" tabindex="0" aria-label="Chambre 2, ~12 m², Étage"                    data-room="ch2"           x="790" y="80"  width="85"  height="120" rx="2"/>
+        <rect class="room-zone" role="button" tabindex="0" aria-label="Chambre 3, ~12 m², Étage, velux"             data-room="ch3"           x="875" y="80"  width="85"  height="120" rx="2"/>
+        <rect class="room-zone" role="button" tabindex="0" aria-label="Chambre 4, ~12 m², Étage, velux"             data-room="ch4"           x="875" y="200" width="85"  height="145" rx="2"/>
+        <rect class="room-zone" role="button" tabindex="0" aria-label="Grande salle de bain, ~10 m², Étage"         data-room="sdb"           x="720" y="80"  width="70"  height="130" rx="2"/>
+        <rect class="room-zone" role="button" tabindex="0" aria-label="Salle de bain 2 / WC, ~5 m², Étage"         data-room="sdb2"          x="790" y="200" width="85"  height="80"  rx="2"/>
       </svg>
     </div>
 
     <!-- ════════════════ VUE 3D ════════════════ -->
-    <div id="view-3d" class="view">
-      <div id="hint3d">🖱 Clic + drag : rotation<br>🔍 Scroll : zoom<br>🖱 Clic pièce : détails</div>
+    <div id="view-3d" class="view" role="tabpanel" aria-labelledby="tab-3d" tabindex="0">
+      <div id="hint3d" aria-label="Commandes 3D : Flèches pour pivoter, + et - pour zoomer, Échap pour quitter"><span aria-hidden="true">🖱</span> Clic + drag : rotation<br><span aria-hidden="true">🔍</span> Scroll : zoom<br>Flèches : rotation clavier</div>
       <div id="legend3d">
         <h3>Légende</h3>
         <div class="li"><div class="lc" style="background:#c2e6bc"></div>Séjour</div>
@@ -466,53 +540,68 @@
         <div class="li"><div class="lc" style="background:#d8d8d0"></div>Garage</div>
       </div>
       <div id="controls-3d">
-        <button class="btn3d on"  id="b-rdc"       onclick="toggle3d('rdc')">RDC</button>
-        <button class="btn3d on"  id="b-etage"     onclick="toggle3d('etage')">Étage</button>
-        <button class="btn3d on"  id="b-toit"      onclick="toggle3d('toit')">Toiture</button>
-        <button class="btn3d off" id="b-interieur" onclick="toggleInterieur()">Vue intérieure</button>
-        <button class="btn3d off btn3d-theme" data-theme="architectural" onclick="applyThemeToScene('architectural')">Architectural</button>
-        <button class="btn3d active btn3d-theme" data-theme="minimalist"  onclick="applyThemeToScene('minimalist')">Minimaliste</button>
+        <button class="btn3d on"  id="b-rdc"       onclick="toggle3d('rdc')"              aria-pressed="true"  aria-label="Afficher/Masquer le rez-de-chaussée">RDC</button>
+        <button class="btn3d on"  id="b-etage"     onclick="toggle3d('etage')"            aria-pressed="true"  aria-label="Afficher/Masquer l'étage">Étage</button>
+        <button class="btn3d on"  id="b-toit"      onclick="toggle3d('toit')"             aria-pressed="true"  aria-label="Afficher/Masquer la toiture">Toiture</button>
+        <button class="btn3d off" id="b-interieur" onclick="toggleInterieur()"            aria-pressed="false" aria-label="Basculer la vue intérieure">Vue intérieure</button>
+        <button class="btn3d off btn3d-theme" data-theme="architectural" onclick="applyThemeToScene('architectural')" aria-pressed="false">Architectural</button>
+        <button class="btn3d active btn3d-theme" data-theme="minimalist"  onclick="applyThemeToScene('minimalist')"  aria-pressed="true">Minimaliste</button>
       </div>
       <div id="diag-3d"></div>
     </div>
 
     <!-- ════════════════ VUE 360° ════════════════ -->
-    <div id="view-360" class="view">
+    <div id="view-360" class="view" role="tabpanel" aria-labelledby="tab-360" tabindex="0">
       <div id="room-label-360">Séjour</div>
-      <div id="hint-360">Faites glisser pour regarder autour · Scroll pour zoomer</div>
-      <div id="add-img-360" title="Remplacer par votre image 360°">&#x1F4F7; Ajouter image 360°</div>
+      <div id="hint-360" role="status" aria-live="polite">Faites glisser pour regarder autour · Scroll pour zoomer</div>
+      <button id="add-img-360" title="Remplacer par votre image 360°" aria-label="Ajouter une image 360° depuis votre appareil">&#x1F4F7; Ajouter image 360°</button>
       <div id="nav-360"></div>
     </div>
 
   </div>
 
   <!-- ══ PANNEAU INFO ══ -->
-  <div id="room-info-panel" style="width: 300px; height: 100%; background: white; border-left: 1px solid #e0e6ed; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column;">
+  <aside id="room-info-panel" role="complementary" aria-label="Panneau information du bien" style="width: 300px; height: 100%; background: white; border-left: 1px solid #e0e6ed; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column;">
 
 <!-- QR CODE MODAL -->
-  <div id="qr-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center;">
+  <div id="qr-modal" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center;">
     <div style="background: white; padding: 2rem; border-radius: 12px; text-align: center; max-width: 400px; position: relative;">
-      <button onclick="closeQRModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer;">✕</button>
-      <h3 style="margin: 0 0 1rem; color: #2c3e50;">Partager cette visite</h3>
+      <button onclick="closeQRModal()" aria-label="Fermer le partage QR Code" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer;">✕</button>
+      <h3 id="qr-modal-title" style="margin: 0 0 1rem; color: #2c3e50;">Partager cette visite</h3>
       <div id="qrcode-container" style="margin: 1.5rem 0; background: #f5f7fa; padding: 1rem; border-radius: 8px;"></div>
       <p style="margin: 0 0 1rem; color: #7f8c8d; font-size: 0.9rem;">Scannez pour accéder à la visite interactive</p>
-      <button onclick="printQR()" style="width: 100%; padding: 0.75rem; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;">🖨️ Imprimer</button>
+      <button onclick="printQR()" aria-label="Imprimer le QR Code" style="width: 100%; padding: 0.75rem; background: #4a5bcf; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;"><span aria-hidden="true">🖨️</span> Imprimer</button>
     </div>
   </div>
 
   <!-- DEFAULT VIEW -->
   <div id="default-info">
-    <h2 style="margin: 0 0 1rem; font-size: 1.5rem; color: #667eea;">📍 Infos annonce</h2>
+    <h2 style="margin: 0 0 1rem; font-size: 1.5rem; color: #4a5bcf;">📍 Infos annonce</h2>
 
     <!-- BOUTONS ACTION (QR + Contact) -->
     <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
-      <button onclick="showQRModal()" style="flex: 1; padding: 0.75rem; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.9rem;">📱 QR Code</button>
-      <button onclick="toggleContactForm()" style="flex: 1; padding: 0.75rem; background: #764ba2; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.9rem;">💬 Contacter</button>
+      <button onclick="showQRModal()" aria-label="Afficher le QR Code pour partager la visite" style="flex: 1; padding: 0.75rem; background: #4a5bcf; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.9rem;"><span aria-hidden="true">📱</span> QR Code</button>
+      <button onclick="toggleContactForm()" aria-label="Ouvrir le formulaire de contact" aria-expanded="false" id="btn-contact" style="flex: 1; padding: 0.75rem; background: #764ba2; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.9rem;"><span aria-hidden="true">💬</span> Contacter</button>
     </div>
 
     <div style="background: #f5f7fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
       <p style="margin: 0 0 0.5rem; color: #7f8c8d; font-size: 0.9rem;">PRIX</p>
       <p style="margin: 0; font-size: 1.8rem; font-weight: bold; color: #2c3e50;">265 000 €</p>
+    </div>
+
+    <!-- PRICE COMPARISON -->
+    <div style="background: linear-gradient(135deg, #4a5bcf15 0%, #764ba215 100%); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid #4a5bcf;">
+      <p style="margin: 0 0 0.5rem; color: #7f8c8d; font-size: 0.85rem;">📊 COMPARAISON MARCHÉ</p>
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <div style="flex: 1;">
+          <p style="margin: 0; font-size: 0.9rem; color: #7f8c8d;">Votre prix : <strong>265 000 €</strong></p>
+          <p style="margin: 0.5rem 0 0; font-size: 0.9rem; color: #7f8c8d;">Marché : <strong id="market-price">280 000 €</strong></p>
+        </div>
+        <div id="price-badge" style="text-align: center; padding: 0.75rem 1rem; border-radius: 8px; font-weight: bold; font-size: 0.95rem;"></div>
+      </div>
+      <p style="margin-top: 0.75rem; font-size: 0.85rem; color: #7f8c8d; font-style: italic; margin-bottom: 0;">
+        📈 Prix moyen maisons 170 m² région Romorantin
+      </p>
     </div>
 
     <div style="background: #f5f7fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
@@ -526,9 +615,9 @@
 
   <!-- ROOM DETAILS VIEW (Hidden by default) -->
   <div id="room-details" style="display: none;">
-    <button onclick="showDefaultInfo()" style="background: none; border: none; color: #667eea; cursor: pointer; font-size: 1.2rem; padding: 0 0 1rem 0;">← Retour</button>
+    <button onclick="showDefaultInfo()" aria-label="Retour aux informations du bien" style="background: none; border: none; color: #4a5bcf; cursor: pointer; font-size: 1.2rem; padding: 0 0 1rem 0;">← Retour</button>
     <h3 id="room-name" style="margin: 0 0 0.5rem; color: #2c3e50;"></h3>
-    <span id="room-badge" style="display: inline-block; background: #667eea; color: white; padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.85rem; margin-bottom: 1rem;"></span>
+    <span id="room-badge" style="display: inline-block; background: #4a5bcf; color: white; padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.85rem; margin-bottom: 1rem;"></span>
     <div style="background: #f5f7fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
       <p style="margin: 0 0 0.5rem; color: #7f8c8d; font-size: 0.9rem;">SURFACE</p>
       <p id="room-surface" style="margin: 0; font-size: 1.3rem; font-weight: bold;"></p>
@@ -539,48 +628,50 @@
   </div>
 
   <!-- CALCULATEUR MENSUALITÉ -->
-  <div style="margin-top: auto; padding-top: 1.5rem; border-top: 1px solid #e0e6ed;">
-    <h4 style="margin: 0 0 1rem; color: #2c3e50; font-size: 1rem;">💰 Calculateur financement</h4>
+  <div style="margin-top: auto; padding-top: 1.5rem; border-top: 1px solid #e0e6ed;" aria-label="Calculateur de financement" role="region">
+    <h4 style="margin: 0 0 1rem; color: #2c3e50; font-size: 1rem;"><span aria-hidden="true">💰</span> Calculateur financement</h4>
     <div style="margin-bottom: 0.75rem;">
-      <label style="display: block; font-size: 0.85rem; color: #7f8c8d; margin-bottom: 0.3rem;">Apport (€)</label>
-      <input type="number" id="apport" value="50000" style="width: 100%; padding: 0.5rem; border: 1px solid #e0e6ed; border-radius: 4px;">
+      <label for="apport" style="display: block; font-size: 0.85rem; color: #555; margin-bottom: 0.3rem; font-weight: 500;">Apport (€)</label>
+      <input type="number" id="apport" value="50000" min="0" aria-label="Apport personnel en euros" style="width: 100%; padding: 0.5rem; border: 1px solid #e0e6ed; border-radius: 4px;">
     </div>
     <div style="margin-bottom: 0.75rem;">
-      <label style="display: block; font-size: 0.85rem; color: #7f8c8d; margin-bottom: 0.3rem;">Durée (ans)</label>
-      <input type="number" id="duree" value="20" style="width: 100%; padding: 0.5rem; border: 1px solid #e0e6ed; border-radius: 4px;">
+      <label for="duree" style="display: block; font-size: 0.85rem; color: #555; margin-bottom: 0.3rem; font-weight: 500;">Durée (ans)</label>
+      <input type="number" id="duree" value="20" min="1" max="30" aria-label="Durée du prêt en années" style="width: 100%; padding: 0.5rem; border: 1px solid #e0e6ed; border-radius: 4px;">
     </div>
     <div style="margin-bottom: 1rem;">
-      <label style="display: block; font-size: 0.85rem; color: #7f8c8d; margin-bottom: 0.3rem;">Taux (%)</label>
-      <input type="number" id="taux" value="4.5" step="0.1" style="width: 100%; padding: 0.5rem; border: 1px solid #e0e6ed; border-radius: 4px;">
+      <label for="taux" style="display: block; font-size: 0.85rem; color: #555; margin-bottom: 0.3rem; font-weight: 500;">Taux (%)</label>
+      <input type="number" id="taux" value="4.5" step="0.1" min="0" max="20" aria-label="Taux d'intérêt annuel en pourcentage" style="width: 100%; padding: 0.5rem; border: 1px solid #e0e6ed; border-radius: 4px;">
     </div>
-    <button onclick="calculerMensualite()" style="width: 100%; padding: 0.75rem; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">Calculer</button>
-    <div id="resultat-mensualite" style="margin-top: 1rem; padding: 1rem; background: #f0f4ff; border-radius: 4px; display: none;">
+    <button onclick="calculerMensualite()" aria-label="Calculer la mensualité estimée" style="width: 100%; padding: 0.75rem; background: #4a5bcf; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">Calculer</button>
+    <div id="resultat-mensualite" role="status" aria-live="polite" style="margin-top: 1rem; padding: 1rem; background: #f0f4ff; border-radius: 4px; display: none;">
       <p style="margin: 0 0 0.5rem; color: #7f8c8d; font-size: 0.9rem;">MENSUALITÉ ESTIMÉE</p>
-      <p id="mensualite-value" style="margin: 0; font-size: 1.5rem; font-weight: bold; color: #667eea;"></p>
+      <p id="mensualite-value" style="margin: 0; font-size: 1.5rem; font-weight: bold; color: #4a5bcf;"></p>
     </div>
   </div>
 
   <!-- CONTACT FORM SECTION -->
-  <div id="contact-section" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e0e6ed; display: none;">
-    <h4 style="margin: 0 0 1rem; color: #2c3e50; font-size: 1rem;">💬 Intéressé par cette propriété?</h4>
+  <div id="contact-section" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e0e6ed; display: none;" aria-live="polite">
+    <h4 style="margin: 0 0 1rem; color: #2c3e50; font-size: 1rem;"><span aria-hidden="true">💬</span> Intéressé par cette propriété ?</h4>
 
-    <form id="contact-form" style="display: flex; flex-direction: column; gap: 0.75rem;">
-      <input type="text" placeholder="Votre nom" id="form-name" required style="padding: 0.75rem; border: 1px solid #e0e6ed; border-radius: 6px; font-size: 0.95rem;">
+    <form id="contact-form" style="display: flex; flex-direction: column; gap: 0.75rem;" novalidate aria-label="Formulaire de contact">
+      <label for="form-name" class="form-label">Votre nom <span aria-hidden="true">*</span></label>
+      <input type="text" id="form-name" required aria-required="true" autocomplete="name" placeholder="Jean Dupont" style="padding: 0.75rem; border: 1px solid #e0e6ed; border-radius: 6px; font-size: 0.95rem;">
 
-      <input type="email" placeholder="Votre email" id="form-email" required style="padding: 0.75rem; border: 1px solid #e0e6ed; border-radius: 6px; font-size: 0.95rem;">
+      <label for="form-email" class="form-label">Votre email <span aria-hidden="true">*</span></label>
+      <input type="email" id="form-email" required aria-required="true" autocomplete="email" placeholder="jean@example.com" style="padding: 0.75rem; border: 1px solid #e0e6ed; border-radius: 6px; font-size: 0.95rem;">
 
-      <textarea placeholder="Votre message" id="form-message" rows="3" style="padding: 0.75rem; border: 1px solid #e0e6ed; border-radius: 6px; font-size: 0.95rem; font-family: inherit; resize: none;"></textarea>
+      <label for="form-message" class="form-label">Votre message <span aria-hidden="true">*</span></label>
+      <textarea id="form-message" rows="3" required aria-required="true" placeholder="Bonjour, je suis intéressé par ce bien..." style="padding: 0.75rem; border: 1px solid #e0e6ed; border-radius: 6px; font-size: 0.95rem; font-family: inherit; resize: none;"></textarea>
 
-      <button type="submit" style="padding: 0.75rem; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;">Envoyer mon intérêt</button>
+      <button type="submit" style="padding: 0.75rem; background: #4a5bcf; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;">Envoyer mon intérêt</button>
     </form>
 
     <div id="contact-success" style="display: none; padding: 1rem; background: #d4edda; color: #155724; border-radius: 6px; margin-top: 1rem; text-align: center;">
       <p style="margin: 0; font-weight: 500;">✅ Merci! Nous vous recontacterons bientôt.</p>
     </div>
   </div>
-</div>
-</div>
-</div>
+</aside>
+</main><!-- /main-content -->
 
 <!-- Three.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
@@ -601,7 +692,7 @@ const hotspotCSS = `
   .hotspot {
     width: 24px !important;
     height: 24px !important;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    background: linear-gradient(135deg, #4a5bcf 0%, #764ba2 100%) !important;
     border: 3px solid white !important;
     border-radius: 50% !important;
     cursor: pointer !important;
@@ -725,6 +816,40 @@ function showDefaultInfo() {
   document.getElementById('room-details').style.display = 'none';
 }
 
+const marketPriceByRegion = {
+  romorantin: 280000,
+  niort: 295000,
+  bretagne: 275000,
+};
+
+function getMarketPrice(region) {
+  return marketPriceByRegion[region] || 280000;
+}
+
+function comparePrices() {
+  const yourPrice = 265000;
+  const marketAverage = getMarketPrice('romorantin');
+  const difference = marketAverage - yourPrice;
+  const percentDiff = Math.abs((difference / marketAverage) * 100).toFixed(1);
+
+  document.getElementById('market-price').textContent = marketAverage.toLocaleString('fr-FR') + ' €';
+
+  const badge = document.getElementById('price-badge');
+  if (difference > 0) {
+    badge.style.background = '#d4edda';
+    badge.style.color = '#155724';
+    badge.innerHTML = `🟢 -${percentDiff}%<br><span style="font-size:0.85rem;font-weight:normal;">Bon marché</span>`;
+  } else if (difference < 0) {
+    badge.style.background = '#f8d7da';
+    badge.style.color = '#721c24';
+    badge.innerHTML = `🔴 +${percentDiff}%<br><span style="font-size:0.85rem;font-weight:normal;">Au-dessus marché</span>`;
+  } else {
+    badge.style.background = '#e2e3e5';
+    badge.style.color = '#383d41';
+    badge.innerHTML = `⚪ Marché<br><span style="font-size:0.85rem;font-weight:normal;">Prix équitable</span>`;
+  }
+}
+
 function calculerMensualite() {
   const prixTotal = 265000;
   const apport = parseFloat(document.getElementById('apport').value) || 0;
@@ -778,7 +903,7 @@ function printQR() {
         <style>
           body { text-align: center; padding: 2rem; font-family: Arial; }
           img { width: 300px; height: 300px; margin: 1rem 0; }
-          h2 { color: #667eea; }
+          h2 { color: #4a5bcf; }
           p { color: #666; }
         </style>
       </head>
@@ -799,6 +924,8 @@ function toggleContactForm() {
   const contactSection = document.getElementById('contact-section');
   const isVisible = contactSection.style.display !== 'none';
   contactSection.style.display = isVisible ? 'none' : 'block';
+  const btn = document.getElementById('btn-contact');
+  if (btn) btn.setAttribute('aria-expanded', isVisible ? 'false' : 'true');
 }
 
 function handleContactForm(e) {
@@ -845,6 +972,7 @@ function handleContactForm(e) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  comparePrices();
   const form = document.getElementById('contact-form');
   if (form) {
     form.addEventListener('submit', handleContactForm);
@@ -860,6 +988,12 @@ document.querySelectorAll('.room-zone').forEach(zone => {
     const id = zone.dataset.room;
     if (currentRoom === id) { deactivate2D(); deactivateRoom(); }
     else { activate2D(id); activateRoom(id); }
+  });
+  zone.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      zone.click();
+    }
   });
 });
 
@@ -891,7 +1025,11 @@ window.addEventListener('error', e => {
 });
 
 function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    const isActive = b.dataset.tab === tab;
+    b.classList.toggle('active', isActive);
+    b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+  });
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + tab).classList.add('active');
   deactivate2D(); deactivateRoom();
@@ -1304,7 +1442,9 @@ function stopLoop() { animRunning = false; if (animId) { cancelAnimationFrame(an
 window.toggle3d = function(k) {
   vis[k] = !vis[k];
   G[k].visible = vis[k];
-  document.getElementById('b-' + k).className = 'btn3d ' + (vis[k] ? 'on' : 'off');
+  const btn = document.getElementById('b-' + k);
+  btn.className = 'btn3d ' + (vis[k] ? 'on' : 'off');
+  btn.setAttribute('aria-pressed', vis[k] ? 'true' : 'false');
 };
 let interiorMode = false;
 window.toggleInterieur = function() {
@@ -1313,7 +1453,9 @@ window.toggleInterieur = function() {
   M3d.wallIn.opacity  = interiorMode ? 0.10 : 1.0;  M3d.wallIn.needsUpdate  = true;
   M3d.roof.opacity    = interiorMode ? 0.0  : 0.35; M3d.roof.needsUpdate    = true;
   if (ambientLight) ambientLight.intensity = interiorMode ? 0.35 : 0.7;
-  document.getElementById('b-interieur').className = 'btn3d ' + (interiorMode ? 'active' : 'off');
+  const btn = document.getElementById('b-interieur');
+  btn.className = 'btn3d ' + (interiorMode ? 'active' : 'off');
+  btn.setAttribute('aria-pressed', interiorMode ? 'true' : 'false');
 };
 
 window.applyThemeToScene = function(themeName) {
@@ -1622,6 +1764,74 @@ document.getElementById('add-img-360').addEventListener('click',()=>{
       const lbl=document.getElementById('room-label-360'); if(lbl) lbl.textContent=file.name.replace(/\.[^.]+$/,'');
     }; tmp.src=url;
   }; inp.click();
+});
+
+// ══════════════════════════════════════════════════════
+//  KEYBOARD NAVIGATION — Accessibilité
+// ══════════════════════════════════════════════════════
+
+function closeVisite() { switchTab('2d'); }
+
+document.addEventListener('keydown', function(e) {
+  const activeBtn = document.querySelector('.tab-btn.active');
+  const activeTab = activeBtn ? activeBtn.dataset.tab : null;
+
+  // Navigation 3D au clavier
+  if (activeTab === '3d' && camera) {
+    const step = 1.0;
+    if (e.key === 'ArrowUp')    { camera.position.y += step; e.preventDefault(); }
+    if (e.key === 'ArrowDown')  { camera.position.y -= step; e.preventDefault(); }
+    if (e.key === 'ArrowLeft')  { camera.rotation.y -= 0.1;  e.preventDefault(); }
+    if (e.key === 'ArrowRight') { camera.rotation.y += 0.1;  e.preventDefault(); }
+    if (e.key === '+' || e.key === '=') {
+      camera.zoom = Math.min(camera.zoom + 0.1, 5);
+      camera.updateProjectionMatrix(); e.preventDefault();
+    }
+    if (e.key === '-') {
+      camera.zoom = Math.max(camera.zoom - 0.1, 0.2);
+      camera.updateProjectionMatrix(); e.preventDefault();
+    }
+  }
+
+  // Navigation 360° au clavier
+  if (activeTab === '360' && camera360 && controls360) {
+    if (e.key === 'ArrowLeft')  { controls360.rotateLeft(0.05);  e.preventDefault(); }
+    if (e.key === 'ArrowRight') { controls360.rotateLeft(-0.05); e.preventDefault(); }
+    if (e.key === 'ArrowUp')    { controls360.rotateUp(0.05);    e.preventDefault(); }
+    if (e.key === 'ArrowDown')  { controls360.rotateUp(-0.05);   e.preventDefault(); }
+    if (e.key === '+' || e.key === '=') { targetFov360 = Math.max(30, targetFov360 - 5); e.preventDefault(); }
+    if (e.key === '-') { targetFov360 = Math.min(100, targetFov360 + 5); e.preventDefault(); }
+  }
+
+  // Échap : quitter 3D ou 360° → revenir au plan 2D
+  if (e.key === 'Escape' && (activeTab === '3d' || activeTab === '360')) {
+    closeVisite();
+    e.preventDefault();
+  }
+
+  // Entrée sur hotspot 2D focalisé
+  if (e.key === 'Enter' && document.activeElement && document.activeElement.classList.contains('room-zone')) {
+    document.activeElement.click();
+    e.preventDefault();
+  }
+});
+
+function toggleDarkMode() {
+  var html = document.documentElement;
+  var current = html.getAttribute('data-theme');
+  var isDark = current === 'dark' || (!current && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  var next = isDark ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  var btn = document.getElementById('dark-toggle');
+  if (btn) btn.textContent = next === 'dark' ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function() {
+  var html = document.documentElement;
+  var current = html.getAttribute('data-theme');
+  var isDark = current === 'dark' || (!current && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  var btn = document.getElementById('dark-toggle');
+  if (btn) btn.textContent = isDark ? '☀️' : '🌙';
 });
 </script>
 

@@ -6,7 +6,8 @@
   <title>ImmoViz 3D — Plan interactif pour votre annonce LeBonCoin</title>
   <meta name="description" content="Plan 2D + Vue 3D + Visite 360° pour valoriser votre bien. Livré en 48h à partir de 150€.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
   <style>
     :root {
       --cyan: #00e5ff;
@@ -19,7 +20,14 @@
 
     *{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:-apple-system,'Segoe UI',sans-serif;background:#0d0d0d;color:#f0f0f0;line-height:1.6;overflow-x:hidden}
+    body{font-family:-apple-system,'Segoe UI',sans-serif;background:#0d0d0d;color:#f0f0f0;line-height:1.6;overflow-x:hidden;cursor:none}
+
+    /* ── CURSEUR CUSTOM ── */
+    .custom-cursor-dot, .custom-cursor-ring{position:fixed;pointer-events:none;z-index:9999;will-change:transform}
+    .custom-cursor-dot{width:8px;height:8px;background:var(--cyan);border-radius:50%;box-shadow:0 0 8px rgba(0,229,255,.6);opacity:1;transition:opacity .2s}
+    .custom-cursor-ring{width:32px;height:32px;border:2px solid var(--cyan);border-radius:50%;opacity:.6;transition:opacity .2s}
+    .custom-cursor-dot.hov{opacity:0}
+    .custom-cursor-ring.hov{width:48px;height:48px;background:rgba(0,229,255,.1);opacity:.8}
     a{text-decoration:none}
 
     /* Italic serif — signature Skelvia */
@@ -89,13 +97,15 @@
 
     /* ── ANIMATIONS ── */
     @keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes wordUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
     .hero-inner>*{opacity:0;animation:fadeUp .95s cubic-bezier(.22,1,.36,1) both}
     .hero-inner .badge   {animation-delay:.15s}
-    .hero-inner h1       {animation-delay:.32s}
+    .hero-inner h1       {animation:none;opacity:1}
     .hero-inner .hsub    {animation-delay:.52s}
     .hero-inner .cta-row {animation-delay:.7s}
     .hero-inner .hgallery{animation-delay:.88s}
     .hero-inner .hstats  {animation-delay:1.02s}
+    .h1-word{display:inline-block;opacity:0;animation:wordUp .6s cubic-bezier(.22,1,.36,1) both}
 
     .reveal{opacity:0;transform:translateY(26px);transition:opacity .72s cubic-bezier(.22,1,.36,1),transform .72s cubic-bezier(.22,1,.36,1)}
     .reveal.v{opacity:1;transform:translateY(0)}
@@ -111,10 +121,11 @@
 
     /* ── TYPOGRAPHY ── */
     h1{
+      font-family:'Inter Tight',-apple-system,sans-serif;
       font-size:clamp(2.8rem,6.5vw,5rem);font-weight:800;line-height:1.04;
-      letter-spacing:-2.5px;margin-bottom:1.25rem;text-shadow:0 2px 30px rgba(0,0,0,.6);
+      letter-spacing:-3px;margin-bottom:1.25rem;text-shadow:0 2px 30px rgba(0,0,0,.6);
     }
-    h2{font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;letter-spacing:-1.5px;line-height:1.08;margin-bottom:.75rem}
+    h2{font-family:'Inter Tight',-apple-system,sans-serif;font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;letter-spacing:-2px;line-height:1.08;margin-bottom:.75rem}
     .sub{color:var(--muted);font-size:1rem;max-width:540px;margin-bottom:3rem;line-height:1.75}
 
     /* ── HERO ── */
@@ -352,6 +363,24 @@
     /* ── FOOTER ── */
     footer{text-align:center;padding:2rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem}
 
+    /* ── LOADER ── */
+    #loader {
+      position:fixed; inset:0; background:#0d0d0d;
+      z-index:9998; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:1.5rem;
+      transition:opacity .5s ease, visibility .5s ease;
+    }
+    #loader.done { opacity:0; visibility:hidden; pointer-events:none }
+    .loader-logo { font-family:'Inter Tight',sans-serif; font-weight:800;
+      font-size:1.4rem; color:#fff; letter-spacing:-.5px;
+      display:flex; align-items:center; gap:.5rem }
+    .loader-logo span { color:#00e5ff }
+    .loader-bar-wrap { width:180px; height:2px;
+      background:rgba(255,255,255,.1); border-radius:2px; overflow:hidden }
+    .loader-bar { height:100%; background:#00e5ff; width:0;
+      border-radius:2px; animation:loadbar 1s cubic-bezier(.4,0,.2,1) forwards }
+    @keyframes loadbar { to { width:100% } }
+
     /* ── RESPONSIVE ── */
     @media(max-width:740px){
       .nav-links{display:none}
@@ -365,6 +394,16 @@
   </style>
 </head>
 <body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo"><span class="loader-dot"></span>ImmoViz 3D</div>
+  <div class="loader-bar-track"><div class="loader-bar-fill"></div></div>
+</div>
+
+<!-- CURSEUR CUSTOM -->
+<div class="custom-cursor-dot" id="cur-dot"></div>
+<div class="custom-cursor-ring" id="cur-ring"></div>
 
 <div id="page-bg"></div>
 
@@ -688,6 +727,19 @@
 </footer>
 
 <script>
+  // ── LOADER ──
+  (function(){
+    document.body.style.overflow = 'hidden';
+    var loader = document.getElementById('loader');
+    setTimeout(function(){
+      loader.classList.add('fade-out');
+      setTimeout(function(){
+        loader.style.display = 'none';
+        document.body.style.overflow = '';
+      }, 400);
+    }, 1200);
+  })();
+
   // ── PARALLAX SOURIS (hero uniquement) ──
   (function(){
     const heroEl = document.querySelector('.hero');
@@ -916,6 +968,121 @@
       if (!was) item.classList.add('open');
     });
   });
+
+  // ── ANIMATION MOT PAR MOT — H1 HERO ──
+  (function(){
+    const h1 = document.querySelector('.hero-inner h1');
+    if (!h1) return;
+    const wordSpans = [];
+    const initialDelay = 0.2, wordGap = 0.08;
+    const children = Array.from(h1.childNodes);
+    h1.innerHTML = '';
+
+    children.forEach(node => {
+      if (node.nodeType === 3) {
+        node.textContent.split(/(\s+)/).forEach(part => {
+          if (/\S/.test(part)) {
+            const sp = document.createElement('span');
+            sp.className = 'h1-word'; sp.textContent = part;
+            h1.appendChild(sp); wordSpans.push(sp);
+          } else if (part) {
+            h1.appendChild(document.createTextNode(part));
+          }
+        });
+      } else if (node.nodeType === 1) {
+        if (node.tagName === 'BR') {
+          h1.appendChild(document.createElement('br'));
+        } else {
+          const el = document.createElement(node.tagName);
+          Array.from(node.attributes).forEach(a => el.setAttribute(a.name, a.value));
+          Array.from(node.childNodes).forEach(child => {
+            if (child.nodeType === 3) {
+              child.textContent.split(/(\s+)/).forEach(part => {
+                if (/\S/.test(part)) {
+                  const sp = document.createElement('span');
+                  sp.className = 'h1-word'; sp.textContent = part;
+                  el.appendChild(sp); wordSpans.push(sp);
+                } else if (part) {
+                  el.appendChild(document.createTextNode(part));
+                }
+              });
+            } else {
+              el.appendChild(child.cloneNode(true));
+            }
+          });
+          h1.appendChild(el);
+        }
+      }
+    });
+
+    wordSpans.forEach((sp, i) => {
+      sp.style.animationDelay = (initialDelay + i * wordGap) + 's';
+    });
+
+    // Décaler les autres éléments hero pour démarrer après le dernier mot
+    const lastDelay = initialDelay + (wordSpans.length - 1) * wordGap;
+    const base = lastDelay + 0.15;
+    const heroInner = document.querySelector('.hero-inner');
+    if (!heroInner) return;
+    [
+      ['.badge',    0],
+      ['.hsub',     0.12],
+      ['.cta-row',  0.24],
+      ['.hgallery', 0.36],
+      ['.hstats',   0.48]
+    ].forEach(([sel, gap]) => {
+      const el = heroInner.querySelector(sel);
+      if (el) el.style.animationDelay = (base + gap) + 's';
+    });
+  })();
+
+  // ── CURSEUR CUSTOM ──
+  (function(){
+    const isMobile = window.matchMedia('(hover:none)').matches || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) return;
+
+    const dot = document.querySelector('.custom-cursor-dot');
+    const ring = document.querySelector('.custom-cursor-ring');
+    const clickables = 'a, button, [role="button"], .btn-p, .btn-g, .glass';
+
+    let x = 0, y = 0, dotX = 0, dotY = 0, ringX = 0, ringY = 0;
+    const dotLerp = 0.18, ringLerp = 0.06;
+    let isHovering = false;
+
+    document.addEventListener('mousemove', e => {
+      x = e.clientX;
+      y = e.clientY;
+    });
+
+    function animate() {
+      dotX += (x - dotX) * dotLerp;
+      dotY += (y - dotY) * dotLerp;
+      ringX += (x - ringX) * ringLerp;
+      ringY += (y - ringY) * ringLerp;
+
+      dot.style.transform = `translate(calc(-50% + ${Math.round(dotX)}px), calc(-50% + ${Math.round(dotY)}px))`;
+      ring.style.transform = `translate(calc(-50% + ${Math.round(ringX)}px), calc(-50% + ${Math.round(ringY)}px))`;
+
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    document.addEventListener('mouseover', e => {
+      if (e.target.closest(clickables)) {
+        isHovering = true;
+        dot.classList.add('hov');
+        ring.classList.add('hov');
+      }
+    });
+
+    document.addEventListener('mouseout', e => {
+      if (e.target.closest(clickables)) {
+        isHovering = false;
+        dot.classList.remove('hov');
+        ring.classList.remove('hov');
+      }
+    });
+  })();
 </script>
 </body>
 </html>
