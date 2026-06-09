@@ -753,7 +753,7 @@ const THEME_CONFIG = {
 let currentTheme = 'minimalist';
 
 // Générer les panneaux HTML
-const roomPanels = document.getElementById('room-panels');
+const roomPanels = document.getElementById('room-panels') || document.getElementById('room-info-panel');
 Object.entries(ROOMS).forEach(([id, r]) => {
   const statsRows = [
     `<div class="stat-row"><span class="stat-label">Surface</span><span class="stat-value">${r.surface}</span></div>`,
