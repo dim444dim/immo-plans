@@ -9,7 +9,6 @@
     :root {
       --bg: #0d0d0d;
       --surface: #161616;
-      --surface2: #1e1e1e;
       --border: #2a2a2a;
       --cyan: #00e5ff;
       --cyan-dim: rgba(0,229,255,0.15);
@@ -32,17 +31,22 @@
     /* ── NAV ── */
     nav {
       position: fixed; top: 0; left: 0; right: 0;
-      background: rgba(13,13,13,0.92);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
+      background: transparent;
+      border-bottom: 1px solid transparent;
       display: flex; justify-content: space-between; align-items: center;
       padding: 0 2rem; height: 60px;
       z-index: 100;
+      transition: background 0.4s, border-color 0.4s, backdrop-filter 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(13,13,13,0.92);
+      border-bottom-color: var(--border);
+      backdrop-filter: blur(12px);
     }
     .logo { font-weight: 800; font-size: 1.1rem; color: var(--white); letter-spacing: -0.5px; }
     .logo span { color: var(--cyan); }
     .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a { color: var(--muted); font-size: 0.875rem; transition: color 0.2s; }
+    .nav-links a { color: rgba(255,255,255,0.7); font-size: 0.875rem; transition: color 0.2s; }
     .nav-links a:hover { color: var(--white); }
     .nav-cta {
       background: var(--cyan); color: #000 !important;
@@ -55,10 +59,55 @@
 
     /* ── HERO ── */
     .hero {
-      min-height: 100vh; padding-top: 60px;
+      position: relative;
+      min-height: 100vh;
       display: flex; flex-direction: column; justify-content: center;
+      overflow: hidden;
     }
-    .hero-inner { padding: 4rem 1.5rem 3rem; max-width: 900px; margin: 0 auto; }
+
+    /* Fond hero — remplacez le gradient par url('votre-photo.jpg') center/cover no-repeat */
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(135deg, #0f1923 0%, #1a1208 35%, #0d1520 70%, #050505 100%);
+      animation: kenBurns 10s ease-out forwards;
+      z-index: 0;
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.25) 0%,
+        rgba(0,0,0,0.15) 40%,
+        rgba(13,13,13,0.88) 100%
+      );
+    }
+
+    .hero-inner {
+      position: relative; z-index: 1;
+      padding: 5rem 1.5rem 4rem; max-width: 900px; margin: 0 auto;
+    }
+
+    /* Stagger d'entrée — chaque enfant direct du hero-inner */
+    .hero-inner > * {
+      opacity: 0;
+      animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .hero-inner .badge    { animation-delay: 0.15s; }
+    .hero-inner h1        { animation-delay: 0.35s; }
+    .hero-inner .hero-sub { animation-delay: 0.55s; }
+    .hero-inner .cta-row  { animation-delay: 0.75s; }
+    .hero-inner .hero-stats { animation-delay: 0.95s; }
+
+    @keyframes kenBurns {
+      from { transform: scale(1.07); }
+      to   { transform: scale(1); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
     .badge {
       display: inline-block;
@@ -71,16 +120,19 @@
     }
 
     h1 {
-      font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+      font-size: clamp(2.4rem, 5.5vw, 4rem);
       font-weight: 800; line-height: 1.08;
       letter-spacing: -1.5px; margin-bottom: 1.5rem;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.5);
     }
-    h1 em { color: var(--cyan); font-style: normal; }
+    h1 em { color: var(--cyan); font-style: italic; }
 
     .hero-sub {
-      font-size: 1.1rem; color: var(--muted);
-      max-width: 580px; margin-bottom: 2.5rem; line-height: 1.75;
+      font-size: 1.05rem; color: rgba(255,255,255,0.7);
+      max-width: 560px; margin-bottom: 2.5rem; line-height: 1.75;
+      text-shadow: 0 1px 10px rgba(0,0,0,0.5);
     }
+    .hero-sub strong { color: var(--white); }
 
     .cta-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
 
@@ -93,19 +145,29 @@
     }
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(0,229,255,0.3);
+      box-shadow: 0 8px 28px rgba(0,229,255,0.35);
     }
-
-    .btn-link { color: var(--muted); font-size: 0.875rem; }
-    .btn-link:hover { color: var(--text); }
+    .btn-link { color: rgba(255,255,255,0.6); font-size: 0.875rem; transition: color 0.2s; }
+    .btn-link:hover { color: var(--white); }
 
     .hero-stats {
       display: flex; gap: 2.5rem; flex-wrap: wrap;
       margin-top: 3.5rem; padding-top: 2rem;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid rgba(255,255,255,0.12);
     }
     .stat strong { display: block; font-size: 1.6rem; font-weight: 800; color: var(--white); }
-    .stat span { font-size: 0.8rem; color: var(--muted); }
+    .stat span { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
 
     /* ── SECTION BASE ── */
     section { padding: 5rem 1.5rem; }
@@ -131,17 +193,19 @@
     .demo-card {
       background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      transition: border-color 0.2s, transform 0.2s;
+      border-radius: 12px; overflow: hidden;
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
     }
-    .demo-card:hover { border-color: var(--cyan); transform: translateY(-3px); }
+    .demo-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0,229,255,0.1);
+    }
     .demo-thumb {
       height: 160px;
       background: linear-gradient(135deg, #1a1a2e 0%, #0f2027 100%);
       display: flex; align-items: center; justify-content: center;
-      font-size: 2.5rem;
-      border-bottom: 1px solid var(--border);
+      font-size: 2.5rem; border-bottom: 1px solid var(--border);
     }
     .demo-info { padding: 1.25rem; }
     .demo-info h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
@@ -154,9 +218,8 @@
     }
     .btn-demo {
       display: block; text-align: center;
-      border: 1px solid var(--border);
-      color: var(--muted); padding: 0.6rem;
-      border-radius: 6px; font-size: 0.85rem;
+      border: 1px solid var(--border); color: var(--muted);
+      padding: 0.6rem; border-radius: 6px; font-size: 0.85rem;
       transition: border-color 0.2s, color 0.2s;
     }
     .btn-demo:hover { border-color: var(--cyan); color: var(--cyan); }
@@ -168,11 +231,11 @@
       gap: 1.25rem;
     }
     .problem-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.75rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.75rem;
+      transition: border-color 0.25s;
     }
+    .problem-card:hover { border-color: rgba(0,229,255,0.3); }
     .problem-icon { font-size: 1.6rem; margin-bottom: 1rem; }
     .problem-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; }
     .problem-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
@@ -180,17 +243,16 @@
     /* ── SOLUTION ── */
     .solution { background: var(--surface); }
     .features-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: grid; grid-template-columns: 1fr 1fr;
       gap: 1rem; margin-bottom: 2.5rem;
     }
     .feature {
       display: flex; gap: 0.75rem; align-items: flex-start;
-      padding: 1.25rem;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
+      padding: 1.25rem; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 8px;
+      transition: border-color 0.25s;
     }
+    .feature:hover { border-color: rgba(0,229,255,0.3); }
     .check-box {
       width: 20px; height: 20px; flex-shrink: 0;
       background: var(--cyan-dim);
@@ -201,14 +263,10 @@
     }
     .feature-text h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.2rem; }
     .feature-text p { font-size: 0.8rem; color: var(--muted); }
-
     .solution-note {
-      text-align: center;
-      color: var(--muted); font-size: 0.875rem;
-      padding: 1rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--bg);
+      text-align: center; color: var(--muted); font-size: 0.875rem;
+      padding: 1rem; border: 1px solid var(--border);
+      border-radius: 8px; background: var(--bg);
     }
 
     /* ── COMPARATIF ── */
@@ -220,8 +278,7 @@
     .compare-table th {
       padding: 1rem; text-align: center;
       font-size: 0.8rem; font-weight: 700;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
+      background: var(--surface); border-bottom: 1px solid var(--border);
       color: var(--muted);
     }
     .compare-table th.hl { color: var(--cyan); }
@@ -241,7 +298,9 @@
     .pricing-card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 12px; padding: 2rem; position: relative;
+      transition: transform 0.25s, box-shadow 0.25s;
     }
+    .pricing-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.3); }
     .pricing-card.featured { border-color: var(--cyan); }
     .featured-badge {
       position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
@@ -262,9 +321,9 @@
       background: var(--cyan); color: #000;
       padding: 0.8rem; border-radius: 8px;
       font-weight: 700; font-size: 0.9rem;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, transform 0.15s;
     }
-    .btn-card-primary:hover { opacity: 0.85; }
+    .btn-card-primary:hover { opacity: 0.85; transform: translateY(-1px); }
     .btn-card-outline {
       display: block; text-align: center;
       border: 1px solid var(--border); color: var(--muted);
@@ -275,7 +334,10 @@
 
     /* ── FAQ ── */
     .faq { background: var(--surface); }
-    .faq-list { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .faq-list {
+      display: flex; flex-direction: column;
+      border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+    }
     .faq-item { border-bottom: 1px solid var(--border); }
     .faq-item:last-child { border-bottom: none; }
     .faq-q {
@@ -289,17 +351,17 @@
     .faq-q:hover { background: rgba(255,255,255,0.03); }
     .faq-icon { color: var(--cyan); font-size: 1.2rem; transition: transform 0.3s; flex-shrink: 0; }
     .faq-item.open .faq-icon { transform: rotate(45deg); }
-    .faq-a { display: none; padding: 0 1.5rem 1.25rem; color: var(--muted); font-size: 0.875rem; line-height: 1.75; }
+    .faq-a {
+      display: none; padding: 0 1.5rem 1.25rem;
+      color: var(--muted); font-size: 0.875rem; line-height: 1.75;
+    }
     .faq-item.open .faq-a { display: block; }
 
     /* ── CTA FINAL ── */
     .cta-final {
-      text-align: center;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 4rem 2rem;
-      margin: 0 1.5rem 5rem;
+      text-align: center; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 16px;
+      padding: 4rem 2rem; margin: 0 1.5rem 5rem;
     }
     .cta-final h2 { margin-bottom: 0.75rem; }
     .cta-final p { color: var(--muted); margin-bottom: 2rem; font-size: 0.95rem; }
@@ -307,8 +369,7 @@
 
     /* ── FOOTER ── */
     footer {
-      text-align: center;
-      padding: 2rem;
+      text-align: center; padding: 2rem;
       border-top: 1px solid var(--border);
       color: var(--muted); font-size: 0.8rem;
     }
@@ -326,7 +387,7 @@
 <body>
 
 <!-- NAV -->
-<nav>
+<nav id="navbar">
   <div class="logo">Immo<span>Viz</span> 3D</div>
   <ul class="nav-links">
     <li><a href="#demos">Démos</a></li>
@@ -339,6 +400,7 @@
 
 <!-- HERO -->
 <div class="hero">
+  <div class="hero-bg"></div>
   <div class="hero-inner">
     <div class="badge">Plan 2D · Vue 3D · Visite 360°</div>
 
@@ -347,7 +409,7 @@
     <p class="hero-sub">
       Livrable HTML autonome · Plan 2D interactif + Vue 3D + Panorama 360°
       à coller dans votre annonce LeBonCoin.<br>
-      <strong style="color:var(--text)">Livré en 48h · À partir de 150€ · Sans abonnement</strong>
+      <strong>Livré en 48h · À partir de 150€ · Sans abonnement</strong>
     </p>
 
     <div class="cta-row">
@@ -379,12 +441,12 @@
 <!-- DÉMOS -->
 <section class="demos" id="demos">
   <div class="wrap">
-    <p class="section-tag">Exemples réels</p>
-    <h2>Voyez le résultat avant de commander</h2>
-    <p class="section-sub">Chaque livrable est un fichier HTML autonome — aucun logiciel requis, fonctionne dans n'importe quel navigateur.</p>
+    <p class="section-tag reveal">Exemples réels</p>
+    <h2 class="reveal">Voyez le résultat avant de commander</h2>
+    <p class="section-sub reveal">Chaque livrable est un fichier HTML autonome — aucun logiciel requis, fonctionne dans n'importe quel navigateur.</p>
 
     <div class="demos-grid">
-      <div class="demo-card">
+      <div class="demo-card reveal reveal-delay-1">
         <div class="demo-thumb">🏡</div>
         <div class="demo-info">
           <h3>Maison — Romorantin</h3>
@@ -398,7 +460,7 @@
         </div>
       </div>
 
-      <div class="demo-card">
+      <div class="demo-card reveal reveal-delay-2">
         <div class="demo-thumb">🏠</div>
         <div class="demo-info">
           <h3>Maison — Niort</h3>
@@ -412,7 +474,7 @@
         </div>
       </div>
 
-      <div class="demo-card">
+      <div class="demo-card reveal reveal-delay-3">
         <div class="demo-thumb">🏙️</div>
         <div class="demo-info">
           <h3>Appartement — Tours</h3>
@@ -432,22 +494,22 @@
 <!-- PROBLÈMES -->
 <section id="problemes">
   <div class="wrap">
-    <p class="section-tag">Le problème</p>
-    <h2>Votre annonce se noie dans les résultats</h2>
-    <p class="section-sub">LeBonCoin affiche des milliers de biens. Sans visuel fort, les acheteurs passent à côté du vôtre.</p>
+    <p class="section-tag reveal">Le problème</p>
+    <h2 class="reveal">Votre annonce se noie dans les résultats</h2>
+    <p class="section-sub reveal">LeBonCoin affiche des milliers de biens. Sans visuel fort, les acheteurs passent à côté du vôtre.</p>
 
     <div class="problems-grid">
-      <div class="problem-card">
+      <div class="problem-card reveal reveal-delay-1">
         <div class="problem-icon">📸</div>
         <h3>Photos pas suffisantes</h3>
         <p>Des photos font voir le bien, un plan 3D interactif fait le <em>vivre</em>. Les acheteurs visualisent mieux, se projettent plus vite.</p>
       </div>
-      <div class="problem-card">
+      <div class="problem-card reveal reveal-delay-2">
         <div class="problem-icon">👁️</div>
         <h3>Visites inutiles</h3>
         <p>Des acquéreurs se déplacent sans être vraiment intéressés. Un plan précis filtre les curieux et attire des profils sérieux.</p>
       </div>
-      <div class="problem-card">
+      <div class="problem-card reveal reveal-delay-3">
         <div class="problem-icon">💸</div>
         <h3>Matterport coûte 3 500€/an</h3>
         <p>Les outils pros sont hors de prix pour un particulier. Notre solution livre le même résultat pour 150€, sans abonnement.</p>
@@ -459,43 +521,43 @@
 <!-- SOLUTION -->
 <section class="solution" id="solution">
   <div class="wrap">
-    <p class="section-tag">La solution</p>
-    <h2>Un livrable clé en main<br>en 48 heures</h2>
-    <p class="section-sub">Vous envoyez les infos de votre bien. Je livre un fichier HTML complet, prêt à partager, sans aucun logiciel requis.</p>
+    <p class="section-tag reveal">La solution</p>
+    <h2 class="reveal">Un livrable clé en main<br>en 48 heures</h2>
+    <p class="section-sub reveal">Vous envoyez les infos de votre bien. Je livre un fichier HTML complet, prêt à partager, sans aucun logiciel requis.</p>
 
     <div class="features-grid">
-      <div class="feature">
+      <div class="feature reveal reveal-delay-1">
         <div class="check-box">✓</div>
         <div class="feature-text">
           <h4>Plan 2D interactif</h4>
           <p>Toutes les pièces cliquables avec surfaces et détails</p>
         </div>
       </div>
-      <div class="feature">
+      <div class="feature reveal reveal-delay-2">
         <div class="check-box">✓</div>
         <div class="feature-text">
           <h4>Vue 3D navigable</h4>
           <p>Rotation libre, zoom, exploration du volume</p>
         </div>
       </div>
-      <div class="feature">
+      <div class="feature reveal reveal-delay-1">
         <div class="check-box">✓</div>
         <div class="feature-text">
           <h4>Visite 360° intégrée</h4>
-          <p>Panoramas pièce par pièce inclus si vous fournissez les photos</p>
+          <p>Panoramas pièce par pièce si vous fournissez les photos</p>
         </div>
       </div>
-      <div class="feature">
+      <div class="feature reveal reveal-delay-2">
         <div class="check-box">✓</div>
         <div class="feature-text">
           <h4>Fichier autonome</h4>
-          <p>Un seul fichier .html — zéro dépendance, zéro abonnement</p>
+          <p>Un seul .html — zéro dépendance, zéro abonnement</p>
         </div>
       </div>
     </div>
 
-    <p class="solution-note">
-      📎 Le fichier s'héberge gratuitement sur GitHub Pages ou Netlify · URL publique en 5 minutes · Compatible avec LeBonCoin
+    <p class="solution-note reveal">
+      📎 Hébergement gratuit sur GitHub Pages ou Netlify · URL publique en 5 min · Compatible LeBonCoin
     </p>
   </div>
 </section>
@@ -503,10 +565,10 @@
 <!-- COMPARATIF -->
 <section id="comparatif">
   <div class="wrap">
-    <p class="section-tag">Comparatif</p>
-    <h2>Pourquoi choisir ImmoViz 3D ?</h2>
+    <p class="section-tag reveal">Comparatif</p>
+    <h2 class="reveal">Pourquoi choisir ImmoViz 3D ?</h2>
 
-    <table class="compare-table">
+    <table class="compare-table reveal">
       <thead>
         <tr>
           <th style="text-align:left">Critère</th>
@@ -518,15 +580,11 @@
       <tbody>
         <tr>
           <td>Plan interactif 2D + 3D</td>
-          <td class="ok">✓</td>
-          <td class="ok">✓</td>
-          <td class="no">✗</td>
+          <td class="ok">✓</td><td class="ok">✓</td><td class="no">✗</td>
         </tr>
         <tr>
           <td>Visite 360°</td>
-          <td class="ok">✓</td>
-          <td class="ok">✓</td>
-          <td class="no">✗</td>
+          <td class="ok">✓</td><td class="ok">✓</td><td class="no">✗</td>
         </tr>
         <tr>
           <td>Prix</td>
@@ -536,21 +594,15 @@
         </tr>
         <tr>
           <td>Abonnement requis</td>
-          <td class="ok">Non</td>
-          <td class="no">Oui</td>
-          <td class="ok">Non</td>
+          <td class="ok">Non</td><td class="no">Oui</td><td class="ok">Non</td>
         </tr>
         <tr>
           <td>Délai de livraison</td>
-          <td class="ok">48h</td>
-          <td>Sur RDV</td>
-          <td>Immédiat</td>
+          <td class="ok">48h</td><td>Sur RDV</td><td>Immédiat</td>
         </tr>
         <tr>
           <td>Partage URL public</td>
-          <td class="ok">✓</td>
-          <td class="ok">✓</td>
-          <td class="no">✗</td>
+          <td class="ok">✓</td><td class="ok">✓</td><td class="no">✗</td>
         </tr>
       </tbody>
     </table>
@@ -560,12 +612,12 @@
 <!-- TARIFS -->
 <section id="tarifs">
   <div class="wrap">
-    <p class="section-tag">Tarifs</p>
-    <h2>Simple et sans surprise</h2>
-    <p class="section-sub">Pas d'abonnement. Pas de frais cachés. Vous payez une fois, le fichier est à vous pour toujours.</p>
+    <p class="section-tag reveal">Tarifs</p>
+    <h2 class="reveal">Simple et sans surprise</h2>
+    <p class="section-sub reveal">Pas d'abonnement. Pas de frais cachés. Vous payez une fois, le fichier est à vous pour toujours.</p>
 
     <div class="pricing-grid">
-      <div class="pricing-card">
+      <div class="pricing-card reveal reveal-delay-1">
         <div class="price-label">Offre Essentielle</div>
         <div class="price"><sup>€</sup>150</div>
         <p class="price-desc">Livraison en 48h · Paiement après livraison</p>
@@ -580,7 +632,7 @@
         <a href="mailto:dimitri444art@gmail.com?subject=Commande plan 3D - Offre Essentielle" class="btn-card-outline">Demander un devis</a>
       </div>
 
-      <div class="pricing-card featured">
+      <div class="pricing-card featured reveal reveal-delay-2">
         <div class="featured-badge">Recommandé</div>
         <div class="price-label">Offre Photoréaliste</div>
         <div class="price"><sup>€</sup>450</div>
@@ -602,55 +654,30 @@
 <!-- FAQ -->
 <section class="faq" id="faq">
   <div class="wrap">
-    <p class="section-tag">Questions fréquentes</p>
-    <h2>Tout ce que vous voulez savoir</h2>
-    <p class="section-sub">Une autre question ? Écrivez-moi directement.</p>
+    <p class="section-tag reveal">Questions fréquentes</p>
+    <h2 class="reveal">Tout ce que vous voulez savoir</h2>
+    <p class="section-sub reveal">Une autre question ? Écrivez-moi directement.</p>
 
-    <div class="faq-list">
+    <div class="faq-list reveal">
       <div class="faq-item">
-        <button class="faq-q">
-          De quoi avez-vous besoin pour commencer ?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          Juste l'annonce de votre bien (texte ou URL LeBonCoin) et quelques photos si vous souhaitez intégrer la visite 360°. Tout le reste est géré de mon côté.
-        </div>
+        <button class="faq-q">De quoi avez-vous besoin pour commencer ?<span class="faq-icon">+</span></button>
+        <div class="faq-a">Juste l'annonce de votre bien (texte ou URL LeBonCoin) et quelques photos si vous souhaitez la visite 360°. Tout le reste est géré de mon côté.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">
-          Comment intégrer le plan dans mon annonce LeBonCoin ?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          Je vous fournis une URL publique que vous copiez dans la description de votre annonce. Pour un compte professionnel (avec SIRET), le lien peut être mis dans le champ "visite virtuelle" dédié.
-        </div>
+        <button class="faq-q">Comment intégrer le plan dans mon annonce LeBonCoin ?<span class="faq-icon">+</span></button>
+        <div class="faq-a">Je vous fournis une URL publique à coller dans la description. Pour un compte professionnel (avec SIRET), le lien peut être mis dans le champ "visite virtuelle" dédié.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">
-          Ai-je besoin d'un appareil photo 360° ?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          Non. Un iPhone (ou Android) suffit pour créer les panoramas avec l'application Google Street View — c'est gratuit et le résultat est très bon. Ou vous pouvez me fournir des photos classiques et je gère la visite 360° de façon procédurale.
-        </div>
+        <button class="faq-q">Ai-je besoin d'un appareil photo 360° ?<span class="faq-icon">+</span></button>
+        <div class="faq-a">Non. Un iPhone ou Android suffit avec l'application Google Street View (gratuite). Ou je gère la visite 360° de façon procédurale sans aucune photo de votre part.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">
-          Combien de temps mon URL reste-t-elle active ?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          6 mois minimum (le temps de vendre votre bien). Si votre bien n'est pas vendu au bout de 6 mois, je renouvelle gratuitement l'hébergement.
-        </div>
+        <button class="faq-q">Combien de temps mon URL reste-t-elle active ?<span class="faq-icon">+</span></button>
+        <div class="faq-a">6 mois minimum. Si votre bien n'est pas vendu, je renouvelle gratuitement l'hébergement.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">
-          Quand dois-je payer ?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          Après livraison et validation du résultat. Si le rendu ne vous convient pas, vous ne payez rien.
-        </div>
+        <button class="faq-q">Quand dois-je payer ?<span class="faq-icon">+</span></button>
+        <div class="faq-a">Après livraison et validation du résultat. Si le rendu ne vous convient pas, vous ne payez rien.</div>
       </div>
     </div>
   </div>
@@ -658,7 +685,7 @@
 
 <!-- CTA FINAL -->
 <div class="wrap">
-  <div class="cta-final">
+  <div class="cta-final reveal">
     <h2>Prêt à valoriser votre bien ?</h2>
     <p>Envoyez-moi votre annonce — je vous reviens sous 24h avec un aperçu gratuit.</p>
     <div class="cta-row">
@@ -674,6 +701,24 @@
 </footer>
 
 <script>
+  // Nav — transparent en haut, sombre au scroll
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Scroll reveal via IntersectionObserver
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
   // FAQ accordion
   document.querySelectorAll('.faq-q').forEach(btn => {
     btn.addEventListener('click', () => {
