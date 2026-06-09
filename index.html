@@ -223,19 +223,36 @@
     /* ── VIEWER 3D ── */
     .viewer3d-section{padding:5rem 0;text-align:center}
     .viewer3d-section .wrap{margin-bottom:2.5rem}
-    .canvas-wrap{
-      position:relative;width:100%;max-width:800px;height:520px;
-      margin:0 auto;cursor:grab;
+    .iframe-shell{
+      position:relative;
+      width:calc(100% - 3.5rem);max-width:1000px;
+      height:560px;margin:0 auto;
+      border-radius:20px;overflow:hidden;
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 30px 80px rgba(0,0,0,.55);
     }
-    .canvas-wrap:active{cursor:grabbing}
-    #scene3d{width:100%;height:100%;display:block}
+    .iframe-bar{
+      height:36px;background:rgba(14,11,8,.9);
+      display:flex;align-items:center;padding:0 1rem;gap:.5rem;
+      border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;
+    }
+    .iframe-dot{width:10px;height:10px;border-radius:50%}
+    .iframe-url{
+      flex:1;background:rgba(255,255,255,.07);border-radius:4px;
+      padding:.2rem .75rem;font-size:.72rem;color:rgba(255,255,255,.4);
+      text-align:center;margin:0 .75rem;
+    }
+    #demo-frame{
+      width:100%;height:calc(560px - 36px);
+      border:none;display:block;
+    }
     .scene-hint{
-      position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);
+      position:absolute;bottom:1.25rem;left:50%;transform:translateX(-50%);
       display:inline-flex;align-items:center;gap:.5rem;
-      background:rgba(10,8,6,.7);backdrop-filter:blur(8px);
+      background:rgba(10,8,6,.75);backdrop-filter:blur(10px);
       border:1px solid var(--border);border-radius:20px;
-      color:var(--muted);font-size:.8rem;padding:.4rem 1rem;
-      pointer-events:none;transition:opacity .4s;
+      color:var(--muted);font-size:.78rem;padding:.38rem 1rem;
+      pointer-events:none;transition:opacity .6s;z-index:10;
     }
     .scene-hint.hidden{opacity:0}
 
@@ -451,10 +468,16 @@
   <div class="wrap">
     <p class="stag reveal" style="justify-content:center">Explorez votre bien en 3D</p>
     <h2 class="reveal">Chaque pièce,<br><em>visualisée en 3D.</em></h2>
-    <p class="sub reveal" style="margin:0 auto 0;max-width:480px">Glissez pour tourner autour du plan — exactement ce que reçoit votre acheteur.</p>
+    <p class="sub reveal" style="margin:0 auto 2rem;max-width:480px">Glissez pour tourner autour du plan — exactement ce que reçoit votre acheteur.</p>
   </div>
-  <div class="canvas-wrap reveal">
-    <canvas id="scene3d"></canvas>
+  <div class="iframe-shell reveal">
+    <div class="iframe-bar">
+      <span class="iframe-dot" style="background:#ff5f57"></span>
+      <span class="iframe-dot" style="background:#febc2e"></span>
+      <span class="iframe-dot" style="background:#28c840"></span>
+      <span class="iframe-url">dim444dim.github.io/immo-plans/plan-interactif-romorantin.html</span>
+    </div>
+    <iframe id="demo-frame" src="plan-interactif-romorantin.html" title="Plan 3D interactif — Romorantin" loading="lazy"></iframe>
     <div class="scene-hint" id="scene-hint">⟳ &nbsp;Glissez pour tourner autour du plan</div>
   </div>
 </section>
@@ -700,12 +723,31 @@
     }
   })();
 
-  // ── VIEWER 3D PLAN DE MAISON ──
+  // ── VIEWER 3D — iframe switch to tab 3D ──
   (function(){
+    const frame = document.getElementById('demo-frame');
+    const hint  = document.getElementById('scene-hint');
+    if (!frame) return;
+
+    frame.addEventListener('load', () => {
+      try {
+        // Passe directement en Vue 3D
+        frame.contentWindow.switchTab('3d');
+        // Cache le hint après 3s
+        setTimeout(() => hint && hint.classList.add('hidden'), 3000);
+      } catch(e) {}
+    });
+
+    // Cache le hint au premier clic dans l'iframe
+    frame.addEventListener('mouseenter', () => {
+      setTimeout(() => hint && hint.classList.add('hidden'), 1500);
+    });
+
+    // Suppression du code Three.js inutile — fin de bloc
+    return;
+    // (ancien code Three.js supprimé)
     const canvas = document.getElementById('scene3d');
     if (!canvas) return;
-
-    // Three.js chargé en lazy
     const s = document.createElement('script');
     s.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js';
     s.onload = initScene;
