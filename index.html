@@ -1,368 +1,689 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visite 3D Immobilière — Plans Interactifs</title>
-    <meta name="description" content="Transformez vos annonces immobilières avec des visites 3D interactives. Plan 2D, vue 3D, panorama 360° et calculateur de financement.">
-    <meta property="og:title" content="Visite 3D Immobilière — Démos en direct">
-    <meta property="og:description" content="Plan 2D • Vue 3D • Panorama 360° • Calculateur financement">
-    <meta property="og:url" content="https://immo-plans-ept40hxxf-dim-s-projects4.vercel.app">
-    <meta property="og:type" content="website">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #2c3e50; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ImmoViz 3D — Plan interactif pour votre annonce LeBonCoin</title>
+  <meta name="description" content="Plan 2D + Vue 3D + Visite 360° pour valoriser votre bien. Livré en 48h à partir de 150€.">
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --surface2: #1e1e1e;
+      --border: #2a2a2a;
+      --cyan: #00e5ff;
+      --cyan-dim: rgba(0,229,255,0.15);
+      --text: #f0f0f0;
+      --muted: #888;
+      --white: #ffffff;
+    }
 
-        .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 4rem 2rem;
-            text-align: center;
-            min-height: 500px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
-        .hero p { font-size: 1.2rem; opacity: 0.9; margin-bottom: 1rem; }
-        .hero .subtitle { font-size: 1rem; opacity: 0.8; margin-bottom: 2rem; }
+    body {
+      font-family: -apple-system, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
 
-        .cta-button {
-            display: inline-block;
-            background: white;
-            color: #667eea;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-        }
+    a { text-decoration: none; }
 
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        }
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      background: rgba(13,13,13,0.92);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 2rem; height: 60px;
+      z-index: 100;
+    }
+    .logo { font-weight: 800; font-size: 1.1rem; color: var(--white); letter-spacing: -0.5px; }
+    .logo span { color: var(--cyan); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--muted); font-size: 0.875rem; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta {
+      background: var(--cyan); color: #000 !important;
+      padding: 0.45rem 1.1rem; border-radius: 6px;
+      font-weight: 700; font-size: 0.8rem;
+    }
 
-        .demos {
-            max-width: 1200px;
-            margin: 4rem auto;
-            padding: 0 2rem;
-        }
+    /* ── WRAPPER ── */
+    .wrap { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
 
-        .demos h2 {
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 3rem;
-            color: #667eea;
-        }
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh; padding-top: 60px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .hero-inner { padding: 4rem 1.5rem 3rem; max-width: 900px; margin: 0 auto; }
 
-        .demo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
+    .badge {
+      display: inline-block;
+      background: var(--cyan-dim);
+      border: 1px solid rgba(0,229,255,0.35);
+      color: var(--cyan);
+      padding: 0.3rem 0.9rem;
+      border-radius: 20px; font-size: 0.75rem;
+      letter-spacing: 0.5px; margin-bottom: 1.75rem;
+    }
 
-        .demo-card {
-            background: white;
-            border: 1px solid #e0e6ed;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-        }
+    h1 {
+      font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+      font-weight: 800; line-height: 1.08;
+      letter-spacing: -1.5px; margin-bottom: 1.5rem;
+    }
+    h1 em { color: var(--cyan); font-style: normal; }
 
-        .demo-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
+    .hero-sub {
+      font-size: 1.1rem; color: var(--muted);
+      max-width: 580px; margin-bottom: 2.5rem; line-height: 1.75;
+    }
 
-        .demo-image {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 3rem;
-        }
+    .cta-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
 
-        .demo-content {
-            padding: 1.5rem;
-        }
+    .btn-primary {
+      background: var(--cyan); color: #000;
+      padding: 0.9rem 2rem; border-radius: 8px;
+      font-weight: 700; font-size: 1rem;
+      transition: transform 0.15s, box-shadow 0.15s;
+      display: inline-block;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(0,229,255,0.3);
+    }
 
-        .demo-content h3 {
-            margin-bottom: 0.5rem;
-            color: #2c3e50;
-        }
+    .btn-link { color: var(--muted); font-size: 0.875rem; }
+    .btn-link:hover { color: var(--text); }
 
-        .demo-content p {
-            color: #7f8c8d;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-        }
+    .hero-stats {
+      display: flex; gap: 2.5rem; flex-wrap: wrap;
+      margin-top: 3.5rem; padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .stat strong { display: block; font-size: 1.6rem; font-weight: 800; color: var(--white); }
+    .stat span { font-size: 0.8rem; color: var(--muted); }
 
-        .demo-link {
-            display: inline-block;
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-        }
+    /* ── SECTION BASE ── */
+    section { padding: 5rem 1.5rem; }
+    .section-tag {
+      font-size: 0.7rem; font-weight: 700;
+      color: var(--cyan); text-transform: uppercase;
+      letter-spacing: 2px; margin-bottom: 0.75rem;
+    }
+    h2 {
+      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+      font-weight: 800; letter-spacing: -1px;
+      line-height: 1.15; margin-bottom: 0.75rem;
+    }
+    .section-sub { color: var(--muted); font-size: 1rem; max-width: 540px; margin-bottom: 3rem; }
 
-        .demo-link:hover {
-            text-decoration: underline;
-        }
+    /* ── DÉMOS ── */
+    .demos { background: var(--surface); }
+    .demos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+    .demo-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .demo-card:hover { border-color: var(--cyan); transform: translateY(-3px); }
+    .demo-thumb {
+      height: 160px;
+      background: linear-gradient(135deg, #1a1a2e 0%, #0f2027 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .demo-info { padding: 1.25rem; }
+    .demo-info h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .demo-info p { font-size: 0.8rem; color: var(--muted); margin-bottom: 1rem; }
+    .demo-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .tag {
+      font-size: 0.7rem; padding: 0.2rem 0.5rem;
+      border-radius: 4px; background: var(--cyan-dim);
+      color: var(--cyan); border: 1px solid rgba(0,229,255,0.25);
+    }
+    .btn-demo {
+      display: block; text-align: center;
+      border: 1px solid var(--border);
+      color: var(--muted); padding: 0.6rem;
+      border-radius: 6px; font-size: 0.85rem;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-demo:hover { border-color: var(--cyan); color: var(--cyan); }
 
-        .features {
-            background: #f5f7fa;
-            padding: 4rem 2rem;
-            margin: 4rem 0;
-        }
+    /* ── PROBLÈMES ── */
+    .problems-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+    }
+    .problem-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.75rem;
+    }
+    .problem-icon { font-size: 1.6rem; margin-bottom: 1rem; }
+    .problem-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .problem-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
 
-        .features-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
+    /* ── SOLUTION ── */
+    .solution { background: var(--surface); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem; margin-bottom: 2.5rem;
+    }
+    .feature {
+      display: flex; gap: 0.75rem; align-items: flex-start;
+      padding: 1.25rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .check-box {
+      width: 20px; height: 20px; flex-shrink: 0;
+      background: var(--cyan-dim);
+      border: 1px solid rgba(0,229,255,0.5);
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--cyan); font-size: 0.7rem; font-weight: 700;
+    }
+    .feature-text h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.2rem; }
+    .feature-text p { font-size: 0.8rem; color: var(--muted); }
 
-        .feature-item {
-            text-align: center;
-        }
+    .solution-note {
+      text-align: center;
+      color: var(--muted); font-size: 0.875rem;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+    }
 
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
+    /* ── COMPARATIF ── */
+    .compare-table {
+      width: 100%; border-collapse: collapse;
+      margin-top: 2rem; border-radius: 10px; overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .compare-table th {
+      padding: 1rem; text-align: center;
+      font-size: 0.8rem; font-weight: 700;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .compare-table th.hl { color: var(--cyan); }
+    .compare-table td {
+      padding: 0.85rem 1rem; text-align: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem; color: var(--muted);
+      background: var(--bg);
+    }
+    .compare-table td:first-child { text-align: left; color: var(--white); }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .ok { color: var(--cyan); }
+    .no { color: #ff4d4d; }
 
-        .feature-item h3 {
-            color: #667eea;
-            margin-bottom: 0.5rem;
-        }
+    /* ── TARIFS ── */
+    .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .pricing-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 2rem; position: relative;
+    }
+    .pricing-card.featured { border-color: var(--cyan); }
+    .featured-badge {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--cyan); color: #000;
+      font-size: 0.65rem; font-weight: 700;
+      padding: 0.2rem 0.8rem; border-radius: 20px;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .price-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem; }
+    .price { font-size: 2.8rem; font-weight: 800; line-height: 1; color: var(--white); }
+    .price sup { font-size: 1.2rem; vertical-align: super; }
+    .price-desc { font-size: 0.8rem; color: var(--muted); margin: 0.5rem 0 1.5rem; }
+    .price-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.75rem; }
+    .price-features li { font-size: 0.875rem; color: var(--muted); display: flex; align-items: flex-start; gap: 0.5rem; }
+    .price-features li::before { content: "✓"; color: var(--cyan); font-weight: 700; flex-shrink: 0; }
+    .btn-card-primary {
+      display: block; text-align: center;
+      background: var(--cyan); color: #000;
+      padding: 0.8rem; border-radius: 8px;
+      font-weight: 700; font-size: 0.9rem;
+      transition: opacity 0.2s;
+    }
+    .btn-card-primary:hover { opacity: 0.85; }
+    .btn-card-outline {
+      display: block; text-align: center;
+      border: 1px solid var(--border); color: var(--muted);
+      padding: 0.8rem; border-radius: 8px;
+      font-size: 0.9rem; transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-card-outline:hover { border-color: var(--cyan); color: var(--cyan); }
 
-        .feature-item p {
-            color: #7f8c8d;
-        }
+    /* ── FAQ ── */
+    .faq { background: var(--surface); }
+    .faq-list { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      width: 100%; background: none; border: none;
+      padding: 1.25rem 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer; color: var(--white);
+      font-size: 0.9rem; font-weight: 500; text-align: left;
+      transition: background 0.2s;
+    }
+    .faq-q:hover { background: rgba(255,255,255,0.03); }
+    .faq-icon { color: var(--cyan); font-size: 1.2rem; transition: transform 0.3s; flex-shrink: 0; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-a { display: none; padding: 0 1.5rem 1.25rem; color: var(--muted); font-size: 0.875rem; line-height: 1.75; }
+    .faq-item.open .faq-a { display: block; }
 
-        .pricing {
-            max-width: 1200px;
-            margin: 4rem auto;
-            padding: 0 2rem;
-        }
+    /* ── CTA FINAL ── */
+    .cta-final {
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 4rem 2rem;
+      margin: 0 1.5rem 5rem;
+    }
+    .cta-final h2 { margin-bottom: 0.75rem; }
+    .cta-final p { color: var(--muted); margin-bottom: 2rem; font-size: 0.95rem; }
+    .cta-final .cta-row { justify-content: center; }
 
-        .pricing h2 {
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 3rem;
-            color: #667eea;
-        }
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted); font-size: 0.8rem;
+    }
 
-        .price-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .price-card {
-            background: white;
-            border: 2px solid #e0e6ed;
-            border-radius: 12px;
-            padding: 2rem;
-            transition: all 0.3s;
-        }
-
-        .price-card:hover {
-            border-color: #667eea;
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
-        }
-
-        .price-card h3 {
-            color: #2c3e50;
-            margin-bottom: 1rem;
-        }
-
-        .price {
-            font-size: 2rem;
-            color: #667eea;
-            font-weight: bold;
-            margin: 1rem 0;
-        }
-
-        .price-card ul {
-            list-style: none;
-            margin: 1.5rem 0;
-            text-align: left;
-        }
-
-        .price-card li {
-            padding: 0.5rem 0;
-            color: #7f8c8d;
-        }
-
-        .price-card li:before {
-            content: "✓ ";
-            color: #27ae60;
-            font-weight: bold;
-            margin-right: 0.5rem;
-        }
-
-        .pricing-note {
-            text-align: center;
-            color: #7f8c8d;
-            margin-top: 2rem;
-        }
-
-        footer {
-            background: #2c3e50;
-            color: white;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 4rem;
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 1.8rem; }
-            .hero p { font-size: 1rem; }
-            .demos h2, .pricing h2 { font-size: 1.5rem; }
-        }
-    </style>
-
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WBK9XWSGCT"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-WBK9XWSGCT');
-    </script>
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .features-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 1.5rem; }
+      .cta-final { margin: 0 0 4rem; border-radius: 0; border-left: none; border-right: none; }
+    }
+  </style>
 </head>
 <body>
-    <!-- HERO SECTION -->
-    <section class="hero">
-        <h1>🏠 Visite 3D Immobilière</h1>
-        <p>Transformez vos annonces avec des visites interactives</p>
-        <p class="subtitle">Plan 2D • Vue 3D • Panorama 360° • Calculateur financement</p>
-        <a href="#demos" class="cta-button">Voir les démos →</a>
-    </section>
 
-    <!-- FEATURES -->
-    <section class="features">
-        <div class="features-grid">
-            <div class="feature-item">
-                <div class="feature-icon">📐</div>
-                <h3>Plan 2D Interactif</h3>
-                <p>Visualisez la maison en plan, cliquez sur chaque pièce pour les détails</p>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">🎨</div>
-                <h3>Vue 3D Fluide</h3>
-                <p>Naviguez en 3D isométrique, rotate et zoom sur les pièces</p>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">360°</div>
-                <h3>Panorama 360°</h3>
-                <p>Visite immersive dans chaque pièce, comme si vous y étiez</p>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">💰</div>
-                <h3>Calculateur Financement</h3>
-                <p>Vos clients calculent leur mensualité en temps réel</p>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">📱</div>
-                <h3>Mobile-Friendly</h3>
-                <p>Fonctionne parfaitement sur téléphone et tablette</p>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">📧</div>
-                <h3>Lead Capture</h3>
-                <p>Formulaire de contact intégré, prospects vous contactent directement</p>
-            </div>
+<!-- NAV -->
+<nav>
+  <div class="logo">Immo<span>Viz</span> 3D</div>
+  <ul class="nav-links">
+    <li><a href="#demos">Démos</a></li>
+    <li><a href="#solution">Solution</a></li>
+    <li><a href="#tarifs">Tarifs</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="mailto:dimitri444art@gmail.com" class="nav-cta">Devis gratuit →</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="badge">Plan 2D · Vue 3D · Visite 360°</div>
+
+    <h1>Votre bien se vend<br><em>40% plus vite</em><br>avec un plan 3D interactif</h1>
+
+    <p class="hero-sub">
+      Livrable HTML autonome · Plan 2D interactif + Vue 3D + Panorama 360°
+      à coller dans votre annonce LeBonCoin.<br>
+      <strong style="color:var(--text)">Livré en 48h · À partir de 150€ · Sans abonnement</strong>
+    </p>
+
+    <div class="cta-row">
+      <a href="mailto:dimitri444art@gmail.com?subject=Devis plan 3D immobilier" class="btn-primary">Demander un devis gratuit →</a>
+      <a href="#demos" class="btn-link">Voir les exemples ↓</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <strong>+40%</strong>
+        <span>de clics vs annonce simple</span>
+      </div>
+      <div class="stat">
+        <strong>48h</strong>
+        <span>délai de livraison</span>
+      </div>
+      <div class="stat">
+        <strong>150€</strong>
+        <span>offre de départ</span>
+      </div>
+      <div class="stat">
+        <strong>0€</strong>
+        <span>d'abonnement (vs 3500€/an Matterport)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DÉMOS -->
+<section class="demos" id="demos">
+  <div class="wrap">
+    <p class="section-tag">Exemples réels</p>
+    <h2>Voyez le résultat avant de commander</h2>
+    <p class="section-sub">Chaque livrable est un fichier HTML autonome — aucun logiciel requis, fonctionne dans n'importe quel navigateur.</p>
+
+    <div class="demos-grid">
+      <div class="demo-card">
+        <div class="demo-thumb">🏡</div>
+        <div class="demo-info">
+          <h3>Maison — Romorantin</h3>
+          <p>170 m² · 12 pièces · 265 000 €</p>
+          <div class="demo-tags">
+            <span class="tag">Plan 2D</span>
+            <span class="tag">Vue 3D</span>
+            <span class="tag">360°</span>
+          </div>
+          <a href="plan-interactif-romorantin.html" class="btn-demo" target="_blank">Voir la démo →</a>
         </div>
-    </section>
+      </div>
 
-    <!-- DÉMOS -->
-    <section class="demos" id="demos">
-        <h2>📍 Démos en direct</h2>
-        <div class="demo-grid">
-            <div class="demo-card">
-                <div class="demo-image">🏘️</div>
-                <div class="demo-content">
-                    <h3>Romorantin</h3>
-                    <p>Maison 170m² • 265 000€</p>
-                    <a href="plan-interactif-romorantin.html" class="demo-link">Voir la visite →</a>
-                </div>
-            </div>
-            <div class="demo-card">
-                <div class="demo-image">🏠</div>
-                <div class="demo-content">
-                    <h3>Niort</h3>
-                    <p>Maison 177m² • 352 000€</p>
-                    <a href="plan-interactif-niort.html" class="demo-link">Voir la visite →</a>
-                </div>
-            </div>
-            <div class="demo-card">
-                <div class="demo-image">🔑</div>
-                <div class="demo-content">
-                    <h3>Votre maison</h3>
-                    <p>Demandez une démo personnalisée</p>
-                    <a href="plan-interactif-romorantin.html" class="demo-link">Voir plus →</a>
-                </div>
-            </div>
+      <div class="demo-card">
+        <div class="demo-thumb">🏠</div>
+        <div class="demo-info">
+          <h3>Maison — Niort</h3>
+          <p>130 m² · 9 pièces</p>
+          <div class="demo-tags">
+            <span class="tag">Plan 2D</span>
+            <span class="tag">Vue 3D</span>
+            <span class="tag">360°</span>
+          </div>
+          <a href="plan-interactif-niort.html" class="btn-demo" target="_blank">Voir la démo →</a>
         </div>
-    </section>
+      </div>
 
-    <!-- PRICING -->
-    <section class="pricing">
-        <h2>💳 Tarification simple</h2>
-        <div class="price-cards">
-            <div class="price-card">
-                <h3>Basic</h3>
-                <div class="price">150€</div>
-                <ul>
-                    <li>Plan 2D interactif</li>
-                    <li>Vue 3D fluide</li>
-                    <li>Calculateur financement</li>
-                    <li>QR code shareable</li>
-                    <li>Formulaire contact</li>
-                </ul>
-            </div>
-            <div class="price-card">
-                <h3>Pro</h3>
-                <div class="price">250€</div>
-                <ul>
-                    <li>Tout de Basic +</li>
-                    <li>Panorama 360° réel</li>
-                    <li>Photos immobilière</li>
-                    <li>Branding custom</li>
-                    <li>Analytics intégré</li>
-                </ul>
-            </div>
-            <div class="price-card">
-                <h3>Premium</h3>
-                <div class="price">500€</div>
-                <ul>
-                    <li>Tout de Pro +</li>
-                    <li>Rendu Blender 3D</li>
-                    <li>Drone photo</li>
-                    <li>CRM integration</li>
-                    <li>Support prioritaire</li>
-                </ul>
-            </div>
+      <div class="demo-card">
+        <div class="demo-thumb">🏙️</div>
+        <div class="demo-info">
+          <h3>Appartement — Tours</h3>
+          <p>Plan interactif complet</p>
+          <div class="demo-tags">
+            <span class="tag">Plan 2D</span>
+            <span class="tag">Vue 3D</span>
+            <span class="tag">360°</span>
+          </div>
+          <a href="plan-interactif-tours.html" class="btn-demo" target="_blank">Voir la démo →</a>
         </div>
-        <p class="pricing-note">⚡ Livraison en 24-48h • Pas de frais cachés</p>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- FOOTER -->
-    <footer>
-        <p>&copy; 2024 Visite 3D Immobilière | Tous droits réservés</p>
-        <p style="font-size: 0.9rem; margin-top: 1rem; opacity: 0.8;">Créé pour les agents immobiliers qui veulent se démarquer</p>
-    </footer>
+<!-- PROBLÈMES -->
+<section id="problemes">
+  <div class="wrap">
+    <p class="section-tag">Le problème</p>
+    <h2>Votre annonce se noie dans les résultats</h2>
+    <p class="section-sub">LeBonCoin affiche des milliers de biens. Sans visuel fort, les acheteurs passent à côté du vôtre.</p>
+
+    <div class="problems-grid">
+      <div class="problem-card">
+        <div class="problem-icon">📸</div>
+        <h3>Photos pas suffisantes</h3>
+        <p>Des photos font voir le bien, un plan 3D interactif fait le <em>vivre</em>. Les acheteurs visualisent mieux, se projettent plus vite.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">👁️</div>
+        <h3>Visites inutiles</h3>
+        <p>Des acquéreurs se déplacent sans être vraiment intéressés. Un plan précis filtre les curieux et attire des profils sérieux.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">💸</div>
+        <h3>Matterport coûte 3 500€/an</h3>
+        <p>Les outils pros sont hors de prix pour un particulier. Notre solution livre le même résultat pour 150€, sans abonnement.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="solution" id="solution">
+  <div class="wrap">
+    <p class="section-tag">La solution</p>
+    <h2>Un livrable clé en main<br>en 48 heures</h2>
+    <p class="section-sub">Vous envoyez les infos de votre bien. Je livre un fichier HTML complet, prêt à partager, sans aucun logiciel requis.</p>
+
+    <div class="features-grid">
+      <div class="feature">
+        <div class="check-box">✓</div>
+        <div class="feature-text">
+          <h4>Plan 2D interactif</h4>
+          <p>Toutes les pièces cliquables avec surfaces et détails</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="check-box">✓</div>
+        <div class="feature-text">
+          <h4>Vue 3D navigable</h4>
+          <p>Rotation libre, zoom, exploration du volume</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="check-box">✓</div>
+        <div class="feature-text">
+          <h4>Visite 360° intégrée</h4>
+          <p>Panoramas pièce par pièce inclus si vous fournissez les photos</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="check-box">✓</div>
+        <div class="feature-text">
+          <h4>Fichier autonome</h4>
+          <p>Un seul fichier .html — zéro dépendance, zéro abonnement</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="solution-note">
+      📎 Le fichier s'héberge gratuitement sur GitHub Pages ou Netlify · URL publique en 5 minutes · Compatible avec LeBonCoin
+    </p>
+  </div>
+</section>
+
+<!-- COMPARATIF -->
+<section id="comparatif">
+  <div class="wrap">
+    <p class="section-tag">Comparatif</p>
+    <h2>Pourquoi choisir ImmoViz 3D ?</h2>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th style="text-align:left">Critère</th>
+          <th class="hl">ImmoViz 3D</th>
+          <th>Matterport</th>
+          <th>Simple photos</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Plan interactif 2D + 3D</td>
+          <td class="ok">✓</td>
+          <td class="ok">✓</td>
+          <td class="no">✗</td>
+        </tr>
+        <tr>
+          <td>Visite 360°</td>
+          <td class="ok">✓</td>
+          <td class="ok">✓</td>
+          <td class="no">✗</td>
+        </tr>
+        <tr>
+          <td>Prix</td>
+          <td class="ok" style="color:var(--cyan);font-weight:700">150€</td>
+          <td class="no">3 500€/an</td>
+          <td class="ok">Gratuit</td>
+        </tr>
+        <tr>
+          <td>Abonnement requis</td>
+          <td class="ok">Non</td>
+          <td class="no">Oui</td>
+          <td class="ok">Non</td>
+        </tr>
+        <tr>
+          <td>Délai de livraison</td>
+          <td class="ok">48h</td>
+          <td>Sur RDV</td>
+          <td>Immédiat</td>
+        </tr>
+        <tr>
+          <td>Partage URL public</td>
+          <td class="ok">✓</td>
+          <td class="ok">✓</td>
+          <td class="no">✗</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- TARIFS -->
+<section id="tarifs">
+  <div class="wrap">
+    <p class="section-tag">Tarifs</p>
+    <h2>Simple et sans surprise</h2>
+    <p class="section-sub">Pas d'abonnement. Pas de frais cachés. Vous payez une fois, le fichier est à vous pour toujours.</p>
+
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="price-label">Offre Essentielle</div>
+        <div class="price"><sup>€</sup>150</div>
+        <p class="price-desc">Livraison en 48h · Paiement après livraison</p>
+        <ul class="price-features">
+          <li>Plan 2D interactif (toutes pièces)</li>
+          <li>Vue 3D navigable (rotation + zoom)</li>
+          <li>Visite 360° (si photos fournies)</li>
+          <li>Fichier HTML autonome</li>
+          <li>URL hébergée 6 mois (GitHub Pages)</li>
+          <li>1 retouche incluse</li>
+        </ul>
+        <a href="mailto:dimitri444art@gmail.com?subject=Commande plan 3D - Offre Essentielle" class="btn-card-outline">Demander un devis</a>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="featured-badge">Recommandé</div>
+        <div class="price-label">Offre Photoréaliste</div>
+        <div class="price"><sup>€</sup>450</div>
+        <p class="price-desc">Rendu Blender · Délai 5-7 jours</p>
+        <ul class="price-features">
+          <li>Tout l'Offre Essentielle</li>
+          <li>Modélisation Blender photoréaliste</li>
+          <li>Textures et matériaux réalistes</li>
+          <li>Rendu haute définition (4K)</li>
+          <li>Vidéo de présentation 30s incluse</li>
+          <li>3 retouches incluses</li>
+        </ul>
+        <a href="mailto:dimitri444art@gmail.com?subject=Commande plan 3D - Offre Photoréaliste" class="btn-card-primary">Demander un devis →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="wrap">
+    <p class="section-tag">Questions fréquentes</p>
+    <h2>Tout ce que vous voulez savoir</h2>
+    <p class="section-sub">Une autre question ? Écrivez-moi directement.</p>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">
+          De quoi avez-vous besoin pour commencer ?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          Juste l'annonce de votre bien (texte ou URL LeBonCoin) et quelques photos si vous souhaitez intégrer la visite 360°. Tout le reste est géré de mon côté.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">
+          Comment intégrer le plan dans mon annonce LeBonCoin ?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          Je vous fournis une URL publique que vous copiez dans la description de votre annonce. Pour un compte professionnel (avec SIRET), le lien peut être mis dans le champ "visite virtuelle" dédié.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">
+          Ai-je besoin d'un appareil photo 360° ?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          Non. Un iPhone (ou Android) suffit pour créer les panoramas avec l'application Google Street View — c'est gratuit et le résultat est très bon. Ou vous pouvez me fournir des photos classiques et je gère la visite 360° de façon procédurale.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">
+          Combien de temps mon URL reste-t-elle active ?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          6 mois minimum (le temps de vendre votre bien). Si votre bien n'est pas vendu au bout de 6 mois, je renouvelle gratuitement l'hébergement.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">
+          Quand dois-je payer ?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          Après livraison et validation du résultat. Si le rendu ne vous convient pas, vous ne payez rien.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<div class="wrap">
+  <div class="cta-final">
+    <h2>Prêt à valoriser votre bien ?</h2>
+    <p>Envoyez-moi votre annonce — je vous reviens sous 24h avec un aperçu gratuit.</p>
+    <div class="cta-row">
+      <a href="mailto:dimitri444art@gmail.com?subject=Devis plan 3D immobilier" class="btn-primary">Obtenir mon devis gratuit →</a>
+    </div>
+    <p style="margin-top:1.25rem;font-size:0.8rem;color:var(--muted)">Aperçu gratuit · Sans engagement · Paiement après livraison</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 ImmoViz 3D &nbsp;·&nbsp; <a href="mailto:dimitri444art@gmail.com" style="color:var(--muted)">dimitri444art@gmail.com</a></p>
+</footer>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+
 </body>
 </html>
