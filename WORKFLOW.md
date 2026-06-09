@@ -14,3 +14,4 @@
 - [x] 2A — Slider Avant/Après — 2026-06-09
 - [x] 2B — Section Comment ça marche — 2026-06-09
 - [x] 2C — SVG miniatures démos — 2026-06-09
+- [x] 2C fix — label Tours "Appartement · ~85m²" — 2026-06-09
