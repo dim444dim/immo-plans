@@ -22,6 +22,8 @@
     html{scroll-behavior:smooth}
     body{font-family:-apple-system,'Segoe UI',sans-serif;background:#0d0d0d;color:#f0f0f0;line-height:1.6;overflow-x:hidden;cursor:none}
 
+    @media(hover:none){body{cursor:auto}}
+
     /* ── CURSEUR CUSTOM ── */
     .custom-cursor-dot, .custom-cursor-ring{position:fixed;pointer-events:none;z-index:9999;will-change:transform}
     .custom-cursor-dot{width:8px;height:8px;background:var(--cyan);border-radius:50%;box-shadow:0 0 8px rgba(0,229,255,.6);opacity:1;transition:opacity .2s}
@@ -967,7 +969,7 @@
   });
 
   // ── ANIMATION MOT PAR MOT — H1 HERO ──
-  (function(){
+  document.addEventListener('DOMContentLoaded', function(){(function(){
     const h1 = document.querySelector('.hero-inner h1');
     if (!h1) return;
     const wordSpans = [];
@@ -1015,7 +1017,7 @@
     wordSpans.forEach((sp, i) => {
       sp.style.animationDelay = (initialDelay + i * wordGap) + 's';
     });
-  })();
+  })()});
 
   // ── COMPTEURS ANIMÉS ──
   function animCount(el) {
