@@ -5,307 +5,301 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ImmoViz 3D — Plan interactif pour votre annonce LeBonCoin</title>
   <meta name="description" content="Plan 2D + Vue 3D + Visite 360° pour valoriser votre bien. Livré en 48h à partir de 150€.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
   <style>
     :root {
       --cyan: #00e5ff;
-      --cyan-dim: rgba(0,229,255,0.12);
+      --cyan-dim: rgba(0,229,255,0.13);
       --muted: rgba(255,255,255,0.55);
       --border: rgba(255,255,255,0.1);
-      --card: rgba(10,8,6,0.72);
-      --card2: rgba(18,14,10,0.8);
+      --card: rgba(10,8,6,0.74);
+      --card2: rgba(20,15,10,0.84);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { font-family: -apple-system,'Segoe UI',sans-serif; background:#0d0d0d; color:#f0f0f0; line-height:1.6; overflow-x:hidden; }
-    a { text-decoration:none; }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:-apple-system,'Segoe UI',sans-serif;background:#0d0d0d;color:#f0f0f0;line-height:1.6;overflow-x:hidden}
+    a{text-decoration:none}
+
+    /* Italic serif — signature Skelvia */
+    em{font-family:'Playfair Display',Georgia,serif;font-style:italic;color:var(--cyan)}
 
     /* ── FOND PARALLAX ── */
-    #page-bg {
-      position:fixed; inset:0;
-      background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=85&fit=crop');
-      background-size:cover; background-position:center;
-      transform-origin:center bottom; z-index:-2;
+    #page-bg{
+      position:fixed;inset:0;
+      background-image:url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=85&fit=crop');
+      background-size:cover;background-position:center;
+      transform-origin:center bottom;z-index:-2;
     }
-    #page-bg::after {
-      content:''; position:absolute; inset:0;
-      background:linear-gradient(to bottom,rgba(0,0,0,.38) 0%,rgba(0,0,0,.18) 30%,rgba(0,0,0,.6) 70%,rgba(0,0,0,.78) 100%);
+    #page-bg::after{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(to bottom,rgba(0,0,0,.4) 0%,rgba(0,0,0,.2) 25%,rgba(0,0,0,.55) 65%,rgba(0,0,0,.8) 100%);
     }
 
     /* ── NAV PILL ── */
-    nav {
-      position:fixed; top:1rem; left:50%; transform:translateX(-50%);
-      background:rgba(14,11,8,.8); border:1px solid rgba(255,255,255,.12);
-      backdrop-filter:blur(16px); display:flex; align-items:center; gap:2rem;
-      padding:.6rem 1.25rem; border-radius:50px; z-index:100; white-space:nowrap;
+    nav{
+      position:fixed;top:1rem;left:50%;transform:translateX(-50%);
+      background:rgba(12,9,6,.82);border:1px solid rgba(255,255,255,.13);
+      backdrop-filter:blur(18px);
+      display:flex;align-items:center;gap:1.75rem;
+      padding:.55rem 1.1rem;border-radius:50px;z-index:100;white-space:nowrap;
     }
-    .logo { font-weight:800; font-size:1rem; color:#fff; letter-spacing:-.5px; }
-    .logo span { color:var(--cyan); }
-    .nav-links { display:flex; gap:1.5rem; list-style:none; }
-    .nav-links a { color:rgba(255,255,255,.65); font-size:.85rem; transition:color .2s; }
-    .nav-links a:hover { color:#fff; }
+    .logo{font-weight:800;font-size:1rem;color:#fff;letter-spacing:-.5px;display:flex;align-items:center;gap:.4rem}
+    .logo-dot{width:8px;height:8px;border-radius:50%;background:var(--cyan)}
+    .nav-links{display:flex;gap:1.4rem;list-style:none}
+    .nav-links a{color:rgba(255,255,255,.6);font-size:.83rem;transition:color .2s}
+    .nav-links a:hover{color:#fff}
+    .nav-cta{
+      background:var(--cyan);color:#000;
+      padding:.42rem 1rem;border-radius:50px;font-weight:700;font-size:.8rem;
+      position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:.35rem;
+    }
+    .nav-cta::before{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg)}
+    .nav-cta:hover::before{animation:shimmer .55s ease-out forwards}
+
+    /* ── SHIMMER ── */
+    @keyframes shimmer{from{left:-80%}to{left:130%}}
 
     /* ── BOUTONS ── */
-    .btn-shine {
-      background:var(--cyan); color:#000;
-      padding:.8rem 1.75rem; border-radius:50px;
-      font-weight:700; font-size:.9rem;
-      position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:.5rem;
-      transition:transform .15s, box-shadow .2s;
+    .btn-p{
+      background:var(--cyan);color:#000;
+      padding:.85rem 1.9rem;border-radius:50px;font-weight:700;font-size:.95rem;
+      position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:.5rem;
+      transition:transform .15s,box-shadow .2s;
     }
-    .btn-shine::before {
-      content:''; position:absolute; top:0; left:-80%; width:50%; height:100%;
-      background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);
-      transform:skewX(-20deg);
-    }
-    .btn-shine:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(0,229,255,.35); }
-    .btn-shine:hover::before { animation:shimmer .55s ease-out forwards; }
+    .btn-p::before{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg)}
+    .btn-p:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,229,255,.35)}
+    .btn-p:hover::before{animation:shimmer .55s ease-out forwards}
 
-    .btn-outline {
-      color:rgba(255,255,255,.7); padding:.8rem 1.75rem; border-radius:50px;
-      border:1px solid rgba(255,255,255,.22); font-size:.9rem; font-weight:500;
-      position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:.5rem;
-      transition:color .2s, border-color .2s;
+    .btn-g{
+      color:rgba(255,255,255,.72);padding:.85rem 1.75rem;border-radius:50px;
+      border:1px solid rgba(255,255,255,.22);font-size:.9rem;font-weight:500;
+      position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:.5rem;
+      transition:color .2s,border-color .2s;
     }
-    .btn-outline::before {
-      content:''; position:absolute; top:0; left:-80%; width:50%; height:100%;
-      background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
-      transform:skewX(-20deg);
-    }
-    .btn-outline:hover { color:#fff; border-color:rgba(255,255,255,.55); }
-    .btn-outline:hover::before { animation:shimmer .55s ease-out forwards; }
+    .btn-g::before{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transform:skewX(-20deg)}
+    .btn-g:hover{color:#fff;border-color:rgba(255,255,255,.55)}
+    .btn-g:hover::before{animation:shimmer .55s ease-out forwards}
 
-    @keyframes shimmer { from{left:-80%} to{left:130%} }
-
-    /* NAV CTA */
-    .nav-cta {
-      background:var(--cyan); color:#000; padding:.4rem 1rem; border-radius:50px;
-      font-weight:700; font-size:.8rem; position:relative; overflow:hidden;
-    }
-    .nav-cta::before {
-      content:''; position:absolute; top:0; left:-80%; width:50%; height:100%;
-      background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);
-      transform:skewX(-20deg);
-    }
-    .nav-cta:hover::before { animation:shimmer .55s ease-out forwards; }
-
-    /* ── WRAP ── */
-    .wrap { max-width:960px; margin:0 auto; padding:0 1.75rem; }
+    /* ── LAYOUT ── */
+    .wrap{max-width:980px;margin:0 auto;padding:0 1.75rem}
+    section{padding:6rem 1.75rem}
 
     /* ── ANIMATIONS ── */
-    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
-    .hero-inner>* { opacity:0; animation:fadeUp .9s cubic-bezier(.22,1,.36,1) forwards; }
-    .hero-inner .badge    { animation-delay:.2s; }
-    .hero-inner h1        { animation-delay:.4s; }
-    .hero-inner .hero-sub { animation-delay:.6s; }
-    .hero-inner .cta-row  { animation-delay:.8s; }
-    .hero-inner .hero-proof { animation-delay:1s; }
+    @keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+    .hero-inner>*{opacity:0;animation:fadeUp .95s cubic-bezier(.22,1,.36,1) forwards}
+    .hero-inner .badge   {animation-delay:.15s}
+    .hero-inner h1       {animation-delay:.32s}
+    .hero-inner .hsub    {animation-delay:.52s}
+    .hero-inner .cta-row {animation-delay:.7s}
+    .hero-inner .hgallery{animation-delay:.88s}
+    .hero-inner .hstats  {animation-delay:1.02s}
 
-    .reveal { opacity:0; transform:translateY(28px); transition:opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
-    .reveal.visible { opacity:1; transform:translateY(0); }
-    .d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s}
+    .reveal{opacity:0;transform:translateY(26px);transition:opacity .72s cubic-bezier(.22,1,.36,1),transform .72s cubic-bezier(.22,1,.36,1)}
+    .reveal.v{opacity:1;transform:translateY(0)}
+    .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
 
-    /* ── SECTION TAGS ── */
-    .stag {
-      display:flex; align-items:center; gap:.65rem;
-      font-size:.7rem; font-weight:700; color:var(--cyan);
-      text-transform:uppercase; letter-spacing:2px; margin-bottom:1rem;
+    /* ── SECTION TAG ── */
+    .stag{
+      display:flex;align-items:center;gap:.65rem;
+      font-size:.68rem;font-weight:700;color:var(--cyan);
+      text-transform:uppercase;letter-spacing:2px;margin-bottom:1.1rem;
     }
-    .stag::before { content:''; width:22px; height:2px; background:var(--cyan); flex-shrink:0; }
+    .stag::before{content:'';width:22px;height:2px;background:var(--cyan);flex-shrink:0}
 
-    h2 { font-size:clamp(2rem,4.5vw,3rem); font-weight:800; letter-spacing:-1.5px; line-height:1.08; margin-bottom:.75rem; }
-    h2 em { color:var(--cyan); font-style:italic; }
-    .sub { color:var(--muted); font-size:1rem; max-width:540px; margin-bottom:3rem; }
-
-    section { padding:6rem 1.75rem; }
+    /* ── TYPOGRAPHY ── */
+    h1{
+      font-size:clamp(2.8rem,6.5vw,5rem);font-weight:800;line-height:1.04;
+      letter-spacing:-2.5px;margin-bottom:1.25rem;text-shadow:0 2px 30px rgba(0,0,0,.6);
+    }
+    h2{font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;letter-spacing:-1.5px;line-height:1.08;margin-bottom:.75rem}
+    .sub{color:var(--muted);font-size:1rem;max-width:540px;margin-bottom:3rem;line-height:1.75}
 
     /* ── HERO ── */
-    .hero { min-height:100vh; display:flex; flex-direction:column; justify-content:flex-end; padding-bottom:6rem; }
-    .hero-inner { max-width:960px; margin:0 auto; padding:0 1.75rem; }
+    .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:5.5rem}
+    .hero-inner{max-width:980px;margin:0 auto;padding:0 1.75rem}
 
-    .badge {
-      display:inline-flex; align-items:center; gap:.5rem;
-      background:var(--cyan-dim); border:1px solid rgba(0,229,255,.35);
-      color:var(--cyan); padding:.3rem .9rem; border-radius:20px;
-      font-size:.75rem; letter-spacing:.5px; margin-bottom:1.5rem;
+    .badge{
+      display:inline-flex;align-items:center;gap:.55rem;
+      background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.32);
+      color:var(--cyan);padding:.32rem .9rem;border-radius:20px;
+      font-size:.73rem;letter-spacing:.5px;margin-bottom:1.6rem;
     }
-    .badge-dot { width:7px; height:7px; border-radius:50%; background:var(--cyan); animation:pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+    .bdot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:blink 2s infinite}
+    @keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.75)}}
 
-    h1 { font-size:clamp(2.6rem,6vw,4.5rem); font-weight:800; line-height:1.06; letter-spacing:-2px; margin-bottom:1.25rem; text-shadow:0 2px 30px rgba(0,0,0,.6); }
-    h1 em { color:var(--cyan); font-style:italic; }
+    .hsub{font-size:1.05rem;color:rgba(255,255,255,.65);max-width:520px;margin-bottom:2.25rem;line-height:1.75}
+    .hsub strong{color:#fff}
+    .cta-row{display:flex;gap:.9rem;align-items:center;flex-wrap:wrap}
 
-    .hero-sub { font-size:1.05rem; color:var(--muted); max-width:540px; margin-bottom:2rem; line-height:1.75; }
-    .hero-sub strong { color:#fff; }
-
-    .cta-row { display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }
-
-    .hero-proof {
-      display:flex; gap:2.5rem; align-items:center; flex-wrap:wrap;
-      margin-top:3rem; padding-top:2rem; border-top:1px solid var(--border);
+    /* Galerie inline dans le hero */
+    .hgallery{
+      display:flex;gap:.6rem;margin-top:2.5rem;flex-wrap:wrap;
     }
-    .proof-stat strong { display:block; font-size:1.6rem; font-weight:800; }
-    .proof-stat span { font-size:.78rem; color:var(--muted); }
+    .hcard{
+      background:rgba(10,8,6,.7);border:1px solid rgba(255,255,255,.12);
+      backdrop-filter:blur(8px);border-radius:10px;padding:.6rem .9rem;
+      display:flex;align-items:center;gap:.6rem;font-size:.8rem;color:rgba(255,255,255,.7);
+      transition:border-color .2s,background .2s;
+    }
+    .hcard:hover{border-color:rgba(0,229,255,.35);background:rgba(15,12,8,.82);color:#fff}
+    .hcard-icon{font-size:1rem}
+
+    .hstats{
+      display:flex;gap:2.25rem;align-items:center;flex-wrap:wrap;
+      margin-top:2.25rem;padding-top:1.75rem;border-top:1px solid rgba(255,255,255,.1);
+    }
+    .hstat strong{display:block;font-size:1.55rem;font-weight:800}
+    .hstat span{font-size:.76rem;color:var(--muted)}
+
+    /* ── POUR QUI ── */
+    .pourqui{
+      background:rgba(10,8,6,.65);backdrop-filter:blur(10px);
+      border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+      padding:1rem 1.75rem;display:flex;align-items:center;gap:2rem;overflow-x:auto;
+      scrollbar-width:none;
+    }
+    .pourqui::-webkit-scrollbar{display:none}
+    .pq-label{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:2px;white-space:nowrap}
+    .pq-sep{width:1px;height:18px;background:var(--border);flex-shrink:0}
+    .pq-items{display:flex;gap:.5rem;flex-wrap:nowrap}
+    .pq-item{
+      white-space:nowrap;font-size:.82rem;color:rgba(255,255,255,.6);
+      padding:.32rem .8rem;border-radius:20px;border:1px solid transparent;
+      transition:color .2s,border-color .2s;
+    }
+    .pq-item:hover{color:#fff;border-color:rgba(255,255,255,.2)}
+
+    /* ── CARDS ── */
+    .glass{
+      background:var(--card);border:1px solid var(--border);
+      backdrop-filter:blur(14px);border-radius:16px;
+      transition:background .25s,transform .25s,border-color .25s;
+    }
+    .glass:hover{background:var(--card2);transform:translateY(-3px);border-color:rgba(0,229,255,.25)}
 
     /* ── PROBLÈMES ── */
-    .problems-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:1.25rem; margin-bottom:3rem; }
-    .pcard {
-      background:var(--card); border:1px solid var(--border); backdrop-filter:blur(12px);
-      border-radius:16px; padding:1.75rem;
-      transition:background .25s, transform .25s, border-color .25s;
-    }
-    .pcard:hover { background:var(--card2); transform:translateY(-3px); border-color:rgba(0,229,255,.25); }
-    .picon {
-      width:44px; height:44px; background:var(--cyan-dim);
-      border-radius:10px; display:flex; align-items:center; justify-content:center;
-      font-size:1.2rem; margin-bottom:1rem;
-    }
-    .pcard h3 { font-size:1rem; font-weight:700; margin-bottom:.5rem; }
-    .pcard p { font-size:.875rem; color:var(--muted); line-height:1.65; }
+    .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:1.2rem}
+    .pcard{padding:1.75rem}
+    .picon{width:46px;height:46px;background:var(--cyan-dim);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1.1rem}
+    .pcard h3{font-size:1rem;font-weight:700;margin-bottom:.5rem}
+    .pcard p{font-size:.875rem;color:var(--muted);line-height:1.65}
 
     /* ── BANDEROLE ── */
-    .banderole {
-      background:rgba(255,255,255,.07); backdrop-filter:blur(8px);
-      border-top:1px solid var(--border); border-bottom:1px solid var(--border);
-      padding:2rem 1.75rem; display:flex; justify-content:space-between; align-items:center; gap:2rem; flex-wrap:wrap;
+    .band{
+      background:rgba(255,255,255,.07);backdrop-filter:blur(8px);
+      border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+      padding:1.9rem 1.75rem;display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap;
     }
-    .banderole h3 { font-size:clamp(1.1rem,2.5vw,1.4rem); font-weight:700; }
-    .banderole p { font-size:.875rem; color:var(--muted); margin-top:.25rem; }
+    .band h3{font-size:clamp(1.1rem,2.5vw,1.4rem);font-weight:700}
+    .band p{font-size:.875rem;color:var(--muted);margin-top:.25rem}
 
-    /* ── MÉTHODE (split) ── */
-    .method-split { display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:start; }
-    .method-items { display:flex; flex-direction:column; gap:.85rem; }
-    .mitem {
-      display:flex; gap:.85rem; align-items:flex-start;
-      background:var(--card); border:1px solid var(--border);
-      backdrop-filter:blur(12px); border-radius:12px; padding:1.2rem;
-      transition:border-color .2s, background .2s;
+    /* ── MÉTHODE SPLIT ── */
+    .msplit{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+    .mitems{display:flex;flex-direction:column;gap:.8rem}
+    .mitem{
+      display:flex;gap:.85rem;align-items:flex-start;
+      background:var(--card);border:1px solid var(--border);backdrop-filter:blur(12px);
+      border-radius:12px;padding:1.15rem;
+      transition:border-color .2s,background .2s;
     }
-    .mitem:hover { border-color:rgba(0,229,255,.3); background:var(--card2); }
-    .mcheck {
-      width:24px; height:24px; flex-shrink:0;
-      background:var(--cyan-dim); border:1px solid rgba(0,229,255,.5);
-      border-radius:6px; display:flex; align-items:center; justify-content:center;
-      color:var(--cyan); font-size:.75rem; font-weight:700;
+    .mitem:hover{border-color:rgba(0,229,255,.3);background:var(--card2)}
+    .mchk{
+      width:24px;height:24px;flex-shrink:0;background:var(--cyan-dim);
+      border:1px solid rgba(0,229,255,.5);border-radius:6px;
+      display:flex;align-items:center;justify-content:center;color:var(--cyan);font-size:.72rem;font-weight:700;
     }
-    .mitem h4 { font-size:.9rem; font-weight:700; margin-bottom:.2rem; }
-    .mitem p { font-size:.8rem; color:var(--muted); }
+    .mitem h4{font-size:.9rem;font-weight:700;margin-bottom:.2rem}
+    .mitem p{font-size:.8rem;color:var(--muted)}
 
-    .stat-box {
-      background:var(--card); border:1px solid var(--border);
-      backdrop-filter:blur(12px); border-radius:16px; padding:2rem; position:sticky; top:5rem;
-    }
-    .stat-label { font-size:.7rem; font-weight:700; color:var(--cyan); text-transform:uppercase; letter-spacing:2px; margin-bottom:.75rem; }
-    .stat-big { font-size:3.5rem; font-weight:900; letter-spacing:-2px; line-height:1; margin-bottom:.25rem; }
-    .stat-big em { color:var(--cyan); font-style:normal; }
-    .stat-desc { font-size:.875rem; color:var(--muted); margin-bottom:1.75rem; line-height:1.6; }
-    .bars { display:flex; flex-direction:column; gap:.75rem; }
-    .bar-row label { font-size:.8rem; color:var(--muted); display:block; margin-bottom:.3rem; }
-    .bar-track { height:5px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden; }
-    .bar-fill { height:100%; background:var(--cyan); border-radius:3px; width:0; transition:width 1.2s cubic-bezier(.22,1,.36,1); }
+    .statbox{background:var(--card);border:1px solid var(--border);backdrop-filter:blur(14px);border-radius:16px;padding:2rem;position:sticky;top:5.5rem}
+    .slabel{font-size:.68rem;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:2px;margin-bottom:.75rem}
+    .sbig{font-size:3.8rem;font-weight:900;letter-spacing:-2px;line-height:1;margin-bottom:.2rem}
+    .sdesc{font-size:.875rem;color:var(--muted);margin-bottom:1.75rem;line-height:1.65}
+    .bars{display:flex;flex-direction:column;gap:.8rem}
+    .brow label{font-size:.8rem;color:var(--muted);display:block;margin-bottom:.3rem}
+    .btrack{height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden}
+    .bfill{height:100%;background:var(--cyan);border-radius:3px;width:0;transition:width 1.3s cubic-bezier(.22,1,.36,1)}
 
     /* ── CRÉDIBILITÉ ── */
-    .cred-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; }
-    .cred-card {
-      background:var(--card); border:1px solid var(--border); backdrop-filter:blur(12px);
-      border-radius:16px; padding:1.75rem; text-align:center;
-      transition:transform .25s, border-color .25s;
-    }
-    .cred-card:hover { transform:translateY(-3px); border-color:rgba(0,229,255,.3); }
-    .cred-icon {
-      width:48px; height:48px; background:var(--cyan-dim); border-radius:12px;
-      display:flex; align-items:center; justify-content:center;
-      font-size:1.4rem; margin:0 auto 1rem;
-    }
-    .cred-card .num { font-size:2rem; font-weight:900; color:#fff; line-height:1; }
-    .cred-card .clabel { font-size:.85rem; font-weight:700; margin:.3rem 0; }
-    .cred-card .cdesc { font-size:.8rem; color:var(--muted); line-height:1.6; }
+    .cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+    .ccard{padding:1.75rem;text-align:center}
+    .cicon{width:50px;height:50px;background:var(--cyan-dim);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto 1rem}
+    .cnum{font-size:2.2rem;font-weight:900;color:#fff;line-height:1}
+    .clbl{font-size:.85rem;font-weight:700;margin:.35rem 0}
+    .cdesc{font-size:.8rem;color:var(--muted);line-height:1.6}
 
-    /* ── PREUVES / DÉMOS ── */
-    .proof-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
-    .proof-main {
-      background:var(--card); border:1px solid var(--border); backdrop-filter:blur(12px);
-      border-radius:16px; overflow:hidden; grid-row:span 2;
-      transition:border-color .25s, transform .25s;
+    /* ── CTA INTERMÉDIAIRE ── */
+    .ctamid{text-align:center;padding:6rem 1.75rem}
+    .urgbadge{
+      display:inline-flex;align-items:center;gap:.6rem;
+      background:rgba(255,60,60,.1);border:1px solid rgba(255,60,60,.25);
+      color:rgba(255,190,190,.9);padding:.4rem 1rem;border-radius:20px;
+      font-size:.8rem;font-weight:500;margin-bottom:2rem;
     }
-    .proof-main:hover { border-color:rgba(0,229,255,.4); transform:translateY(-3px); }
-    .proof-side {
-      background:var(--card); border:1px solid var(--border); backdrop-filter:blur(12px);
-      border-radius:16px; overflow:hidden;
-      transition:border-color .25s, transform .25s;
-    }
-    .proof-side:hover { border-color:rgba(0,229,255,.4); transform:translateY(-3px); }
-    .proof-thumb {
-      height:200px; display:flex; align-items:center; justify-content:center;
-      font-size:3rem; border-bottom:1px solid var(--border);
-      background:linear-gradient(135deg,rgba(0,30,40,.9) 0%,rgba(0,10,20,.95) 100%);
-    }
-    .proof-side .proof-thumb { height:130px; font-size:2rem; }
-    .proof-body { padding:1.25rem; }
-    .proof-body h3 { font-size:.95rem; font-weight:700; margin-bottom:.3rem; }
-    .proof-body .pmeta { font-size:.8rem; color:var(--muted); margin-bottom:.75rem; }
-    .proof-tags { display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:1rem; }
-    .tag { font-size:.7rem; padding:.2rem .55rem; border-radius:4px; background:var(--cyan-dim); color:var(--cyan); border:1px solid rgba(0,229,255,.2); }
-    .btn-demo {
-      display:block; text-align:center; border:1px solid var(--border); color:var(--muted);
-      padding:.6rem; border-radius:8px; font-size:.85rem; transition:border-color .2s, color .2s;
-    }
-    .btn-demo:hover { border-color:var(--cyan); color:var(--cyan); }
+    .udot{width:8px;height:8px;border-radius:50%;background:#ff3c3c;animation:pred 1.5s infinite;flex-shrink:0}
+    @keyframes pred{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.65)}}
+    .ctamid .sub{margin:0 auto 2rem}
+    .ctamid .cta-row{justify-content:center;margin-bottom:1.25rem}
+    .ichk{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;color:var(--muted);font-size:.82rem}
+    .ichk span::before{content:'✓ ';color:var(--cyan);font-weight:700}
 
-    /* ── BADGE URGENCE ── */
-    .urgence-badge {
-      display:inline-flex; align-items:center; gap:.6rem;
-      background:rgba(255,60,60,.1); border:1px solid rgba(255,60,60,.25);
-      color:rgba(255,180,180,.9); padding:.4rem 1rem; border-radius:20px;
-      font-size:.8rem; font-weight:500; margin-bottom:2rem;
-    }
-    .urgence-dot { width:8px; height:8px; border-radius:50%; background:#ff3c3c; animation:pulse-red 1.5s infinite; flex-shrink:0; }
-    @keyframes pulse-red { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+    /* ── DÉMOS ── */
+    .dgrid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+    .dmain{grid-row:span 2}
+    .dcard{overflow:hidden}
+    .dthumb{height:190px;display:flex;align-items:center;justify-content:center;font-size:3rem;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(0,30,40,.9) 0%,rgba(0,10,20,.95) 100%)}
+    .dside .dthumb{height:125px;font-size:2rem}
+    .dbody{padding:1.25rem}
+    .dbody h3{font-size:.95rem;font-weight:700;margin-bottom:.3rem}
+    .dmeta{font-size:.8rem;color:var(--muted);margin-bottom:.75rem}
+    .dtags{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+    .tag{font-size:.7rem;padding:.2rem .55rem;border-radius:4px;background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(0,229,255,.2)}
+    .btn-demo{display:block;text-align:center;border:1px solid var(--border);color:var(--muted);padding:.6rem;border-radius:8px;font-size:.85rem;transition:border-color .2s,color .2s}
+    .btn-demo:hover{border-color:var(--cyan);color:var(--cyan)}
 
-    /* ── CTA CENTRAL ── */
-    .cta-center { text-align:center; padding:6rem 1.75rem; }
-    .cta-center h2 { margin-bottom:.75rem; }
-    .cta-center .sub { margin:0 auto 2rem; }
-    .cta-center .cta-row { justify-content:center; margin-bottom:1.25rem; }
-    .inline-checks { display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap; color:var(--muted); font-size:.82rem; }
-    .inline-checks span::before { content:'✓ '; color:var(--cyan); font-weight:700; }
+    /* ── TARIFS ── */
+    .tgrid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+    .tcard{padding:2rem;position:relative}
+    .tlbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem}
+    .tprice{font-size:3rem;font-weight:800;line-height:1;margin-bottom:.5rem}
+    .tprice sup{font-size:1.2rem;vertical-align:super}
+    .tdesc{font-size:.8rem;color:var(--muted);margin-bottom:1.5rem}
+    .tfeats{list-style:none;display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.75rem}
+    .tfeats li{font-size:.875rem;color:var(--muted);display:flex;gap:.5rem}
+    .tfeats li::before{content:'✓';color:var(--cyan);font-weight:700;flex-shrink:0}
+    .tbadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--cyan);color:#000;font-size:.65rem;font-weight:700;padding:.2rem .9rem;border-radius:20px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
 
     /* ── FAQ ── */
-    .faq-list { background:var(--card); backdrop-filter:blur(12px); border:1px solid var(--border); border-radius:16px; overflow:hidden; }
-    .faq-item { border-bottom:1px solid var(--border); }
-    .faq-item:last-child { border-bottom:none; }
-    .faq-q {
-      width:100%; background:none; border:none;
-      padding:1.25rem 1.5rem; display:flex; justify-content:space-between; align-items:center;
-      cursor:pointer; color:#fff; font-size:.9rem; font-weight:500; text-align:left;
-      transition:background .2s;
-    }
-    .faq-q:hover { background:rgba(255,255,255,.04); }
-    .faq-btn {
-      width:28px; height:28px; border-radius:50%; border:1px solid rgba(255,255,255,.3);
-      background:rgba(255,255,255,.08); display:flex; align-items:center; justify-content:center;
-      flex-shrink:0; color:rgba(255,255,255,.7); font-size:.8rem; font-weight:700;
-      transition:background .2s, border-color .2s, transform .3s;
-    }
-    .faq-item.open .faq-btn { background:var(--cyan); border-color:var(--cyan); color:#000; transform:rotate(45deg); }
-    .faq-a { display:none; padding:0 1.5rem 1.25rem; color:var(--muted); font-size:.875rem; line-height:1.75; }
-    .faq-item.open .faq-a { display:block; }
+    .faqlist{background:var(--card);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+    .faqitem{border-bottom:1px solid var(--border)}
+    .faqitem:last-child{border-bottom:none}
+    .faqq{width:100%;background:none;border:none;padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;color:#fff;font-size:.9rem;font-weight:500;text-align:left;transition:background .2s}
+    .faqq:hover{background:rgba(255,255,255,.04)}
+    .faqbtn{width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:rgba(255,255,255,.65);font-size:.75rem;font-weight:700;transition:background .2s,border-color .2s,transform .3s}
+    .faqitem.open .faqbtn{background:var(--cyan);border-color:var(--cyan);color:#000;transform:rotate(45deg)}
+    .faqa{display:none;padding:0 1.5rem 1.25rem;color:var(--muted);font-size:.875rem;line-height:1.75}
+    .faqitem.open .faqa{display:block}
 
-    /* ── CTA FINAL (sans boîte) ── */
-    .cta-final { text-align:center; padding:7rem 1.75rem 8rem; }
-    .cta-final h2 { font-size:clamp(2.5rem,5.5vw,4rem); margin-bottom:.75rem; }
-    .cta-final p { color:var(--muted); max-width:540px; margin:0 auto 2.5rem; font-size:1rem; line-height:1.75; }
+    /* ── CTA FINAL SANS BOÎTE ── */
+    .ctafinal{text-align:center;padding:7.5rem 1.75rem 9rem}
+    .ctafinal h2{font-size:clamp(2.8rem,6vw,4.5rem);margin-bottom:.75rem;letter-spacing:-2px}
+    .ctafinal p{color:var(--muted);max-width:520px;margin:0 auto 2.5rem;font-size:1rem;line-height:1.75}
+    .ctafinal .cta-row{justify-content:center;margin-bottom:1.25rem}
 
     /* ── FOOTER ── */
-    footer { text-align:center; padding:2rem; border-top:1px solid var(--border); color:var(--muted); font-size:.8rem; }
+    footer{text-align:center;padding:2rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem}
 
     /* ── RESPONSIVE ── */
-    @media (max-width:720px) {
-      .nav-links { display:none; }
-      .method-split { grid-template-columns:1fr; }
-      .cred-grid { grid-template-columns:1fr; }
-      .proof-grid { grid-template-columns:1fr; }
-      .proof-main { grid-row:auto; }
-      .banderole { flex-direction:column; align-items:flex-start; }
+    @media(max-width:740px){
+      .nav-links{display:none}
+      .msplit{grid-template-columns:1fr}
+      .cgrid{grid-template-columns:1fr}
+      .dgrid{grid-template-columns:1fr}
+      .dmain{grid-row:auto}
+      .tgrid{grid-template-columns:1fr}
+      .band{flex-direction:column;align-items:flex-start}
     }
   </style>
 </head>
@@ -313,13 +307,13 @@
 
 <div id="page-bg"></div>
 
-<!-- NAV -->
+<!-- NAV PILL -->
 <nav>
-  <div class="logo">Immo<span>Viz</span> 3D</div>
+  <div class="logo"><span class="logo-dot"></span>ImmoViz 3D</div>
   <ul class="nav-links">
+    <li><a href="#problemes">Problèmes</a></li>
+    <li><a href="#solution">Méthode</a></li>
     <li><a href="#demos">Démos</a></li>
-    <li><a href="#solution">Solution</a></li>
-    <li><a href="#tarifs">Tarifs</a></li>
     <li><a href="#faq">FAQ</a></li>
   </ul>
   <a href="mailto:dimitri444art@gmail.com" class="nav-cta">Devis gratuit →</a>
@@ -328,22 +322,47 @@
 <!-- HERO -->
 <div class="hero">
   <div class="hero-inner">
-    <div class="badge"><span class="badge-dot"></span>Plan 2D · Vue 3D · Visite 360°</div>
-    <h1>Votre bien se vend<br><em>40% plus vite</em><br>avec un plan 3D interactif</h1>
-    <p class="hero-sub">
-      Livrable HTML autonome · Plan 2D + Vue 3D + Panorama 360° à coller dans votre annonce LeBonCoin.<br>
+    <div class="badge"><span class="bdot"></span>Plan 2D · Vue 3D · Visite 360°</div>
+
+    <h1>Votre annonce immobilière,<br><em>enfin remarquée.</em></h1>
+
+    <p class="hsub">
+      Plan interactif 2D + Vue 3D + Visite 360° à coller dans votre annonce LeBonCoin.<br>
       <strong>Livré en 48h · À partir de 150€ · Sans abonnement</strong>
     </p>
+
     <div class="cta-row">
-      <a href="mailto:dimitri444art@gmail.com?subject=Devis plan 3D" class="btn-shine">Demander un devis gratuit →</a>
-      <a href="#demos" class="btn-outline">Voir les exemples</a>
+      <a href="mailto:dimitri444art@gmail.com?subject=Devis plan 3D" class="btn-p">Demander un devis gratuit →</a>
+      <a href="#demos" class="btn-g">Voir les exemples</a>
     </div>
-    <div class="hero-proof">
-      <div class="proof-stat"><strong>+40%</strong><span>de clics vs annonce simple</span></div>
-      <div class="proof-stat"><strong>48h</strong><span>délai de livraison</span></div>
-      <div class="proof-stat"><strong>150€</strong><span>offre de départ</span></div>
-      <div class="proof-stat"><strong>0€</strong><span>vs 3 500€/an Matterport</span></div>
+
+    <div class="hgallery">
+      <a href="plan-interactif-romorantin.html" class="hcard" target="_blank"><span class="hcard-icon">🏡</span>Romorantin · 170m²</a>
+      <a href="plan-interactif-niort.html" class="hcard" target="_blank"><span class="hcard-icon">🏠</span>Niort · 130m²</a>
+      <a href="plan-interactif-tours.html" class="hcard" target="_blank"><span class="hcard-icon">🏙️</span>Tours · Appartement</a>
     </div>
+
+    <div class="hstats">
+      <div class="hstat"><strong>+40%</strong><span>de clics vs annonce simple</span></div>
+      <div class="hstat"><strong>48h</strong><span>délai de livraison</span></div>
+      <div class="hstat"><strong>150€</strong><span>offre de départ</span></div>
+      <div class="hstat"><strong>0€</strong><span>vs 3 500€/an Matterport</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- POUR QUI -->
+<div class="pourqui">
+  <span class="pq-label">Pour qui</span>
+  <div class="pq-sep"></div>
+  <div class="pq-items">
+    <span class="pq-item">Particuliers</span>
+    <span class="pq-item">Agences immobilières</span>
+    <span class="pq-item">Marchands de biens</span>
+    <span class="pq-item">Notaires</span>
+    <span class="pq-item">Promoteurs</span>
+    <span class="pq-item">Investisseurs</span>
+    <span class="pq-item">Home stagers</span>
   </div>
 </div>
 
@@ -351,93 +370,107 @@
 <section id="problemes">
   <div class="wrap">
     <p class="stag reveal">Pourquoi maintenant</p>
-    <h2 class="reveal">Votre annonce se noie<br>dans les <em>résultats</em></h2>
-    <p class="sub reveal">LeBonCoin affiche des milliers de biens. Sans visuel fort, les acheteurs passent à côté du vôtre.</p>
-    <div class="problems-grid">
-      <div class="pcard reveal d1"><div class="picon">📸</div><h3>Photos pas suffisantes</h3><p>Des photos font voir le bien, un plan 3D le fait <em>vivre</em>. Les acheteurs se projettent mieux, décident plus vite.</p></div>
-      <div class="pcard reveal d2"><div class="picon">👁️</div><h3>Visites inutiles</h3><p>Des acquéreurs se déplacent sans être vraiment intéressés. Un plan précis filtre les curieux et attire les profils sérieux.</p></div>
-      <div class="pcard reveal d3"><div class="picon">💸</div><h3>Matterport coûte 3 500€/an</h3><p>Les outils pros sont hors de portée pour un particulier. Notre livrable produit le même résultat pour 150€, sans abonnement.</p></div>
+    <h2 class="reveal">Vos acheteurs potentiels<br>passent à côté. <em>En 3 secondes.</em></h2>
+    <p class="sub reveal">LeBonCoin affiche des milliers de biens. Sans visuel fort, les acheteurs cliquent ailleurs avant même d'avoir lu votre annonce.</p>
+
+    <div class="pgrid">
+      <div class="glass pcard reveal d1">
+        <div class="picon">📸</div>
+        <h3>Les photos, ça ne suffit plus</h3>
+        <p>Des photos font voir le bien, un plan 3D interactif fait le <em style="font-style:italic;color:inherit">vivre</em>. Les acheteurs se projettent mieux, décident plus vite.</p>
+      </div>
+      <div class="glass pcard reveal d2">
+        <div class="picon">🚗</div>
+        <h3>Visites physiques inutiles</h3>
+        <p>Des acquéreurs se déplacent pour rien. Un plan précis filtre les curieux et attire uniquement les profils vraiment intéressés.</p>
+      </div>
+      <div class="glass pcard reveal d3">
+        <div class="picon">💸</div>
+        <h3>Matterport coûte 3 500€/an</h3>
+        <p>Les outils pros sont hors de portée pour un particulier. ImmoViz 3D livre le même résultat pour 150€, sans abonnement.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- BANDEROLE 1 -->
-<div class="banderole">
+<!-- BANDEROLE -->
+<div class="band">
   <div>
     <h3>Vous vous reconnaissez dans l'un de ces points ?</h3>
-    <p>La solution ImmoViz 3D a été conçue précisément pour ça.</p>
+    <p>La méthode ImmoViz 3D a été conçue précisément pour ça.</p>
   </div>
-  <a href="#solution" class="btn-outline">Découvrir la solution →</a>
+  <a href="#solution" class="btn-g">Découvrir la méthode →</a>
 </div>
 
 <!-- MÉTHODE SPLIT -->
 <section id="solution">
   <div class="wrap">
-    <p class="stag reveal">La méthode</p>
-    <div class="method-split">
+    <p class="stag reveal">La méthode ImmoViz 3D</p>
+    <div class="msplit">
       <div>
         <h2 class="reveal">Livrable clé en main,<br><em>résultats immédiats.</em></h2>
-        <p class="sub reveal">Vous envoyez l'annonce. Je livre un fichier HTML complet en 48h, prêt à partager sans aucun logiciel.</p>
-        <div class="method-items">
-          <div class="mitem reveal d1"><div class="mcheck">✓</div><div><h4>Plan 2D interactif</h4><p>Toutes les pièces cliquables avec surfaces et détails</p></div></div>
-          <div class="mitem reveal d2"><div class="mcheck">✓</div><div><h4>Vue 3D navigable</h4><p>Rotation libre, zoom, exploration du volume</p></div></div>
-          <div class="mitem reveal d1"><div class="mcheck">✓</div><div><h4>Visite 360° intégrée</h4><p>Panoramas pièce par pièce si vous fournissez les photos</p></div></div>
-          <div class="mitem reveal d2"><div class="mcheck">✓</div><div><h4>Fichier autonome</h4><p>Un seul .html — zéro dépendance, zéro abonnement</p></div></div>
+        <p class="sub reveal">Vous envoyez l'annonce. Je livre un fichier HTML complet en 48h, sans déplacement, sans logiciel de votre côté.</p>
+        <div class="mitems">
+          <div class="mitem reveal d1"><div class="mchk">✓</div><div><h4>Plan 2D interactif</h4><p>Toutes les pièces cliquables avec surfaces et détails</p></div></div>
+          <div class="mitem reveal d2"><div class="mchk">✓</div><div><h4>Vue 3D navigable</h4><p>Rotation libre, zoom, exploration du volume</p></div></div>
+          <div class="mitem reveal d1"><div class="mchk">✓</div><div><h4>Visite 360° intégrée</h4><p>Panoramas pièce par pièce (photos ou procédural)</p></div></div>
+          <div class="mitem reveal d2"><div class="mchk">✓</div><div><h4>Fichier HTML autonome</h4><p>Un seul .html — zéro dépendance, zéro abonnement</p></div></div>
         </div>
       </div>
-      <div class="stat-box reveal">
-        <p class="stat-label">Impact confirmé</p>
-        <div class="stat-big">×<em>10</em></div>
+
+      <div class="statbox reveal">
+        <p class="slabel">Résultat mesuré</p>
+        <div class="sbig">×<em style="color:var(--cyan)">10</em></div>
         <p style="font-size:.85rem;color:var(--muted);margin-bottom:.25rem">plus de contacts qualifiés</p>
-        <p class="stat-desc">Un plan interactif retient l'attention 10× plus longtemps qu'une annonce photo classique. Les acheteurs sérieux restent, les curieux passent.</p>
+        <p class="sdesc">Un plan interactif retient l'attention 10× plus longtemps qu'une annonce photo classique. Les acheteurs sérieux restent.</p>
         <div class="bars" id="bars">
-          <div><label>Taux de clic sur l'annonce</label><div class="bar-track"><div class="bar-fill" data-w="85"></div></div></div>
-          <div><label>Qualité des leads</label><div class="bar-track"><div class="bar-fill" data-w="90"></div></div></div>
-          <div><label>Temps passé sur l'annonce</label><div class="bar-track"><div class="bar-fill" data-w="95"></div></div></div>
-          <div><label>Satisfaction du vendeur</label><div class="bar-track"><div class="bar-fill" data-w="100"></div></div></div>
+          <div class="brow"><label>Taux de clic sur l'annonce</label><div class="btrack"><div class="bfill" data-w="85"></div></div></div>
+          <div class="brow"><label>Qualité des leads entrants</label><div class="btrack"><div class="bfill" data-w="90"></div></div></div>
+          <div class="brow"><label>Temps passé sur l'annonce</label><div class="btrack"><div class="bfill" data-w="95"></div></div></div>
+          <div class="brow"><label>Satisfaction du vendeur</label><div class="btrack"><div class="bfill" data-w="100"></div></div></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CRÉDIBILITÉ -->
-<section id="credibilite">
+<!-- CRÉDIBILITÉ 3 COLONNES -->
+<section>
   <div class="wrap">
     <p class="stag reveal">Pourquoi nous faire confiance</p>
     <h2 class="reveal">Technique confirmée.<br><em>Résultats garantis.</em></h2>
-    <div class="cred-grid" style="margin-top:2.5rem">
-      <div class="cred-card reveal d1">
-        <div class="cred-icon">⚡</div>
-        <div class="num">48h</div>
-        <div class="clabel">Livraison rapide</div>
-        <p class="cdesc">De l'annonce au plan interactif en ligne en moins de 48 heures. Sans déplacement.</p>
+    <div class="cgrid" style="margin-top:2.5rem">
+      <div class="glass ccard reveal d1">
+        <div class="cicon">⚡</div>
+        <div class="cnum">48h</div>
+        <div class="clbl">Livraison garantie</div>
+        <p class="cdesc">De l'annonce au plan interactif en ligne en moins de 48 heures. Sans déplacement, sans matériel spécial.</p>
       </div>
-      <div class="cred-card reveal d2">
-        <div class="cred-icon">💰</div>
-        <div class="num">150€</div>
-        <div class="clabel">Vs 3 500€/an</div>
-        <p class="cdesc">Le même résultat que Matterport à moins de 5% du prix, sans abonnement, sans matériel spécial.</p>
+      <div class="glass ccard reveal d2">
+        <div class="cicon">💰</div>
+        <div class="cnum">150€</div>
+        <div class="clbl">Vs 3 500€/an</div>
+        <p class="cdesc">Le même résultat que Matterport à moins de 5% du prix, sans abonnement, livré en une fois.</p>
       </div>
-      <div class="cred-card reveal d3">
-        <div class="cred-icon">🔒</div>
-        <div class="num">100%</div>
-        <div class="clabel">Propriétaire du fichier</div>
-        <p class="cdesc">Le fichier HTML vous appartient. Hébergement inclus 6 mois. Aucune dépendance externe.</p>
+      <div class="glass ccard reveal d3">
+        <div class="cicon">🔒</div>
+        <div class="cnum">100%</div>
+        <div class="clbl">Propriétaire du fichier</div>
+        <p class="cdesc">Le fichier HTML vous appartient pour toujours. Hébergement inclus 6 mois. Zéro dépendance externe.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- CTA INTERMÉDIAIRE -->
-<div class="cta-center">
-  <div class="urgence-badge reveal"><span class="urgence-dot"></span>Disponibilités limitées · 2 slots par semaine</div>
-  <h2 class="reveal" style="font-size:clamp(2rem,4.5vw,3rem)">Commencez par<br>un devis <em>gratuit.</em></h2>
-  <p class="sub reveal" style="margin:0 auto 2rem">On identifie ensemble les besoins de votre bien, le délai, et ce qui donnera le plus d'impact à votre annonce. Aucun engagement.</p>
+<div class="ctamid">
+  <div class="urgbadge reveal"><span class="udot"></span>Disponibilités limitées · 2 commandes par semaine</div>
+  <h2 class="reveal" style="font-size:clamp(2.2rem,5vw,3.5rem);letter-spacing:-1.5px">Commencez par<br>un devis <em>gratuit.</em></h2>
+  <p class="sub reveal" style="margin:0 auto 2rem">On identifie ensemble les besoins de votre bien et ce qui donnera le plus d'impact à votre annonce. Sans engagement.</p>
   <div class="cta-row reveal" style="justify-content:center;margin-bottom:1.25rem">
-    <a href="mailto:dimitri444art@gmail.com?subject=Devis plan 3D" class="btn-shine">Obtenir mon devis gratuit →</a>
+    <a href="mailto:dimitri444art@gmail.com?subject=Devis plan 3D" class="btn-p">Obtenir mon devis gratuit →</a>
   </div>
-  <div class="inline-checks reveal">
+  <div class="ichk reveal">
     <span>100% gratuit</span>
     <span>Sans engagement</span>
     <span>Réponse sous 24h</span>
@@ -445,38 +478,38 @@
   </div>
 </div>
 
-<!-- DÉMOS / PREUVES -->
+<!-- DÉMOS -->
 <section id="demos">
   <div class="wrap">
     <p class="stag reveal">Les plans parlent d'eux-mêmes</p>
     <h2 class="reveal">Voyez le résultat<br>avant de commander</h2>
-    <p class="sub reveal">Chaque livrable est un fichier HTML autonome — aucun logiciel requis.</p>
-    <div class="proof-grid">
-      <div class="proof-main reveal d1">
-        <div class="proof-thumb">🏡</div>
-        <div class="proof-body">
+    <p class="sub reveal">Chaque livrable est un fichier HTML autonome — aucun logiciel requis, fonctionne dans n'importe quel navigateur.</p>
+    <div class="dgrid">
+      <div class="glass dcard dmain reveal d1">
+        <div class="dthumb">🏡</div>
+        <div class="dbody">
           <h3>Maison — Romorantin</h3>
-          <p class="pmeta">170 m² · 12 pièces · 265 000 € · RDC + Étage</p>
-          <div class="proof-tags"><span class="tag">Plan 2D</span><span class="tag">Vue 3D</span><span class="tag">Visite 360°</span><span class="tag">Complet</span></div>
-          <p style="font-size:.85rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">Plan interactif complet avec 12 pièces, navigation 3D et visite 360° sur 9 pièces. Exemple de notre livrable le plus complet.</p>
+          <p class="dmeta">170 m² · 12 pièces · 265 000 € · RDC + Étage complet</p>
+          <div class="dtags"><span class="tag">Plan 2D</span><span class="tag">Vue 3D</span><span class="tag">Visite 360°</span><span class="tag">Livrable complet</span></div>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">Plan interactif avec 12 pièces, navigation 3D et visite 360° sur 9 pièces. Notre livrable le plus complet.</p>
           <a href="plan-interactif-romorantin.html" class="btn-demo" target="_blank">Voir la démo →</a>
         </div>
       </div>
-      <div class="proof-side reveal d2">
-        <div class="proof-thumb">🏠</div>
-        <div class="proof-body">
+      <div class="glass dcard dside reveal d2">
+        <div class="dthumb">🏠</div>
+        <div class="dbody">
           <h3>Maison — Niort</h3>
-          <p class="pmeta">130 m² · 9 pièces</p>
-          <div class="proof-tags"><span class="tag">Plan 2D</span><span class="tag">Vue 3D</span><span class="tag">360°</span></div>
+          <p class="dmeta">130 m² · 9 pièces</p>
+          <div class="dtags"><span class="tag">Plan 2D</span><span class="tag">Vue 3D</span><span class="tag">360°</span></div>
           <a href="plan-interactif-niort.html" class="btn-demo" target="_blank">Voir la démo →</a>
         </div>
       </div>
-      <div class="proof-side reveal d3">
-        <div class="proof-thumb">🏙️</div>
-        <div class="proof-body">
+      <div class="glass dcard dside reveal d3">
+        <div class="dthumb">🏙️</div>
+        <div class="dbody">
           <h3>Appartement — Tours</h3>
-          <p class="pmeta">Plan interactif complet</p>
-          <div class="proof-tags"><span class="tag">Plan 2D</span><span class="tag">Vue 3D</span><span class="tag">360°</span></div>
+          <p class="dmeta">Plan interactif complet</p>
+          <div class="dtags"><span class="tag">Plan 2D</span><span class="tag">Vue 3D</span><span class="tag">360°</span></div>
           <a href="plan-interactif-tours.html" class="btn-demo" target="_blank">Voir la démo →</a>
         </div>
       </div>
@@ -489,34 +522,36 @@
   <div class="wrap">
     <p class="stag reveal">Tarifs</p>
     <h2 class="reveal">Simple et sans surprise</h2>
-    <p class="sub reveal">Pas d'abonnement. Pas de frais cachés. Vous payez une fois, le fichier est à vous.</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
-      <div class="pcard reveal d1" style="border-radius:16px;padding:2rem">
-        <p style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Offre Essentielle</p>
-        <div style="font-size:2.8rem;font-weight:800;line-height:1;margin-bottom:.5rem"><sup style="font-size:1.2rem;vertical-align:super">€</sup>150</div>
-        <p style="font-size:.8rem;color:var(--muted);margin-bottom:1.5rem">Livraison 48h · Paiement après livraison</p>
-        <ul style="list-style:none;display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.75rem">
-          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>Plan 2D interactif (toutes pièces)</li>
-          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>Vue 3D navigable</li>
-          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>Visite 360° (si photos fournies)</li>
-          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>Fichier HTML autonome</li>
-          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>URL hébergée 6 mois</li>
+    <p class="sub reveal">Pas d'abonnement. Pas de frais cachés. Vous payez une fois, le fichier est à vous pour toujours.</p>
+    <div class="tgrid">
+      <div class="glass tcard reveal d1">
+        <p class="tlbl">Offre Essentielle</p>
+        <div class="tprice"><sup>€</sup>150</div>
+        <p class="tdesc">Livraison 48h · Paiement après livraison</p>
+        <ul class="tfeats">
+          <li>Plan 2D interactif (toutes pièces)</li>
+          <li>Vue 3D navigable (rotation + zoom)</li>
+          <li>Visite 360° (si photos fournies)</li>
+          <li>Fichier HTML autonome</li>
+          <li>URL hébergée 6 mois</li>
+          <li>1 retouche incluse</li>
         </ul>
-        <a href="mailto:dimitri444art@gmail.com?subject=Commande Essentielle" class="btn-outline" style="display:block;text-align:center">Demander un devis</a>
+        <a href="mailto:dimitri444art@gmail.com?subject=Commande Essentielle" class="btn-g" style="display:block;text-align:center;justify-content:center">Demander un devis</a>
       </div>
-      <div class="pcard reveal d2" style="border-radius:16px;padding:2rem;border-color:rgba(0,229,255,.5);position:relative">
-        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--cyan);color:#000;font-size:.65rem;font-weight:700;padding:.2rem .9rem;border-radius:20px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap">Recommandé</div>
-        <p style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Offre Photoréaliste</p>
-        <div style="font-size:2.8rem;font-weight:800;line-height:1;margin-bottom:.5rem"><sup style="font-size:1.2rem;vertical-align:super">€</sup>450</div>
-        <p style="font-size:.8rem;color:var(--muted);margin-bottom:1.5rem">Rendu Blender · Délai 5-7 jours</p>
-        <ul style="list-style:none;display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.75rem">
-          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>Tout l'Offre Essentielle</li>
-          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>Modélisation Blender photoréaliste</li>
-          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>Textures et matériaux réalistes</li>
-          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>Rendu haute définition (4K)</li>
-          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>3 retouches incluses</li>
+      <div class="glass tcard reveal d2" style="border-color:rgba(0,229,255,.45)">
+        <div class="tbadge">Recommandé</div>
+        <p class="tlbl">Offre Photoréaliste</p>
+        <div class="tprice"><sup>€</sup>450</div>
+        <p class="tdesc">Rendu Blender · Délai 5-7 jours</p>
+        <ul class="tfeats">
+          <li>Tout l'Offre Essentielle</li>
+          <li>Modélisation Blender photoréaliste</li>
+          <li>Textures et matériaux réalistes</li>
+          <li>Rendu haute définition (4K)</li>
+          <li>Vidéo de présentation 30s</li>
+          <li>3 retouches incluses</li>
         </ul>
-        <a href="mailto:dimitri444art@gmail.com?subject=Commande Photoréaliste" class="btn-shine" style="display:block;text-align:center;justify-content:center">Demander un devis →</a>
+        <a href="mailto:dimitri444art@gmail.com?subject=Commande Photoréaliste" class="btn-p" style="display:block;text-align:center;justify-content:center">Demander un devis →</a>
       </div>
     </div>
   </div>
@@ -527,39 +562,40 @@
   <div class="wrap">
     <p class="stag reveal">Questions fréquentes</p>
     <h2 class="reveal">On a les <em>réponses.</em></h2>
-    <div class="faq-list reveal" style="margin-top:2rem">
-      <div class="faq-item">
-        <button class="faq-q">De quoi avez-vous besoin pour commencer ?<span class="faq-btn">+</span></button>
-        <div class="faq-a">Juste l'annonce de votre bien (texte ou URL LeBonCoin) et quelques photos si vous souhaitez la visite 360°. Tout le reste est géré de mon côté.</div>
+    <div class="faqlist reveal" style="margin-top:2rem">
+      <div class="faqitem">
+        <button class="faqq">De quoi avez-vous besoin pour commencer ?<span class="faqbtn">+</span></button>
+        <div class="faqa">Juste l'annonce de votre bien (texte ou URL LeBonCoin) et quelques photos si vous souhaitez la visite 360°. Tout le reste est géré de mon côté.</div>
       </div>
-      <div class="faq-item">
-        <button class="faq-q">Comment intégrer le plan dans mon annonce LeBonCoin ?<span class="faq-btn">+</span></button>
-        <div class="faq-a">Je vous fournis une URL publique à coller dans la description. Pour un compte professionnel (avec SIRET), le lien peut être mis dans le champ "visite virtuelle" dédié.</div>
+      <div class="faqitem">
+        <button class="faqq">Comment intégrer le plan dans mon annonce LeBonCoin ?<span class="faqbtn">+</span></button>
+        <div class="faqa">Je vous fournis une URL publique à coller dans la description. Pour un compte professionnel (avec SIRET), le lien peut être mis dans le champ "visite virtuelle" dédié.</div>
       </div>
-      <div class="faq-item">
-        <button class="faq-q">Ai-je besoin d'un appareil photo 360° ?<span class="faq-btn">+</span></button>
-        <div class="faq-a">Non. Un iPhone ou Android suffit avec l'application Google Street View (gratuite). Ou je gère la visite 360° de façon procédurale sans aucune photo de votre part.</div>
+      <div class="faqitem">
+        <button class="faqq">Ai-je besoin d'un appareil photo 360° ?<span class="faqbtn">+</span></button>
+        <div class="faqa">Non. Un iPhone ou Android suffit avec l'application Google Street View (gratuite). Ou je gère la visite 360° de façon procédurale sans aucune photo de votre part.</div>
       </div>
-      <div class="faq-item">
-        <button class="faq-q">Combien de temps mon URL reste-t-elle active ?<span class="faq-btn">+</span></button>
-        <div class="faq-a">6 mois minimum. Si votre bien n'est pas vendu au bout de 6 mois, je renouvelle gratuitement l'hébergement.</div>
+      <div class="faqitem">
+        <button class="faqq">Combien de temps mon URL reste-t-elle active ?<span class="faqbtn">+</span></button>
+        <div class="faqa">6 mois minimum. Si votre bien n'est pas vendu au bout de 6 mois, je renouvelle gratuitement l'hébergement.</div>
       </div>
-      <div class="faq-item">
-        <button class="faq-q">Quand dois-je payer ?<span class="faq-btn">+</span></button>
-        <div class="faq-a">Après livraison et validation du résultat. Si le rendu ne vous convient pas, vous ne payez rien.</div>
+      <div class="faqitem">
+        <button class="faqq">Quand dois-je payer ?<span class="faqbtn">+</span></button>
+        <div class="faqa">Après livraison et validation du résultat. Si le rendu ne vous convient pas, vous ne payez rien.</div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- CTA FINAL SANS BOÎTE -->
-<div class="cta-final">
-  <h2>Lancez-vous.<br><em>C'est gratuit.</em></h2>
-  <p>Un email pour décrire votre bien, je vous reviens sous 24h avec un aperçu gratuit. Aucun engagement, aucune pression.</p>
-  <div class="cta-row" style="justify-content:center;margin-bottom:1.25rem">
-    <a href="mailto:dimitri444art@gmail.com?subject=Devis plan 3D immobilier" class="btn-shine">Obtenir mon devis gratuit →</a>
+<div class="ctafinal">
+  <p class="stag reveal" style="justify-content:center">Lancez-vous</p>
+  <h2 class="reveal">Commencez par<br>un email. <em>C'est gratuit.</em></h2>
+  <p class="reveal">Décrivez votre bien en quelques mots, je vous reviens sous 24h avec un aperçu gratuit. Aucun engagement, aucune pression.</p>
+  <div class="cta-row reveal" style="justify-content:center;margin-bottom:1.25rem">
+    <a href="mailto:dimitri444art@gmail.com?subject=Devis plan 3D immobilier" class="btn-p">Obtenir mon devis gratuit →</a>
   </div>
-  <div class="inline-checks">
+  <div class="ichk reveal">
     <span>100% gratuit</span>
     <span>Sans engagement</span>
     <span>Paiement après livraison</span>
@@ -572,45 +608,43 @@
 </footer>
 
 <script>
-  // Parallax zoom
+  // Parallax zoom au scroll
   const bg = document.getElementById('page-bg');
-  let ticking = false;
+  let tk = false;
   window.addEventListener('scroll', () => {
-    if (!ticking) {
+    if (!tk) {
       requestAnimationFrame(() => {
         const p = Math.min(window.scrollY / (document.body.scrollHeight - window.innerHeight), 1);
         bg.style.transform = `scale(${1 + p * 0.18})`;
-        ticking = false;
+        tk = false;
       });
-      ticking = true;
+      tk = true;
     }
   });
 
   // Scroll reveal
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  const obs = new IntersectionObserver(es => {
+    es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('v'); obs.unobserve(e.target); } });
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
   // Barres animées
-  const barObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.querySelectorAll('.bar-fill').forEach(b => { b.style.width = b.dataset.w + '%'; });
-        barObs.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.3 });
   const barsEl = document.getElementById('bars');
-  if (barsEl) barObs.observe(barsEl);
+  if (barsEl) {
+    new IntersectionObserver(es => {
+      if (es[0].isIntersecting) {
+        barsEl.querySelectorAll('.bfill').forEach(b => { b.style.width = b.dataset.w + '%'; });
+      }
+    }, { threshold: 0.3 }).observe(barsEl);
+  }
 
-  // FAQ accordion
-  document.querySelectorAll('.faq-q').forEach(btn => {
+  // FAQ
+  document.querySelectorAll('.faqq').forEach(btn => {
     btn.addEventListener('click', () => {
       const item = btn.parentElement;
-      const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
+      const was = item.classList.contains('open');
+      document.querySelectorAll('.faqitem').forEach(i => i.classList.remove('open'));
+      if (!was) item.classList.add('open');
     });
   });
 </script>
