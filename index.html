@@ -7,484 +7,310 @@
   <meta name="description" content="Plan 2D + Vue 3D + Visite 360° pour valoriser votre bien. Livré en 48h à partir de 150€.">
   <style>
     :root {
-      --bg: #0d0d0d;
       --cyan: #00e5ff;
-      --cyan-dim: rgba(0,229,255,0.15);
-      --text: #f0f0f0;
+      --cyan-dim: rgba(0,229,255,0.12);
       --muted: rgba(255,255,255,0.55);
       --border: rgba(255,255,255,0.1);
-      --card: rgba(12,10,8,0.72);
-      --card-hover: rgba(20,16,12,0.82);
+      --card: rgba(10,8,6,0.72);
+      --card2: rgba(18,14,10,0.8);
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
+    body { font-family: -apple-system,'Segoe UI',sans-serif; background:#0d0d0d; color:#f0f0f0; line-height:1.6; overflow-x:hidden; }
+    a { text-decoration:none; }
 
-    body {
-      font-family: -apple-system, 'Segoe UI', sans-serif;
-      background: #0d0d0d;
-      color: var(--text);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    a { text-decoration: none; }
-
-    /* ── FOND GLOBAL PARALLAX ── */
+    /* ── FOND PARALLAX ── */
     #page-bg {
-      position: fixed; inset: 0;
-      /* Remplacez par votre vraie photo : background-image: url('votre-photo.jpg'); */
+      position:fixed; inset:0;
       background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=85&fit=crop');
-      background-size: cover;
-      background-position: center;
-      transform-origin: center bottom;
-      z-index: -2;
-      transition: transform 0.05s linear;
+      background-size:cover; background-position:center;
+      transform-origin:center bottom; z-index:-2;
     }
     #page-bg::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(
-        to bottom,
-        rgba(0,0,0,0.35) 0%,
-        rgba(0,0,0,0.2) 30%,
-        rgba(0,0,0,0.55) 70%,
-        rgba(0,0,0,0.75) 100%
-      );
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(to bottom,rgba(0,0,0,.38) 0%,rgba(0,0,0,.18) 30%,rgba(0,0,0,.6) 70%,rgba(0,0,0,.78) 100%);
     }
 
-    /* ── NAV ── */
+    /* ── NAV PILL ── */
     nav {
-      position: fixed; top: 1rem; left: 50%; transform: translateX(-50%);
-      background: rgba(15,12,9,0.75);
-      border: 1px solid rgba(255,255,255,0.12);
-      backdrop-filter: blur(16px);
-      display: flex; align-items: center; gap: 2rem;
-      padding: 0.6rem 1.25rem;
-      border-radius: 50px;
-      z-index: 100;
-      transition: background 0.3s;
-      white-space: nowrap;
+      position:fixed; top:1rem; left:50%; transform:translateX(-50%);
+      background:rgba(14,11,8,.8); border:1px solid rgba(255,255,255,.12);
+      backdrop-filter:blur(16px); display:flex; align-items:center; gap:2rem;
+      padding:.6rem 1.25rem; border-radius:50px; z-index:100; white-space:nowrap;
     }
-    .logo { font-weight: 800; font-size: 1rem; color: #fff; letter-spacing: -0.5px; }
-    .logo span { color: var(--cyan); }
-    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
-    .nav-links a { color: rgba(255,255,255,0.65); font-size: 0.85rem; transition: color 0.2s; }
-    .nav-links a:hover { color: #fff; }
+    .logo { font-weight:800; font-size:1rem; color:#fff; letter-spacing:-.5px; }
+    .logo span { color:var(--cyan); }
+    .nav-links { display:flex; gap:1.5rem; list-style:none; }
+    .nav-links a { color:rgba(255,255,255,.65); font-size:.85rem; transition:color .2s; }
+    .nav-links a:hover { color:#fff; }
+
+    /* ── BOUTONS ── */
+    .btn-shine {
+      background:var(--cyan); color:#000;
+      padding:.8rem 1.75rem; border-radius:50px;
+      font-weight:700; font-size:.9rem;
+      position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:.5rem;
+      transition:transform .15s, box-shadow .2s;
+    }
+    .btn-shine::before {
+      content:''; position:absolute; top:0; left:-80%; width:50%; height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);
+      transform:skewX(-20deg);
+    }
+    .btn-shine:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(0,229,255,.35); }
+    .btn-shine:hover::before { animation:shimmer .55s ease-out forwards; }
+
+    .btn-outline {
+      color:rgba(255,255,255,.7); padding:.8rem 1.75rem; border-radius:50px;
+      border:1px solid rgba(255,255,255,.22); font-size:.9rem; font-weight:500;
+      position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:.5rem;
+      transition:color .2s, border-color .2s;
+    }
+    .btn-outline::before {
+      content:''; position:absolute; top:0; left:-80%; width:50%; height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
+      transform:skewX(-20deg);
+    }
+    .btn-outline:hover { color:#fff; border-color:rgba(255,255,255,.55); }
+    .btn-outline:hover::before { animation:shimmer .55s ease-out forwards; }
+
+    @keyframes shimmer { from{left:-80%} to{left:130%} }
+
+    /* NAV CTA */
     .nav-cta {
-      background: var(--cyan); color: #000 !important;
-      padding: 0.45rem 1.1rem; border-radius: 50px;
-      font-weight: 700; font-size: 0.8rem;
-      position: relative; overflow: hidden;
+      background:var(--cyan); color:#000; padding:.4rem 1rem; border-radius:50px;
+      font-weight:700; font-size:.8rem; position:relative; overflow:hidden;
     }
     .nav-cta::before {
-      content: '';
-      position: absolute; top: 0; left: -80%;
-      width: 50%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
-      transform: skewX(-20deg);
+      content:''; position:absolute; top:0; left:-80%; width:50%; height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);
+      transform:skewX(-20deg);
     }
-    .nav-cta:hover::before { animation: shimmer 0.55s ease-out forwards; }
+    .nav-cta:hover::before { animation:shimmer .55s ease-out forwards; }
 
-    /* ── WRAPPER ── */
-    .wrap { max-width: 960px; margin: 0 auto; padding: 0 1.75rem; }
+    /* ── WRAP ── */
+    .wrap { max-width:960px; margin:0 auto; padding:0 1.75rem; }
 
-    /* ── SHIMMER KEYFRAME ── */
-    @keyframes shimmer {
-      from { left: -80%; }
-      to   { left: 130%; }
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+    .hero-inner>* { opacity:0; animation:fadeUp .9s cubic-bezier(.22,1,.36,1) forwards; }
+    .hero-inner .badge    { animation-delay:.2s; }
+    .hero-inner h1        { animation-delay:.4s; }
+    .hero-inner .hero-sub { animation-delay:.6s; }
+    .hero-inner .cta-row  { animation-delay:.8s; }
+    .hero-inner .hero-proof { animation-delay:1s; }
+
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    .d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s}
+
+    /* ── SECTION TAGS ── */
+    .stag {
+      display:flex; align-items:center; gap:.65rem;
+      font-size:.7rem; font-weight:700; color:var(--cyan);
+      text-transform:uppercase; letter-spacing:2px; margin-bottom:1rem;
     }
+    .stag::before { content:''; width:22px; height:2px; background:var(--cyan); flex-shrink:0; }
+
+    h2 { font-size:clamp(2rem,4.5vw,3rem); font-weight:800; letter-spacing:-1.5px; line-height:1.08; margin-bottom:.75rem; }
+    h2 em { color:var(--cyan); font-style:italic; }
+    .sub { color:var(--muted); font-size:1rem; max-width:540px; margin-bottom:3rem; }
+
+    section { padding:6rem 1.75rem; }
 
     /* ── HERO ── */
-    .hero {
-      min-height: 100vh;
-      display: flex; flex-direction: column; justify-content: flex-end;
-      padding-bottom: 6rem;
-    }
-    .hero-inner { max-width: 960px; margin: 0 auto; padding: 0 1.75rem; }
-
-    .hero-inner > * {
-      opacity: 0;
-      animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-    .hero-inner .badge    { animation-delay: 0.2s; }
-    .hero-inner h1        { animation-delay: 0.4s; }
-    .hero-inner .hero-sub { animation-delay: 0.6s; }
-    .hero-inner .cta-row  { animation-delay: 0.8s; }
-    .hero-inner .hero-proof { animation-delay: 1.0s; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    .hero { min-height:100vh; display:flex; flex-direction:column; justify-content:flex-end; padding-bottom:6rem; }
+    .hero-inner { max-width:960px; margin:0 auto; padding:0 1.75rem; }
 
     .badge {
-      display: inline-block;
-      background: var(--cyan-dim);
-      border: 1px solid rgba(0,229,255,0.4);
-      color: var(--cyan);
-      padding: 0.3rem 0.9rem;
-      border-radius: 20px; font-size: 0.75rem;
-      letter-spacing: 0.5px; margin-bottom: 1.5rem;
+      display:inline-flex; align-items:center; gap:.5rem;
+      background:var(--cyan-dim); border:1px solid rgba(0,229,255,.35);
+      color:var(--cyan); padding:.3rem .9rem; border-radius:20px;
+      font-size:.75rem; letter-spacing:.5px; margin-bottom:1.5rem;
     }
+    .badge-dot { width:7px; height:7px; border-radius:50%; background:var(--cyan); animation:pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
 
-    h1 {
-      font-size: clamp(2.6rem, 6vw, 4.5rem);
-      font-weight: 800; line-height: 1.06;
-      letter-spacing: -2px; margin-bottom: 1.25rem;
-      text-shadow: 0 2px 30px rgba(0,0,0,0.6);
-    }
-    h1 em { color: var(--cyan); font-style: italic; }
+    h1 { font-size:clamp(2.6rem,6vw,4.5rem); font-weight:800; line-height:1.06; letter-spacing:-2px; margin-bottom:1.25rem; text-shadow:0 2px 30px rgba(0,0,0,.6); }
+    h1 em { color:var(--cyan); font-style:italic; }
 
-    .hero-sub {
-      font-size: 1.05rem; color: var(--muted);
-      max-width: 540px; margin-bottom: 2rem; line-height: 1.75;
-    }
-    .hero-sub strong { color: #fff; }
+    .hero-sub { font-size:1.05rem; color:var(--muted); max-width:540px; margin-bottom:2rem; line-height:1.75; }
+    .hero-sub strong { color:#fff; }
 
-    .cta-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
-
-    /* Bouton primaire avec shimmer */
-    .btn-primary {
-      background: var(--cyan); color: #000;
-      padding: 0.9rem 2rem; border-radius: 50px;
-      font-weight: 700; font-size: 0.95rem;
-      position: relative; overflow: hidden;
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      transition: transform 0.15s, box-shadow 0.2s;
-    }
-    .btn-primary::before {
-      content: '';
-      position: absolute; top: 0; left: -80%;
-      width: 50%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
-      transform: skewX(-20deg);
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(0,229,255,0.35);
-    }
-    .btn-primary:hover::before { animation: shimmer 0.55s ease-out forwards; }
-
-    .btn-ghost {
-      color: rgba(255,255,255,0.65);
-      font-size: 0.875rem;
-      padding: 0.9rem 1.5rem;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 50px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,0.5); }
+    .cta-row { display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }
 
     .hero-proof {
-      display: flex; gap: 2.5rem; align-items: center;
-      margin-top: 3rem; padding-top: 2rem;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      flex-wrap: wrap;
+      display:flex; gap:2.5rem; align-items:center; flex-wrap:wrap;
+      margin-top:3rem; padding-top:2rem; border-top:1px solid var(--border);
     }
-    .proof-stat strong { display: block; font-size: 1.6rem; font-weight: 800; }
-    .proof-stat span { font-size: 0.78rem; color: var(--muted); }
+    .proof-stat strong { display:block; font-size:1.6rem; font-weight:800; }
+    .proof-stat span { font-size:.78rem; color:var(--muted); }
 
-    /* ── SECTION TAG avec trait ── */
-    .section-tag {
-      display: flex; align-items: center; gap: 0.65rem;
-      font-size: 0.7rem; font-weight: 700;
-      color: var(--cyan); text-transform: uppercase;
-      letter-spacing: 2px; margin-bottom: 1rem;
+    /* ── PROBLÈMES ── */
+    .problems-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:1.25rem; margin-bottom:3rem; }
+    .pcard {
+      background:var(--card); border:1px solid var(--border); backdrop-filter:blur(12px);
+      border-radius:16px; padding:1.75rem;
+      transition:background .25s, transform .25s, border-color .25s;
     }
-    .section-tag::before {
-      content: '';
-      width: 22px; height: 2px;
-      background: var(--cyan); flex-shrink: 0;
+    .pcard:hover { background:var(--card2); transform:translateY(-3px); border-color:rgba(0,229,255,.25); }
+    .picon {
+      width:44px; height:44px; background:var(--cyan-dim);
+      border-radius:10px; display:flex; align-items:center; justify-content:center;
+      font-size:1.2rem; margin-bottom:1rem;
     }
-
-    h2 {
-      font-size: clamp(1.9rem, 4vw, 2.8rem);
-      font-weight: 800; letter-spacing: -1.5px;
-      line-height: 1.1; margin-bottom: 0.75rem;
-    }
-    h2 em { color: var(--cyan); font-style: italic; }
-
-    .section-sub { color: var(--muted); font-size: 1rem; max-width: 540px; margin-bottom: 3rem; }
-
-    /* ── SCROLL REVEAL ── */
-    .reveal {
-      opacity: 0; transform: translateY(28px);
-      transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
-    }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-    .d1 { transition-delay: 0.1s; }
-    .d2 { transition-delay: 0.2s; }
-    .d3 { transition-delay: 0.3s; }
-
-    /* ── SECTIONS ── */
-    section { padding: 6rem 1.75rem; }
-
-    /* ── PROBLÈMES (cartes verre fumé) ── */
-    .problems-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.25rem; margin-bottom: 3rem;
-    }
-    .problem-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-      border-radius: 16px; padding: 1.75rem;
-      transition: background 0.25s, transform 0.25s, border-color 0.25s;
-    }
-    .problem-card:hover {
-      background: var(--card-hover);
-      transform: translateY(-3px);
-      border-color: rgba(0,229,255,0.25);
-    }
-    .problem-icon {
-      width: 44px; height: 44px;
-      background: rgba(0,229,255,0.12);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem; margin-bottom: 1.1rem;
-    }
-    .problem-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .problem-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
+    .pcard h3 { font-size:1rem; font-weight:700; margin-bottom:.5rem; }
+    .pcard p { font-size:.875rem; color:var(--muted); line-height:1.65; }
 
     /* ── BANDEROLE ── */
     .banderole {
-      background: rgba(255,255,255,0.07);
-      backdrop-filter: blur(8px);
-      border-top: 1px solid rgba(255,255,255,0.1);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding: 2rem 1.75rem;
-      display: flex; justify-content: space-between; align-items: center;
-      gap: 2rem; flex-wrap: wrap;
+      background:rgba(255,255,255,.07); backdrop-filter:blur(8px);
+      border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+      padding:2rem 1.75rem; display:flex; justify-content:space-between; align-items:center; gap:2rem; flex-wrap:wrap;
     }
-    .banderole h3 { font-size: clamp(1.1rem, 2.5vw, 1.4rem); font-weight: 700; }
-    .banderole p { font-size: 0.875rem; color: var(--muted); margin-top: 0.25rem; }
+    .banderole h3 { font-size:clamp(1.1rem,2.5vw,1.4rem); font-weight:700; }
+    .banderole p { font-size:.875rem; color:var(--muted); margin-top:.25rem; }
 
-    /* Bouton outline shimmer */
-    .btn-outline-shimmer {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      border: 1px solid rgba(255,255,255,0.25);
-      color: #fff; padding: 0.8rem 1.75rem;
-      border-radius: 50px; font-size: 0.9rem; font-weight: 600;
-      position: relative; overflow: hidden;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      white-space: nowrap;
+    /* ── MÉTHODE (split) ── */
+    .method-split { display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:start; }
+    .method-items { display:flex; flex-direction:column; gap:.85rem; }
+    .mitem {
+      display:flex; gap:.85rem; align-items:flex-start;
+      background:var(--card); border:1px solid var(--border);
+      backdrop-filter:blur(12px); border-radius:12px; padding:1.2rem;
+      transition:border-color .2s, background .2s;
     }
-    .btn-outline-shimmer::before {
-      content: '';
-      position: absolute; top: 0; left: -80%;
-      width: 50%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transform: skewX(-20deg);
+    .mitem:hover { border-color:rgba(0,229,255,.3); background:var(--card2); }
+    .mcheck {
+      width:24px; height:24px; flex-shrink:0;
+      background:var(--cyan-dim); border:1px solid rgba(0,229,255,.5);
+      border-radius:6px; display:flex; align-items:center; justify-content:center;
+      color:var(--cyan); font-size:.75rem; font-weight:700;
     }
-    .btn-outline-shimmer:hover {
-      border-color: rgba(255,255,255,0.6);
-      box-shadow: 0 0 20px rgba(255,255,255,0.08);
-    }
-    .btn-outline-shimmer:hover::before { animation: shimmer 0.55s ease-out forwards; }
+    .mitem h4 { font-size:.9rem; font-weight:700; margin-bottom:.2rem; }
+    .mitem p { font-size:.8rem; color:var(--muted); }
 
-    /* ── DÉMOS ── */
-    .demos-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-      gap: 1.25rem;
+    .stat-box {
+      background:var(--card); border:1px solid var(--border);
+      backdrop-filter:blur(12px); border-radius:16px; padding:2rem; position:sticky; top:5rem;
     }
-    .demo-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-      border-radius: 16px; overflow: hidden;
-      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    .stat-label { font-size:.7rem; font-weight:700; color:var(--cyan); text-transform:uppercase; letter-spacing:2px; margin-bottom:.75rem; }
+    .stat-big { font-size:3.5rem; font-weight:900; letter-spacing:-2px; line-height:1; margin-bottom:.25rem; }
+    .stat-big em { color:var(--cyan); font-style:normal; }
+    .stat-desc { font-size:.875rem; color:var(--muted); margin-bottom:1.75rem; line-height:1.6; }
+    .bars { display:flex; flex-direction:column; gap:.75rem; }
+    .bar-row label { font-size:.8rem; color:var(--muted); display:block; margin-bottom:.3rem; }
+    .bar-track { height:5px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden; }
+    .bar-fill { height:100%; background:var(--cyan); border-radius:3px; width:0; transition:width 1.2s cubic-bezier(.22,1,.36,1); }
+
+    /* ── CRÉDIBILITÉ ── */
+    .cred-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; }
+    .cred-card {
+      background:var(--card); border:1px solid var(--border); backdrop-filter:blur(12px);
+      border-radius:16px; padding:1.75rem; text-align:center;
+      transition:transform .25s, border-color .25s;
     }
-    .demo-card:hover {
-      border-color: rgba(0,229,255,0.4);
-      transform: translateY(-4px);
-      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    .cred-card:hover { transform:translateY(-3px); border-color:rgba(0,229,255,.3); }
+    .cred-icon {
+      width:48px; height:48px; background:var(--cyan-dim); border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.4rem; margin:0 auto 1rem;
     }
-    .demo-thumb {
-      height: 150px;
-      background: linear-gradient(135deg, rgba(0,30,40,0.8) 0%, rgba(0,10,20,0.9) 100%);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2.5rem;
-      border-bottom: 1px solid var(--border);
+    .cred-card .num { font-size:2rem; font-weight:900; color:#fff; line-height:1; }
+    .cred-card .clabel { font-size:.85rem; font-weight:700; margin:.3rem 0; }
+    .cred-card .cdesc { font-size:.8rem; color:var(--muted); line-height:1.6; }
+
+    /* ── PREUVES / DÉMOS ── */
+    .proof-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
+    .proof-main {
+      background:var(--card); border:1px solid var(--border); backdrop-filter:blur(12px);
+      border-radius:16px; overflow:hidden; grid-row:span 2;
+      transition:border-color .25s, transform .25s;
     }
-    .demo-info { padding: 1.25rem; }
-    .demo-info h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
-    .demo-info p { font-size: 0.8rem; color: var(--muted); margin-bottom: 1rem; }
-    .demo-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
-    .tag {
-      font-size: 0.7rem; padding: 0.2rem 0.55rem;
-      border-radius: 4px; background: var(--cyan-dim);
-      color: var(--cyan); border: 1px solid rgba(0,229,255,0.2);
+    .proof-main:hover { border-color:rgba(0,229,255,.4); transform:translateY(-3px); }
+    .proof-side {
+      background:var(--card); border:1px solid var(--border); backdrop-filter:blur(12px);
+      border-radius:16px; overflow:hidden;
+      transition:border-color .25s, transform .25s;
     }
+    .proof-side:hover { border-color:rgba(0,229,255,.4); transform:translateY(-3px); }
+    .proof-thumb {
+      height:200px; display:flex; align-items:center; justify-content:center;
+      font-size:3rem; border-bottom:1px solid var(--border);
+      background:linear-gradient(135deg,rgba(0,30,40,.9) 0%,rgba(0,10,20,.95) 100%);
+    }
+    .proof-side .proof-thumb { height:130px; font-size:2rem; }
+    .proof-body { padding:1.25rem; }
+    .proof-body h3 { font-size:.95rem; font-weight:700; margin-bottom:.3rem; }
+    .proof-body .pmeta { font-size:.8rem; color:var(--muted); margin-bottom:.75rem; }
+    .proof-tags { display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:1rem; }
+    .tag { font-size:.7rem; padding:.2rem .55rem; border-radius:4px; background:var(--cyan-dim); color:var(--cyan); border:1px solid rgba(0,229,255,.2); }
     .btn-demo {
-      display: block; text-align: center;
-      border: 1px solid var(--border); color: var(--muted);
-      padding: 0.6rem; border-radius: 8px; font-size: 0.85rem;
-      transition: border-color 0.2s, color 0.2s;
+      display:block; text-align:center; border:1px solid var(--border); color:var(--muted);
+      padding:.6rem; border-radius:8px; font-size:.85rem; transition:border-color .2s, color .2s;
     }
-    .btn-demo:hover { border-color: var(--cyan); color: var(--cyan); }
+    .btn-demo:hover { border-color:var(--cyan); color:var(--cyan); }
 
-    /* ── SOLUTION ── */
-    .features-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 1rem; margin-bottom: 2rem;
+    /* ── BADGE URGENCE ── */
+    .urgence-badge {
+      display:inline-flex; align-items:center; gap:.6rem;
+      background:rgba(255,60,60,.1); border:1px solid rgba(255,60,60,.25);
+      color:rgba(255,180,180,.9); padding:.4rem 1rem; border-radius:20px;
+      font-size:.8rem; font-weight:500; margin-bottom:2rem;
     }
-    .feature {
-      display: flex; gap: 0.85rem; align-items: flex-start;
-      padding: 1.25rem;
-      background: var(--card);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-      border-radius: 12px;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .feature:hover { border-color: rgba(0,229,255,0.3); background: var(--card-hover); }
-    .check-box {
-      width: 22px; height: 22px; flex-shrink: 0;
-      background: var(--cyan-dim);
-      border: 1px solid rgba(0,229,255,0.5);
-      border-radius: 5px;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--cyan); font-size: 0.7rem; font-weight: 700;
-    }
-    .feature-text h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.2rem; }
-    .feature-text p { font-size: 0.8rem; color: var(--muted); }
+    .urgence-dot { width:8px; height:8px; border-radius:50%; background:#ff3c3c; animation:pulse-red 1.5s infinite; flex-shrink:0; }
+    @keyframes pulse-red { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
 
-    /* ── COMPARATIF ── */
-    .compare-wrap {
-      background: var(--card);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--border);
-      border-radius: 16px; overflow: hidden;
-    }
-    .compare-table { width: 100%; border-collapse: collapse; }
-    .compare-table th {
-      padding: 1rem; text-align: center;
-      font-size: 0.8rem; font-weight: 700;
-      background: rgba(255,255,255,0.04);
-      border-bottom: 1px solid var(--border);
-      color: var(--muted);
-    }
-    .compare-table th.hl { color: var(--cyan); }
-    .compare-table td {
-      padding: 0.85rem 1rem; text-align: center;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.875rem; color: var(--muted);
-    }
-    .compare-table td:first-child { text-align: left; color: #fff; }
-    .compare-table tr:last-child td { border-bottom: none; }
-    .ok { color: var(--cyan); }
-    .no { color: #ff4d4d; }
-
-    /* ── TARIFS ── */
-    .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-    .pricing-card {
-      background: var(--card);
-      backdrop-filter: blur(14px);
-      border: 1px solid var(--border);
-      border-radius: 16px; padding: 2rem; position: relative;
-      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
-    }
-    .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
-    .pricing-card.featured { border-color: rgba(0,229,255,0.5); }
-    .featured-badge {
-      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-      background: var(--cyan); color: #000;
-      font-size: 0.65rem; font-weight: 700;
-      padding: 0.2rem 0.9rem; border-radius: 20px;
-      text-transform: uppercase; letter-spacing: 1px;
-    }
-    .price-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem; }
-    .price { font-size: 2.8rem; font-weight: 800; line-height: 1; }
-    .price sup { font-size: 1.2rem; vertical-align: super; }
-    .price-desc { font-size: 0.8rem; color: var(--muted); margin: 0.5rem 0 1.5rem; }
-    .price-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.75rem; }
-    .price-features li { font-size: 0.875rem; color: var(--muted); display: flex; align-items: flex-start; gap: 0.5rem; }
-    .price-features li::before { content: "✓"; color: var(--cyan); font-weight: 700; flex-shrink: 0; }
-    .btn-card-primary {
-      display: block; text-align: center;
-      background: var(--cyan); color: #000;
-      padding: 0.8rem; border-radius: 50px;
-      font-weight: 700; font-size: 0.9rem;
-      position: relative; overflow: hidden;
-      transition: opacity 0.2s, transform 0.15s;
-    }
-    .btn-card-primary::before {
-      content: '';
-      position: absolute; top: 0; left: -80%; width: 50%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
-      transform: skewX(-20deg);
-    }
-    .btn-card-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-    .btn-card-primary:hover::before { animation: shimmer 0.55s ease-out forwards; }
-    .btn-card-outline {
-      display: block; text-align: center;
-      border: 1px solid var(--border); color: var(--muted);
-      padding: 0.8rem; border-radius: 50px; font-size: 0.9rem;
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .btn-card-outline:hover { border-color: var(--cyan); color: var(--cyan); }
+    /* ── CTA CENTRAL ── */
+    .cta-center { text-align:center; padding:6rem 1.75rem; }
+    .cta-center h2 { margin-bottom:.75rem; }
+    .cta-center .sub { margin:0 auto 2rem; }
+    .cta-center .cta-row { justify-content:center; margin-bottom:1.25rem; }
+    .inline-checks { display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap; color:var(--muted); font-size:.82rem; }
+    .inline-checks span::before { content:'✓ '; color:var(--cyan); font-weight:700; }
 
     /* ── FAQ ── */
-    .faq-list {
-      background: var(--card);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--border);
-      border-radius: 16px; overflow: hidden;
-    }
-    .faq-item { border-bottom: 1px solid var(--border); }
-    .faq-item:last-child { border-bottom: none; }
+    .faq-list { background:var(--card); backdrop-filter:blur(12px); border:1px solid var(--border); border-radius:16px; overflow:hidden; }
+    .faq-item { border-bottom:1px solid var(--border); }
+    .faq-item:last-child { border-bottom:none; }
     .faq-q {
-      width: 100%; background: none; border: none;
-      padding: 1.25rem 1.5rem;
-      display: flex; justify-content: space-between; align-items: center;
-      cursor: pointer; color: #fff;
-      font-size: 0.9rem; font-weight: 500; text-align: left;
-      transition: background 0.2s;
+      width:100%; background:none; border:none;
+      padding:1.25rem 1.5rem; display:flex; justify-content:space-between; align-items:center;
+      cursor:pointer; color:#fff; font-size:.9rem; font-weight:500; text-align:left;
+      transition:background .2s;
     }
-    .faq-q:hover { background: rgba(255,255,255,0.04); }
-    .faq-icon { color: var(--cyan); font-size: 1.2rem; transition: transform 0.3s; flex-shrink: 0; }
-    .faq-item.open .faq-icon { transform: rotate(45deg); }
-    .faq-a { display: none; padding: 0 1.5rem 1.25rem; color: var(--muted); font-size: 0.875rem; line-height: 1.75; }
-    .faq-item.open .faq-a { display: block; }
+    .faq-q:hover { background:rgba(255,255,255,.04); }
+    .faq-btn {
+      width:28px; height:28px; border-radius:50%; border:1px solid rgba(255,255,255,.3);
+      background:rgba(255,255,255,.08); display:flex; align-items:center; justify-content:center;
+      flex-shrink:0; color:rgba(255,255,255,.7); font-size:.8rem; font-weight:700;
+      transition:background .2s, border-color .2s, transform .3s;
+    }
+    .faq-item.open .faq-btn { background:var(--cyan); border-color:var(--cyan); color:#000; transform:rotate(45deg); }
+    .faq-a { display:none; padding:0 1.5rem 1.25rem; color:var(--muted); font-size:.875rem; line-height:1.75; }
+    .faq-item.open .faq-a { display:block; }
 
-    /* ── CTA FINAL ── */
-    .cta-final {
-      text-align: center;
-      background: rgba(10,8,6,0.7);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px;
-      padding: 5rem 2rem; margin: 0 1.75rem 6rem;
-    }
-    .cta-final h2 { margin-bottom: 0.75rem; }
-    .cta-final p { color: var(--muted); margin-bottom: 2rem; }
-    .cta-final .cta-row { justify-content: center; }
+    /* ── CTA FINAL (sans boîte) ── */
+    .cta-final { text-align:center; padding:7rem 1.75rem 8rem; }
+    .cta-final h2 { font-size:clamp(2.5rem,5.5vw,4rem); margin-bottom:.75rem; }
+    .cta-final p { color:var(--muted); max-width:540px; margin:0 auto 2.5rem; font-size:1rem; line-height:1.75; }
 
     /* ── FOOTER ── */
-    footer {
-      text-align: center; padding: 2rem;
-      border-top: 1px solid var(--border);
-      color: var(--muted); font-size: 0.8rem;
-    }
+    footer { text-align:center; padding:2rem; border-top:1px solid var(--border); color:var(--muted); font-size:.8rem; }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 700px) {
-      nav { top: 0.5rem; padding: 0.5rem 1rem; gap: 1rem; }
-      .nav-links { display: none; }
-      .features-grid { grid-template-columns: 1fr; }
-      .pricing-grid { grid-template-columns: 1fr; }
-      .banderole { flex-direction: column; align-items: flex-start; }
-      .cta-final { margin: 0 0 4rem; border-radius: 0; }
+    @media (max-width:720px) {
+      .nav-links { display:none; }
+      .method-split { grid-template-columns:1fr; }
+      .cred-grid { grid-template-columns:1fr; }
+      .proof-grid { grid-template-columns:1fr; }
+      .proof-main { grid-row:auto; }
+      .banderole { flex-direction:column; align-items:flex-start; }
     }
   </style>
 </head>
 <body>
 
-<!-- FOND PARALLAX GLOBAL -->
 <div id="page-bg"></div>
 
 <!-- NAV -->
@@ -502,23 +328,16 @@
 <!-- HERO -->
 <div class="hero">
   <div class="hero-inner">
-    <div class="badge">Plan 2D · Vue 3D · Visite 360°</div>
-
+    <div class="badge"><span class="badge-dot"></span>Plan 2D · Vue 3D · Visite 360°</div>
     <h1>Votre bien se vend<br><em>40% plus vite</em><br>avec un plan 3D interactif</h1>
-
     <p class="hero-sub">
-      Livrable HTML autonome · Plan 2D + Vue 3D + Panorama 360°
-      à coller dans votre annonce LeBonCoin.<br>
+      Livrable HTML autonome · Plan 2D + Vue 3D + Panorama 360° à coller dans votre annonce LeBonCoin.<br>
       <strong>Livré en 48h · À partir de 150€ · Sans abonnement</strong>
     </p>
-
     <div class="cta-row">
-      <a href="mailto:dimitri444art@gmail.com?subject=Devis plan 3D immobilier" class="btn-primary">
-        Demander un devis gratuit →
-      </a>
-      <a href="#demos" class="btn-ghost">Voir les exemples</a>
+      <a href="mailto:dimitri444art@gmail.com?subject=Devis plan 3D" class="btn-shine">Demander un devis gratuit →</a>
+      <a href="#demos" class="btn-outline">Voir les exemples</a>
     </div>
-
     <div class="hero-proof">
       <div class="proof-stat"><strong>+40%</strong><span>de clics vs annonce simple</span></div>
       <div class="proof-stat"><strong>48h</strong><span>délai de livraison</span></div>
@@ -531,77 +350,133 @@
 <!-- PROBLÈMES -->
 <section id="problemes">
   <div class="wrap">
-    <p class="section-tag reveal">Pourquoi maintenant</p>
+    <p class="stag reveal">Pourquoi maintenant</p>
     <h2 class="reveal">Votre annonce se noie<br>dans les <em>résultats</em></h2>
-    <p class="section-sub reveal">LeBonCoin affiche des milliers de biens. Sans visuel fort, les acheteurs passent à côté du vôtre.</p>
-
+    <p class="sub reveal">LeBonCoin affiche des milliers de biens. Sans visuel fort, les acheteurs passent à côté du vôtre.</p>
     <div class="problems-grid">
-      <div class="problem-card reveal d1">
-        <div class="problem-icon">📸</div>
-        <h3>Photos pas suffisantes</h3>
-        <p>Des photos font voir le bien, un plan 3D le fait <em>vivre</em>. Les acheteurs se projettent mieux, décident plus vite.</p>
-      </div>
-      <div class="problem-card reveal d2">
-        <div class="problem-icon">👁️</div>
-        <h3>Visites inutiles</h3>
-        <p>Des acquéreurs se déplacent sans être vraiment intéressés. Un plan précis filtre les curieux et attire les profils sérieux.</p>
-      </div>
-      <div class="problem-card reveal d3">
-        <div class="problem-icon">💸</div>
-        <h3>Matterport coûte 3 500€/an</h3>
-        <p>Les outils pros sont hors de portée pour un particulier. Notre livrable produit le même résultat pour 150€, sans abonnement.</p>
-      </div>
+      <div class="pcard reveal d1"><div class="picon">📸</div><h3>Photos pas suffisantes</h3><p>Des photos font voir le bien, un plan 3D le fait <em>vivre</em>. Les acheteurs se projettent mieux, décident plus vite.</p></div>
+      <div class="pcard reveal d2"><div class="picon">👁️</div><h3>Visites inutiles</h3><p>Des acquéreurs se déplacent sans être vraiment intéressés. Un plan précis filtre les curieux et attire les profils sérieux.</p></div>
+      <div class="pcard reveal d3"><div class="picon">💸</div><h3>Matterport coûte 3 500€/an</h3><p>Les outils pros sont hors de portée pour un particulier. Notre livrable produit le même résultat pour 150€, sans abonnement.</p></div>
     </div>
   </div>
 </section>
 
-<!-- BANDEROLE -->
+<!-- BANDEROLE 1 -->
 <div class="banderole">
   <div>
     <h3>Vous vous reconnaissez dans l'un de ces points ?</h3>
     <p>La solution ImmoViz 3D a été conçue précisément pour ça.</p>
   </div>
-  <a href="#solution" class="btn-outline-shimmer">Découvrir la solution →</a>
+  <a href="#solution" class="btn-outline">Découvrir la solution →</a>
 </div>
 
-<!-- DÉMOS -->
+<!-- MÉTHODE SPLIT -->
+<section id="solution">
+  <div class="wrap">
+    <p class="stag reveal">La méthode</p>
+    <div class="method-split">
+      <div>
+        <h2 class="reveal">Livrable clé en main,<br><em>résultats immédiats.</em></h2>
+        <p class="sub reveal">Vous envoyez l'annonce. Je livre un fichier HTML complet en 48h, prêt à partager sans aucun logiciel.</p>
+        <div class="method-items">
+          <div class="mitem reveal d1"><div class="mcheck">✓</div><div><h4>Plan 2D interactif</h4><p>Toutes les pièces cliquables avec surfaces et détails</p></div></div>
+          <div class="mitem reveal d2"><div class="mcheck">✓</div><div><h4>Vue 3D navigable</h4><p>Rotation libre, zoom, exploration du volume</p></div></div>
+          <div class="mitem reveal d1"><div class="mcheck">✓</div><div><h4>Visite 360° intégrée</h4><p>Panoramas pièce par pièce si vous fournissez les photos</p></div></div>
+          <div class="mitem reveal d2"><div class="mcheck">✓</div><div><h4>Fichier autonome</h4><p>Un seul .html — zéro dépendance, zéro abonnement</p></div></div>
+        </div>
+      </div>
+      <div class="stat-box reveal">
+        <p class="stat-label">Impact confirmé</p>
+        <div class="stat-big">×<em>10</em></div>
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:.25rem">plus de contacts qualifiés</p>
+        <p class="stat-desc">Un plan interactif retient l'attention 10× plus longtemps qu'une annonce photo classique. Les acheteurs sérieux restent, les curieux passent.</p>
+        <div class="bars" id="bars">
+          <div><label>Taux de clic sur l'annonce</label><div class="bar-track"><div class="bar-fill" data-w="85"></div></div></div>
+          <div><label>Qualité des leads</label><div class="bar-track"><div class="bar-fill" data-w="90"></div></div></div>
+          <div><label>Temps passé sur l'annonce</label><div class="bar-track"><div class="bar-fill" data-w="95"></div></div></div>
+          <div><label>Satisfaction du vendeur</label><div class="bar-track"><div class="bar-fill" data-w="100"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CRÉDIBILITÉ -->
+<section id="credibilite">
+  <div class="wrap">
+    <p class="stag reveal">Pourquoi nous faire confiance</p>
+    <h2 class="reveal">Technique confirmée.<br><em>Résultats garantis.</em></h2>
+    <div class="cred-grid" style="margin-top:2.5rem">
+      <div class="cred-card reveal d1">
+        <div class="cred-icon">⚡</div>
+        <div class="num">48h</div>
+        <div class="clabel">Livraison rapide</div>
+        <p class="cdesc">De l'annonce au plan interactif en ligne en moins de 48 heures. Sans déplacement.</p>
+      </div>
+      <div class="cred-card reveal d2">
+        <div class="cred-icon">💰</div>
+        <div class="num">150€</div>
+        <div class="clabel">Vs 3 500€/an</div>
+        <p class="cdesc">Le même résultat que Matterport à moins de 5% du prix, sans abonnement, sans matériel spécial.</p>
+      </div>
+      <div class="cred-card reveal d3">
+        <div class="cred-icon">🔒</div>
+        <div class="num">100%</div>
+        <div class="clabel">Propriétaire du fichier</div>
+        <p class="cdesc">Le fichier HTML vous appartient. Hébergement inclus 6 mois. Aucune dépendance externe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA INTERMÉDIAIRE -->
+<div class="cta-center">
+  <div class="urgence-badge reveal"><span class="urgence-dot"></span>Disponibilités limitées · 2 slots par semaine</div>
+  <h2 class="reveal" style="font-size:clamp(2rem,4.5vw,3rem)">Commencez par<br>un devis <em>gratuit.</em></h2>
+  <p class="sub reveal" style="margin:0 auto 2rem">On identifie ensemble les besoins de votre bien, le délai, et ce qui donnera le plus d'impact à votre annonce. Aucun engagement.</p>
+  <div class="cta-row reveal" style="justify-content:center;margin-bottom:1.25rem">
+    <a href="mailto:dimitri444art@gmail.com?subject=Devis plan 3D" class="btn-shine">Obtenir mon devis gratuit →</a>
+  </div>
+  <div class="inline-checks reveal">
+    <span>100% gratuit</span>
+    <span>Sans engagement</span>
+    <span>Réponse sous 24h</span>
+    <span>Paiement après livraison</span>
+  </div>
+</div>
+
+<!-- DÉMOS / PREUVES -->
 <section id="demos">
   <div class="wrap">
-    <p class="section-tag reveal">Exemples réels</p>
+    <p class="stag reveal">Les plans parlent d'eux-mêmes</p>
     <h2 class="reveal">Voyez le résultat<br>avant de commander</h2>
-    <p class="section-sub reveal">Chaque livrable est un fichier HTML autonome — aucun logiciel requis, fonctionne dans n'importe quel navigateur.</p>
-
-    <div class="demos-grid">
-      <div class="demo-card reveal d1">
-        <div class="demo-thumb">🏡</div>
-        <div class="demo-info">
+    <p class="sub reveal">Chaque livrable est un fichier HTML autonome — aucun logiciel requis.</p>
+    <div class="proof-grid">
+      <div class="proof-main reveal d1">
+        <div class="proof-thumb">🏡</div>
+        <div class="proof-body">
           <h3>Maison — Romorantin</h3>
-          <p>170 m² · 12 pièces · 265 000 €</p>
-          <div class="demo-tags">
-            <span class="tag">Plan 2D</span><span class="tag">Vue 3D</span><span class="tag">360°</span>
-          </div>
+          <p class="pmeta">170 m² · 12 pièces · 265 000 € · RDC + Étage</p>
+          <div class="proof-tags"><span class="tag">Plan 2D</span><span class="tag">Vue 3D</span><span class="tag">Visite 360°</span><span class="tag">Complet</span></div>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">Plan interactif complet avec 12 pièces, navigation 3D et visite 360° sur 9 pièces. Exemple de notre livrable le plus complet.</p>
           <a href="plan-interactif-romorantin.html" class="btn-demo" target="_blank">Voir la démo →</a>
         </div>
       </div>
-      <div class="demo-card reveal d2">
-        <div class="demo-thumb">🏠</div>
-        <div class="demo-info">
+      <div class="proof-side reveal d2">
+        <div class="proof-thumb">🏠</div>
+        <div class="proof-body">
           <h3>Maison — Niort</h3>
-          <p>130 m² · 9 pièces</p>
-          <div class="demo-tags">
-            <span class="tag">Plan 2D</span><span class="tag">Vue 3D</span><span class="tag">360°</span>
-          </div>
+          <p class="pmeta">130 m² · 9 pièces</p>
+          <div class="proof-tags"><span class="tag">Plan 2D</span><span class="tag">Vue 3D</span><span class="tag">360°</span></div>
           <a href="plan-interactif-niort.html" class="btn-demo" target="_blank">Voir la démo →</a>
         </div>
       </div>
-      <div class="demo-card reveal d3">
-        <div class="demo-thumb">🏙️</div>
-        <div class="demo-info">
+      <div class="proof-side reveal d3">
+        <div class="proof-thumb">🏙️</div>
+        <div class="proof-body">
           <h3>Appartement — Tours</h3>
-          <p>Plan interactif complet</p>
-          <div class="demo-tags">
-            <span class="tag">Plan 2D</span><span class="tag">Vue 3D</span><span class="tag">360°</span>
-          </div>
+          <p class="pmeta">Plan interactif complet</p>
+          <div class="proof-tags"><span class="tag">Plan 2D</span><span class="tag">Vue 3D</span><span class="tag">360°</span></div>
           <a href="plan-interactif-tours.html" class="btn-demo" target="_blank">Voir la démo →</a>
         </div>
       </div>
@@ -609,109 +484,39 @@
   </div>
 </section>
 
-<!-- SOLUTION -->
-<section id="solution">
-  <div class="wrap">
-    <p class="section-tag reveal">La solution</p>
-    <h2 class="reveal">Un livrable clé en main<br>en <em>48 heures</em></h2>
-    <p class="section-sub reveal">Vous envoyez l'annonce. Je livre un fichier HTML complet, prêt à partager.</p>
-
-    <div class="features-grid">
-      <div class="feature reveal d1">
-        <div class="check-box">✓</div>
-        <div class="feature-text"><h4>Plan 2D interactif</h4><p>Pièces cliquables avec surfaces et détails</p></div>
-      </div>
-      <div class="feature reveal d2">
-        <div class="check-box">✓</div>
-        <div class="feature-text"><h4>Vue 3D navigable</h4><p>Rotation libre, zoom, exploration du volume</p></div>
-      </div>
-      <div class="feature reveal d1">
-        <div class="check-box">✓</div>
-        <div class="feature-text"><h4>Visite 360° intégrée</h4><p>Panoramas pièce par pièce (photos fournies)</p></div>
-      </div>
-      <div class="feature reveal d2">
-        <div class="check-box">✓</div>
-        <div class="feature-text"><h4>Fichier autonome</h4><p>Un seul .html — zéro dépendance, zéro abonnement</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- BANDEROLE 2 -->
-<div class="banderole">
-  <div>
-    <h3>Hébergement inclus 6 mois</h3>
-    <p>URL publique sur GitHub Pages ou Netlify — compatible LeBonCoin et partage direct.</p>
-  </div>
-  <a href="#tarifs" class="btn-outline-shimmer">Voir les tarifs →</a>
-</div>
-
-<!-- COMPARATIF -->
-<section id="comparatif">
-  <div class="wrap">
-    <p class="section-tag reveal">Comparatif</p>
-    <h2 class="reveal">Pourquoi choisir<br><em>ImmoViz 3D</em> ?</h2>
-
-    <div class="compare-wrap reveal">
-      <table class="compare-table">
-        <thead>
-          <tr>
-            <th style="text-align:left">Critère</th>
-            <th class="hl">ImmoViz 3D</th>
-            <th>Matterport</th>
-            <th>Simple photos</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Plan interactif 2D + 3D</td><td class="ok">✓</td><td class="ok">✓</td><td class="no">✗</td></tr>
-          <tr><td>Visite 360°</td><td class="ok">✓</td><td class="ok">✓</td><td class="no">✗</td></tr>
-          <tr><td>Prix</td><td class="ok" style="color:var(--cyan);font-weight:700">150€</td><td class="no">3 500€/an</td><td class="ok">Gratuit</td></tr>
-          <tr><td>Abonnement requis</td><td class="ok">Non</td><td class="no">Oui</td><td class="ok">Non</td></tr>
-          <tr><td>Délai de livraison</td><td class="ok">48h</td><td>Sur RDV</td><td>Immédiat</td></tr>
-          <tr><td>Partage URL public</td><td class="ok">✓</td><td class="ok">✓</td><td class="no">✗</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
 <!-- TARIFS -->
 <section id="tarifs">
   <div class="wrap">
-    <p class="section-tag reveal">Tarifs</p>
+    <p class="stag reveal">Tarifs</p>
     <h2 class="reveal">Simple et sans surprise</h2>
-    <p class="section-sub reveal">Pas d'abonnement. Pas de frais cachés. Vous payez une fois, le fichier est à vous pour toujours.</p>
-
-    <div class="pricing-grid">
-      <div class="pricing-card reveal d1">
-        <div class="price-label">Offre Essentielle</div>
-        <div class="price"><sup>€</sup>150</div>
-        <p class="price-desc">Livraison 48h · Paiement après livraison</p>
-        <ul class="price-features">
-          <li>Plan 2D interactif (toutes pièces)</li>
-          <li>Vue 3D navigable (rotation + zoom)</li>
-          <li>Visite 360° (si photos fournies)</li>
-          <li>Fichier HTML autonome</li>
-          <li>URL hébergée 6 mois</li>
-          <li>1 retouche incluse</li>
+    <p class="sub reveal">Pas d'abonnement. Pas de frais cachés. Vous payez une fois, le fichier est à vous.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+      <div class="pcard reveal d1" style="border-radius:16px;padding:2rem">
+        <p style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Offre Essentielle</p>
+        <div style="font-size:2.8rem;font-weight:800;line-height:1;margin-bottom:.5rem"><sup style="font-size:1.2rem;vertical-align:super">€</sup>150</div>
+        <p style="font-size:.8rem;color:var(--muted);margin-bottom:1.5rem">Livraison 48h · Paiement après livraison</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.75rem">
+          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>Plan 2D interactif (toutes pièces)</li>
+          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>Vue 3D navigable</li>
+          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>Visite 360° (si photos fournies)</li>
+          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>Fichier HTML autonome</li>
+          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>URL hébergée 6 mois</li>
         </ul>
-        <a href="mailto:dimitri444art@gmail.com?subject=Commande plan 3D - Offre Essentielle" class="btn-card-outline">Demander un devis</a>
+        <a href="mailto:dimitri444art@gmail.com?subject=Commande Essentielle" class="btn-outline" style="display:block;text-align:center">Demander un devis</a>
       </div>
-
-      <div class="pricing-card featured reveal d2">
-        <div class="featured-badge">Recommandé</div>
-        <div class="price-label">Offre Photoréaliste</div>
-        <div class="price"><sup>€</sup>450</div>
-        <p class="price-desc">Rendu Blender · Délai 5-7 jours</p>
-        <ul class="price-features">
-          <li>Tout l'Offre Essentielle</li>
-          <li>Modélisation Blender photoréaliste</li>
-          <li>Textures et matériaux réalistes</li>
-          <li>Rendu haute définition (4K)</li>
-          <li>Vidéo de présentation 30s</li>
-          <li>3 retouches incluses</li>
+      <div class="pcard reveal d2" style="border-radius:16px;padding:2rem;border-color:rgba(0,229,255,.5);position:relative">
+        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--cyan);color:#000;font-size:.65rem;font-weight:700;padding:.2rem .9rem;border-radius:20px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap">Recommandé</div>
+        <p style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Offre Photoréaliste</p>
+        <div style="font-size:2.8rem;font-weight:800;line-height:1;margin-bottom:.5rem"><sup style="font-size:1.2rem;vertical-align:super">€</sup>450</div>
+        <p style="font-size:.8rem;color:var(--muted);margin-bottom:1.5rem">Rendu Blender · Délai 5-7 jours</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.75rem">
+          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>Tout l'Offre Essentielle</li>
+          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>Modélisation Blender photoréaliste</li>
+          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>Textures et matériaux réalistes</li>
+          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>Rendu haute définition (4K)</li>
+          <li style="font-size:.875rem;color:var(--muted);display:flex;gap:.5rem"><span style="color:var(--cyan);font-weight:700">✓</span>3 retouches incluses</li>
         </ul>
-        <a href="mailto:dimitri444art@gmail.com?subject=Commande plan 3D - Offre Photoréaliste" class="btn-card-primary">Demander un devis →</a>
+        <a href="mailto:dimitri444art@gmail.com?subject=Commande Photoréaliste" class="btn-shine" style="display:block;text-align:center;justify-content:center">Demander un devis →</a>
       </div>
     </div>
   </div>
@@ -720,84 +525,86 @@
 <!-- FAQ -->
 <section id="faq">
   <div class="wrap">
-    <p class="section-tag reveal">Questions fréquentes</p>
-    <h2 class="reveal">Tout ce que vous<br>voulez savoir</h2>
-
-    <div class="faq-list reveal">
+    <p class="stag reveal">Questions fréquentes</p>
+    <h2 class="reveal">On a les <em>réponses.</em></h2>
+    <div class="faq-list reveal" style="margin-top:2rem">
       <div class="faq-item">
-        <button class="faq-q">De quoi avez-vous besoin pour commencer ?<span class="faq-icon">+</span></button>
+        <button class="faq-q">De quoi avez-vous besoin pour commencer ?<span class="faq-btn">+</span></button>
         <div class="faq-a">Juste l'annonce de votre bien (texte ou URL LeBonCoin) et quelques photos si vous souhaitez la visite 360°. Tout le reste est géré de mon côté.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">Comment intégrer le plan dans mon annonce LeBonCoin ?<span class="faq-icon">+</span></button>
+        <button class="faq-q">Comment intégrer le plan dans mon annonce LeBonCoin ?<span class="faq-btn">+</span></button>
         <div class="faq-a">Je vous fournis une URL publique à coller dans la description. Pour un compte professionnel (avec SIRET), le lien peut être mis dans le champ "visite virtuelle" dédié.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">Ai-je besoin d'un appareil photo 360° ?<span class="faq-icon">+</span></button>
+        <button class="faq-q">Ai-je besoin d'un appareil photo 360° ?<span class="faq-btn">+</span></button>
         <div class="faq-a">Non. Un iPhone ou Android suffit avec l'application Google Street View (gratuite). Ou je gère la visite 360° de façon procédurale sans aucune photo de votre part.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">Combien de temps mon URL reste-t-elle active ?<span class="faq-icon">+</span></button>
-        <div class="faq-a">6 mois minimum. Si votre bien n'est pas vendu, je renouvelle gratuitement l'hébergement.</div>
+        <button class="faq-q">Combien de temps mon URL reste-t-elle active ?<span class="faq-btn">+</span></button>
+        <div class="faq-a">6 mois minimum. Si votre bien n'est pas vendu au bout de 6 mois, je renouvelle gratuitement l'hébergement.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">Quand dois-je payer ?<span class="faq-icon">+</span></button>
+        <button class="faq-q">Quand dois-je payer ?<span class="faq-btn">+</span></button>
         <div class="faq-a">Après livraison et validation du résultat. Si le rendu ne vous convient pas, vous ne payez rien.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CTA FINAL -->
-<div class="wrap">
-  <div class="cta-final reveal">
-    <h2>Prêt à valoriser votre bien ?</h2>
-    <p>Envoyez-moi votre annonce — je vous reviens sous 24h avec un aperçu gratuit.</p>
-    <div class="cta-row">
-      <a href="mailto:dimitri444art@gmail.com?subject=Devis plan 3D immobilier" class="btn-primary">
-        Obtenir mon devis gratuit →
-      </a>
-    </div>
-    <p style="margin-top:1.25rem;font-size:0.8rem;color:var(--muted)">Aperçu gratuit · Sans engagement · Paiement après livraison</p>
+<!-- CTA FINAL SANS BOÎTE -->
+<div class="cta-final">
+  <h2>Lancez-vous.<br><em>C'est gratuit.</em></h2>
+  <p>Un email pour décrire votre bien, je vous reviens sous 24h avec un aperçu gratuit. Aucun engagement, aucune pression.</p>
+  <div class="cta-row" style="justify-content:center;margin-bottom:1.25rem">
+    <a href="mailto:dimitri444art@gmail.com?subject=Devis plan 3D immobilier" class="btn-shine">Obtenir mon devis gratuit →</a>
+  </div>
+  <div class="inline-checks">
+    <span>100% gratuit</span>
+    <span>Sans engagement</span>
+    <span>Paiement après livraison</span>
+    <span>Réponse sous 24h</span>
   </div>
 </div>
 
-<!-- FOOTER -->
 <footer>
   <p>© 2026 ImmoViz 3D &nbsp;·&nbsp; <a href="mailto:dimitri444art@gmail.com" style="color:var(--muted)">dimitri444art@gmail.com</a></p>
 </footer>
 
 <script>
-  // ── Parallax zoom au scroll ──
+  // Parallax zoom
   const bg = document.getElementById('page-bg');
   let ticking = false;
   window.addEventListener('scroll', () => {
     if (!ticking) {
       requestAnimationFrame(() => {
-        const scrolled = window.scrollY;
-        const maxScroll = document.body.scrollHeight - window.innerHeight;
-        const progress = Math.min(scrolled / maxScroll, 1);
-        // zoom de 1 (haut) à 1.18 (bas)
-        const scale = 1 + progress * 0.18;
-        bg.style.transform = `scale(${scale})`;
+        const p = Math.min(window.scrollY / (document.body.scrollHeight - window.innerHeight), 1);
+        bg.style.transform = `scale(${1 + p * 0.18})`;
         ticking = false;
       });
       ticking = true;
     }
   });
 
-  // ── Scroll reveal ──
-  const observer = new IntersectionObserver((entries) => {
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Barres animées
+  const barObs = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        observer.unobserve(e.target);
+        e.target.querySelectorAll('.bar-fill').forEach(b => { b.style.width = b.dataset.w + '%'; });
+        barObs.unobserve(e.target);
       }
     });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  }, { threshold: 0.3 });
+  const barsEl = document.getElementById('bars');
+  if (barsEl) barObs.observe(barsEl);
 
-  // ── FAQ accordion ──
+  // FAQ accordion
   document.querySelectorAll('.faq-q').forEach(btn => {
     btn.addEventListener('click', () => {
       const item = btn.parentElement;
@@ -807,6 +614,5 @@
     });
   });
 </script>
-
 </body>
 </html>
