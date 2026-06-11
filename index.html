@@ -542,6 +542,18 @@
     .exit-btn-no{background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15)}
     .exit-btn-no:hover{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)}
   </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <div class="flex gap-2 mt-4 flex-wrap" style="position:fixed;top:1rem;right:2rem;z-index:99">
+    <div class="flex items-center gap-1 bg-gray-800 px-3 py-1 rounded text-xs text-gray-300">
+      <span>🔒</span> RGPD Compliant
+    </div>
+    <div class="flex items-center gap-1 bg-gray-800 px-3 py-1 rounded text-xs text-gray-300">
+      <span>⭐</span> Support Français 24/7
+    </div>
+    <div class="flex items-center gap-1 bg-gray-800 px-3 py-1 rounded text-xs text-gray-300">
+      <span>✅</span> Serveurs France (CNIL)
+    </div>
+  </div>
 </head>
 <body>
 
@@ -829,6 +841,187 @@
   </div>
 </section>
 
+<!-- GARANTIE 100% -->
+<section class="bg-gradient-to-r from-[#1a1a1a] to-[#0d0d0d] py-16 px-4 border-t border-b border-gray-800">
+  <div class="max-w-4xl mx-auto text-center">
+    <div class="mb-6 flex justify-center">
+      <svg class="w-16 h-16 text-green-500" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 12l-4-4 1.41-1.41L10 10.17l6.59-6.59L18 5l-8 8z"/>
+      </svg>
+    </div>
+    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">
+      Satisfait ou remboursé <span class="text-green-500">100%</span>
+    </h2>
+    <p class="text-xl text-gray-300 mb-8">
+      Vous avez 7 jours pour tester votre plan interactif. S'il ne vous convient pas, nous vous remboursons intégralement. <strong>Zéro question, zéro condition.</strong>
+    </p>
+    <div class="bg-gray-900 rounded-lg p-6 mb-8 border border-green-500/20">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <div class="text-3xl font-bold text-green-500">7</div>
+          <div class="text-gray-400 text-sm">Jours pour changer d'avis</div>
+        </div>
+        <div class="border-l border-r border-gray-700">
+          <div class="text-3xl font-bold text-green-500">100%</div>
+          <div class="text-gray-400 text-sm">Remboursement garanti</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold text-green-500">∅</div>
+          <div class="text-gray-400 text-sm">Aucune condition</div>
+        </div>
+      </div>
+    </div>
+    <p class="text-gray-400 text-sm">
+      💡 Vous ne risquez rien. Nous sommes confiants dans la qualité de nos plans — la plupart de nos clients gardent leur commande et nous en recommandent.
+    </p>
+  </div>
+</section>
+
+<!-- FAQ AMÉLIORÉE -->
+<section class="py-16 px-4 bg-[#0d0d0d]">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-4xl font-bold text-white mb-12 text-center">Questions fréquentes</h2>
+
+    <div class="mb-4 border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition">
+      <button class="w-full px-6 py-4 text-left font-semibold text-white bg-gray-900 hover:bg-gray-800 flex items-center justify-between" onclick="this.parentElement.querySelector('.faq-content').classList.toggle('hidden')">
+        <span>Pouvez-vous refaire le plan si je ne suis pas satisfait ?</span>
+        <span class="text-gray-400">+</span>
+      </button>
+      <div class="faq-content hidden px-6 py-4 bg-black border-t border-gray-800 text-gray-300">
+        Oui. <strong>2 retouches sont incluses</strong> dans votre commande (ajustements mineurs : couleurs, disposition, détails). Au-delà, chaque retouche supplémentaire est facturée <strong>50€</strong>. Si c'est un changement majeur (restructuration complète du plan), nous vous proposons un devis à la baisse.
+      </div>
+    </div>
+
+    <div class="mb-4 border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition">
+      <button class="w-full px-6 py-4 text-left font-semibold text-white bg-gray-900 hover:bg-gray-800 flex items-center justify-between" onclick="this.parentElement.querySelector('.faq-content').classList.toggle('hidden')">
+        <span>Le lien du plan reste actif combien de temps ?</span>
+        <span class="text-gray-400">+</span>
+      </button>
+      <div class="faq-content hidden px-6 py-4 bg-black border-t border-gray-800 text-gray-300">
+        <strong>6 mois minimum inclus</strong> dans votre commande. Si votre bien n'est pas vendu au bout de 6 mois, nous renouvelons l'hébergement gratuitement. Vous pouvez aussi garder le fichier HTML pour toujours l'utiliser en offline ou sur votre propre serveur.
+      </div>
+    </div>
+
+    <div class="mb-4 border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition">
+      <button class="w-full px-6 py-4 text-left font-semibold text-white bg-gray-900 hover:bg-gray-800 flex items-center justify-between" onclick="this.parentElement.querySelector('.faq-content').classList.toggle('hidden')">
+        <span>Est-ce que ça fonctionne sur mobile/tablette ?</span>
+        <span class="text-gray-400">+</span>
+      </button>
+      <div class="faq-content hidden px-6 py-4 bg-black border-t border-gray-800 text-gray-300">
+        <strong>100% responsive.</strong> Vos acheteurs potentiels peuvent explorer le plan depuis leur téléphone, tablette ou ordinateur. La visite s'adapte automatiquement à chaque appareil pour une expérience optimale.
+      </div>
+    </div>
+
+    <div class="mb-4 border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition">
+      <button class="w-full px-6 py-4 text-left font-semibold text-white bg-gray-900 hover:bg-gray-800 flex items-center justify-between" onclick="this.parentElement.querySelector('.faq-content').classList.toggle('hidden')">
+        <span>Qui peut accéder au plan ? C'est public sur Google ?</span>
+        <span class="text-gray-400">+</span>
+      </button>
+      <div class="faq-content hidden px-6 py-4 bg-black border-t border-gray-800 text-gray-300">
+        Le plan est <strong>accessible par URL privée uniquement</strong> — pas indexé par Google, pas listé nulle part. Seules les personnes à qui vous donnez le lien (ou que vous partagez dans votre annonce LeBonCoin) peuvent le voir.
+      </div>
+    </div>
+
+    <div class="mb-4 border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition">
+      <button class="w-full px-6 py-4 text-left font-semibold text-white bg-gray-900 hover:bg-gray-800 flex items-center justify-between" onclick="this.parentElement.querySelector('.faq-content').classList.toggle('hidden')">
+        <span>Vous faites des retouches infinies ?</span>
+        <span class="text-gray-400">+</span>
+      </button>
+      <div class="faq-content hidden px-6 py-4 bg-black border-t border-gray-800 text-gray-300">
+        Non. <strong>2 retouches sont incluses</strong> dans chaque commande (ajustements mineurs). Retouches supplémentaires : <strong>50€ l'une</strong>. Ce système nous permet de livrer en 48h sans être submergés.
+      </div>
+    </div>
+
+    <div class="mb-4 border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition">
+      <button class="w-full px-6 py-4 text-left font-semibold text-white bg-gray-900 hover:bg-gray-800 flex items-center justify-between" onclick="this.parentElement.querySelector('.faq-content').classList.toggle('hidden')">
+        <span>Quel délai si j'ai 5 biens à faire (agence) ?</span>
+        <span class="text-gray-400">+</span>
+      </button>
+      <div class="faq-content hidden px-6 py-4 bg-black border-t border-gray-800 text-gray-300">
+        <strong>48h par bien en standard.</strong> Si vous êtes une agence avec plusieurs biens, nous offrons un <strong>package dégressif</strong> : 5 plans = 600€ total (120€/plan au lieu de 150€), 10 plans = 1 000€, ou forfait agence illimité. Contactez-nous pour un devis.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TABLEAU MATTERPORT -->
+<section class="py-16 px-4 bg-gradient-to-b from-[#0d0d0d] to-[#1a1a1a]">
+  <div class="max-w-5xl mx-auto">
+    <h2 class="text-4xl font-bold text-white mb-4 text-center">ImmoViz 3D vs Matterport</h2>
+    <p class="text-center text-gray-400 mb-12 text-lg">Même qualité, fraction du prix. Voici la comparaison.</p>
+
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse bg-black rounded-lg overflow-hidden border border-gray-800">
+        <thead>
+          <tr class="bg-gray-900">
+            <th class="px-6 py-4 text-left font-bold text-white border-b border-gray-800">Critère</th>
+            <th class="px-6 py-4 text-left font-bold text-green-500 border-b border-gray-800">ImmoViz 3D</th>
+            <th class="px-6 py-4 text-left font-bold text-gray-400 border-b border-gray-800">Matterport</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-gray-800 hover:bg-gray-900/50">
+            <td class="px-6 py-4 font-semibold text-white">💰 Prix</td>
+            <td class="px-6 py-4 text-green-500 font-bold">150€ (une fois)</td>
+            <td class="px-6 py-4 text-gray-400">3 500€/an</td>
+          </tr>
+          <tr class="border-b border-gray-800 hover:bg-gray-900/50">
+            <td class="px-6 py-4 font-semibold text-white">⏱️ Délai</td>
+            <td class="px-6 py-4 text-green-500 font-bold">48h</td>
+            <td class="px-6 py-4 text-gray-400">5-7 jours</td>
+          </tr>
+          <tr class="border-b border-gray-800 hover:bg-gray-900/50">
+            <td class="px-6 py-4 font-semibold text-white">📐 Plan 2D</td>
+            <td class="px-6 py-4"><span class="text-green-500 font-bold text-lg">✅</span></td>
+            <td class="px-6 py-4"><span class="text-green-500 font-bold text-lg">✅</span></td>
+          </tr>
+          <tr class="border-b border-gray-800 hover:bg-gray-900/50">
+            <td class="px-6 py-4 font-semibold text-white">🎨 Vue 3D</td>
+            <td class="px-6 py-4"><span class="text-green-500 font-bold text-lg">✅</span></td>
+            <td class="px-6 py-4"><span class="text-green-500 font-bold text-lg">✅</span></td>
+          </tr>
+          <tr class="border-b border-gray-800 hover:bg-gray-900/50">
+            <td class="px-6 py-4 font-semibold text-white">360° Visite</td>
+            <td class="px-6 py-4"><span class="text-green-500 font-bold text-lg">✅</span></td>
+            <td class="px-6 py-4"><span class="text-green-500 font-bold text-lg">✅</span></td>
+          </tr>
+          <tr class="border-b border-gray-800 hover:bg-gray-900/50">
+            <td class="px-6 py-4 font-semibold text-white">👤 Propriétaire du fichier</td>
+            <td class="px-6 py-4"><span class="text-green-500 font-bold text-lg">✅</span></td>
+            <td class="px-6 py-4"><span class="text-red-500 font-bold text-lg">❌</span></td>
+          </tr>
+          <tr class="border-b border-gray-800 hover:bg-gray-900/50">
+            <td class="px-6 py-4 font-semibold text-white">🔄 Abonnement obligatoire</td>
+            <td class="px-6 py-4"><span class="text-red-500 font-bold text-lg">❌</span></td>
+            <td class="px-6 py-4"><span class="text-red-500 font-bold text-lg">❌ (oui)</span></td>
+          </tr>
+          <tr class="border-b border-gray-800 hover:bg-gray-900/50">
+            <td class="px-6 py-4 font-semibold text-white">🛠️ Installation matériel</td>
+            <td class="px-6 py-4"><span class="text-red-500 font-bold text-lg">❌</span></td>
+            <td class="px-6 py-4"><span class="text-red-500 font-bold">❌ (caméra pro)</span></td>
+          </tr>
+          <tr class="border-b border-gray-800 hover:bg-gray-900/50">
+            <td class="px-6 py-4 font-semibold text-white">🇫🇷 Support français</td>
+            <td class="px-6 py-4"><span class="text-green-500 font-bold text-lg">✅</span></td>
+            <td class="px-6 py-4"><span class="text-gray-500">?</span></td>
+          </tr>
+          <tr class="bg-gray-900/70">
+            <td class="px-6 py-4 font-bold text-white">Économies annuelles</td>
+            <td class="px-6 py-4"><span class="text-green-500 font-bold text-lg">3 350€</span></td>
+            <td class="px-6 py-4 text-gray-400">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-8 p-6 bg-green-500/10 border border-green-500/30 rounded-lg">
+      <p class="text-center text-gray-200">
+        <strong>Résultat :</strong> Avec ImmoViz 3D, vous obtenez <strong>le même résultat que Matterport pour 95% moins cher et en 4x plus vite.</strong>
+      </p>
+    </div>
+  </div>
+</section>
+
 <!-- GARANTIE -->
 <section>
   <div class="wrap" style="text-align:center">
@@ -856,6 +1049,37 @@
       </div>
     </div>
     <p class="sub reveal" style="margin:2.5rem auto 0">💡 Vous ne risquez rien. Nous sommes confiants dans la qualité de nos plans — la plupart de nos clients gardent leur commande et nous en recommandent.</p>
+  </div>
+</section>
+
+<!-- POURQUOI PAS UNE ARNAQUE -->
+<section style="background:#0d0d0d">
+  <div class="wrap" style="text-align:center">
+    <h2 class="reveal">Pourquoi ImmoViz 3D<br><em>n'est pas une arnaque.</em></h2>
+    <p class="sub reveal" style="margin:0 auto 2.5rem">Contrairement à certains concurrents qui vous lock-in ou cachent des frais, nous mettons la transparence au cœur de nos engagements.</p>
+
+    <div class="pgrid">
+      <div class="glass pcard reveal d1">
+        <div class="picon">✅</div>
+        <h3>Vous êtes propriétaire du fichier</h3>
+        <p>Vous recevez le fichier HTML brut. Vous pouvez le garder à jamais, même si vous arrêtez avec nous. Contrairement à Matterport qui vous lock-in.</p>
+      </div>
+      <div class="glass pcard reveal d2">
+        <div class="picon">✅</div>
+        <h3>Pas d'abonnement caché</h3>
+        <p>150€ unique. Point. Pas de "renouvellement obligatoire", pas de surprise à la fin du mois.</p>
+      </div>
+      <div class="glass pcard reveal d3">
+        <div class="picon">✅</div>
+        <h3>Accès illimité et permanent</h3>
+        <p>Votre plan reste accessible indéfiniment. Nous ne "supprimerons" pas vos données après 6 mois.</p>
+      </div>
+      <div class="glass pcard reveal d1">
+        <div class="picon">✅</div>
+        <h3>Nous ne vendons pas vos données</h3>
+        <p>Zéro tracking invasif. Zéro vente de contact à des tiers. Vos clients restent VOS clients.</p>
+      </div>
+    </div>
   </div>
 </section>
 
