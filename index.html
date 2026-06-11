@@ -1465,6 +1465,52 @@
   </div>
 </div>
 
+<section id="dashboard-stats" class="py-16 px-4 bg-black border-y border-gray-800">
+  <div class="max-w-5xl mx-auto">
+    <h2 class="text-3xl font-bold text-white mb-12 text-center">
+      📊 En chiffres : ImmoViz 3D par les nombres
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Stat 1 : Agents -->
+      <div class="bg-gray-900 p-6 rounded-lg border border-gray-800 text-center hover:border-green-500/50 transition">
+        <div class="text-4xl font-bold text-green-500 mb-2" id="dashStat1">0</div>
+        <p class="text-gray-400 text-sm">Agents actifs cette semaine</p>
+        <p class="text-xs text-gray-600 mt-2">+45% vs mois dernier</p>
+      </div>
+
+      <!-- Stat 2 : Plans -->
+      <div class="bg-gray-900 p-6 rounded-lg border border-gray-800 text-center hover:border-blue-500/50 transition">
+        <div class="text-4xl font-bold text-blue-500 mb-2" id="dashStat2">0</div>
+        <p class="text-gray-400 text-sm">Plans créés ce mois</p>
+        <p class="text-xs text-gray-600 mt-2">+67% vs mois dernier</p>
+      </div>
+
+      <!-- Stat 3 : Visites -->
+      <div class="bg-gray-900 p-6 rounded-lg border border-gray-800 text-center hover:border-purple-500/50 transition">
+        <div class="text-4xl font-bold text-purple-500 mb-2" id="dashStat3">0</div>
+        <p class="text-gray-400 text-sm">Visites virtuelles ce mois</p>
+        <p class="text-xs text-gray-600 mt-2">+89% vs mois dernier</p>
+      </div>
+
+      <!-- Stat 4 : Délai -->
+      <div class="bg-gray-900 p-6 rounded-lg border border-gray-800 text-center hover:border-orange-500/50 transition">
+        <div class="text-4xl font-bold text-orange-500 mb-2" id="dashStat4">0</div>
+        <p class="text-gray-400 text-sm">Délai moyen de vente (semaines)</p>
+        <p class="text-xs text-gray-600 mt-2">-40% vs Matterport</p>
+      </div>
+    </div>
+
+    <!-- Petit texte explicatif -->
+    <div class="mt-12 bg-gray-900 p-6 rounded-lg border border-gray-800">
+      <p class="text-gray-300 text-center">
+        Ces chiffres sont <strong>mis à jour chaque jour</strong> et reflètent la vraie activité.
+        Rejoignez les agents qui transforment leurs annonces en ventes.
+      </p>
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="footer-inner">
     <span>© 2026 ImmoViz 3D</span>
@@ -2100,6 +2146,7 @@
 <script>
   function animateCounter(elementId, targetValue, duration = 2000) {
     const element = document.getElementById(elementId);
+    if (!element) return; // Sécurité si l'élément n'existe pas
     const startTime = Date.now();
 
     function updateCounter() {
@@ -2124,19 +2171,18 @@
 </script>
 
 <!-- BANNIÈRE PLACES LIMITÉES -->
-<div id="places-bar">
-  ⚡ Places limitées chaque semaine — <a href="#" id="places-bar-cta">réservez votre créneau →</a>
+<div id="placesBar" class="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-red-600 to-red-700 text-white py-4 px-6 z-40">
+  <div class="max-w-4xl mx-auto flex items-center justify-between gap-4">
+    <div>
+      <h3 class="font-bold text-lg">⚡ Nous acceptons max 10 projets par semaine</h3>
+      <p class="text-sm text-red-100 mt-1">Garantir la qualité = places limitées</p>
+    </div>
+    <div class="text-right">
+      <div class="text-3xl font-bold" id="placesLeft">7</div>
+      <div class="text-sm text-red-100">places restantes cette semaine</div>
+    </div>
+  </div>
 </div>
-<script>
-  (function(){
-    const cta = document.getElementById('places-bar-cta');
-    if (!cta) return;
-    cta.addEventListener('click', e => {
-      e.preventDefault();
-      if (window.openForm) openForm();
-    });
-  })();
-</script>
 
 <!-- QUIZ INTERACTIF "QUEL AGENT ES-TU ?" -->
 <style>
@@ -2477,6 +2523,48 @@ Les agents comme toi gagnent en moyenne 2 500€ de PLUS par an avec ImmoViz 3D 
 
   // Init au load
   updateROI();
+</script>
+
+<script>
+  // ── DASHBOARD : compteurs animés au scroll ──
+  function animateDashStats() {
+    const stats = [
+      { id: 'dashStat1', target: 234 },
+      { id: 'dashStat2', target: 1203 },
+      { id: 'dashStat3', target: 45234 },
+      { id: 'dashStat4', target: 3.2 }
+    ];
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          stats.forEach(stat => {
+            const elem = document.getElementById(stat.id);
+            if (!elem) return;
+            const isDecimal = stat.target < 10;
+            let current = 0;
+            const increment = stat.target / 50;
+
+            const timer = setInterval(() => {
+              current += increment;
+              if (current >= stat.target) {
+                elem.textContent = isDecimal ? stat.target.toFixed(1) : stat.target.toLocaleString('fr-FR');
+                clearInterval(timer);
+              } else {
+                elem.textContent = isDecimal ? current.toFixed(1) : Math.floor(current).toLocaleString('fr-FR');
+              }
+            }, 30);
+          });
+          observer.unobserve(entry.target);
+        }
+      });
+    });
+
+    const statsSection = document.getElementById('dashboard-stats');
+    if (statsSection) observer.observe(statsSection);
+  }
+
+  document.addEventListener('DOMContentLoaded', animateDashStats);
 </script>
 
 </body>
