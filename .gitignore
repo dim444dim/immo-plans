@@ -1,0 +1,20 @@
+# Environnement / secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+
+# Dépendances
+node_modules/
+
+# Dumps base de données
+*.db
+*.sql
+*.dump
+
+# OS / logs
+.DS_Store
+Thumbs.db
+*.log
