@@ -367,6 +367,20 @@
     .faqitem.open .faqbtn{background:var(--cyan);border-color:var(--cyan);color:#000;transform:rotate(45deg)}
     .faqa{display:none;padding:0 1.5rem 1.25rem;color:var(--muted);font-size:.875rem;line-height:1.75}
     .faqitem.open .faqa{display:block}
+    .faqa strong{color:#fff;font-weight:700}
+    /* ── COMPARATIF ── */
+    .comp-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .comp-table th,.comp-table td{padding:.9rem 1.25rem;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+    .comp-table th{font-size:.7rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:700}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tbody tr:hover td{background:rgba(255,255,255,.03)}
+    .comp-us{color:var(--cyan);font-weight:700}
+    .comp-them{color:var(--muted)}
+    .comp-yes{color:var(--cyan);font-weight:700;text-align:center}
+    .comp-no{color:#ff6b6b;text-align:center}
+    .comp-unk{color:var(--muted);text-align:center}
+    .comp-total{background:var(--card2)}
+    .comp-total td{font-weight:700;color:#fff}
 
     /* ── CTA FINAL SANS BOÎTE ── */
     .ctafinal{text-align:center;padding:7.5rem 1.75rem 9rem}
@@ -815,6 +829,36 @@
   </div>
 </section>
 
+<!-- GARANTIE -->
+<section>
+  <div class="wrap" style="text-align:center">
+    <p class="stag reveal" style="justify-content:center">Notre garantie</p>
+    <h2 class="reveal">Satisfait ou <em>remboursé 100%</em></h2>
+    <p class="sub reveal" style="margin:0 auto 2.5rem">Vous avez 7 jours pour tester votre plan interactif. S'il ne vous convient pas, vous êtes remboursé intégralement — zéro question, zéro condition.</p>
+    <div class="cgrid">
+      <div class="glass ccard reveal d1">
+        <div class="cicon">📅</div>
+        <div class="cnum" data-count="7" data-suffix=" j">7 j</div>
+        <div class="clbl">Pour changer d'avis</div>
+        <p class="cdesc">À partir de la livraison de votre plan interactif.</p>
+      </div>
+      <div class="glass ccard reveal d2">
+        <div class="cicon">💯</div>
+        <div class="cnum" data-count="100" data-suffix="%">100%</div>
+        <div class="clbl">Remboursement garanti</div>
+        <p class="cdesc">Intégral, sans retenue, si le résultat ne vous convient pas.</p>
+      </div>
+      <div class="glass ccard reveal d3">
+        <div class="cicon">🔓</div>
+        <div class="cnum" data-count="0">0</div>
+        <div class="clbl">Condition</div>
+        <p class="cdesc">Aucune justification à fournir, aucune démarche compliquée.</p>
+      </div>
+    </div>
+    <p class="sub reveal" style="margin:2.5rem auto 0">💡 Vous ne risquez rien. Nous sommes confiants dans la qualité de nos plans — la plupart de nos clients gardent leur commande et nous en recommandent.</p>
+  </div>
+</section>
+
 <!-- AVANT / APRÈS -->
 <section id="avantapres">
   <div class="wrap" style="text-align:center">
@@ -967,26 +1011,63 @@
     <h2 class="reveal">On a les <em>réponses.</em></h2>
     <div class="faqlist reveal" style="margin-top:2rem">
       <div class="faqitem">
-        <button class="faqq" aria-expanded="false">De quoi avez-vous besoin pour commencer ?<span class="faqbtn">+</span></button>
-        <div class="faqa" aria-hidden="true">Juste l'annonce de votre bien (texte ou URL LeBonCoin) et quelques photos si vous souhaitez la visite 360°. Tout le reste est géré de mon côté.</div>
+        <button class="faqq" aria-expanded="false">Pouvez-vous refaire le plan si je ne suis pas satisfait ?<span class="faqbtn">+</span></button>
+        <div class="faqa" aria-hidden="true">Oui. <strong>2 retouches sont incluses</strong> dans votre commande (ajustements mineurs : couleurs, disposition, détails). Au-delà, chaque retouche supplémentaire est facturée <strong>50€</strong>. Si c'est un changement majeur (restructuration complète du plan), nous vous proposons un devis à la baisse.</div>
       </div>
       <div class="faqitem">
-        <button class="faqq" aria-expanded="false">Comment intégrer le plan dans mon annonce LeBonCoin ?<span class="faqbtn">+</span></button>
-        <div class="faqa" aria-hidden="true">Je vous fournis une URL publique à coller dans la description. Pour un compte professionnel (avec SIRET), le lien peut être mis dans le champ "visite virtuelle" dédié.</div>
+        <button class="faqq" aria-expanded="false">Le lien du plan reste actif combien de temps ?<span class="faqbtn">+</span></button>
+        <div class="faqa" aria-hidden="true"><strong>6 mois minimum inclus</strong> dans votre commande. Si votre bien n'est pas vendu au bout de 6 mois, nous renouvelons l'hébergement gratuitement. Vous pouvez aussi garder le fichier HTML pour toujours l'utiliser en offline ou sur votre propre serveur.</div>
       </div>
       <div class="faqitem">
-        <button class="faqq" aria-expanded="false">Ai-je besoin d'un appareil photo 360° ?<span class="faqbtn">+</span></button>
-        <div class="faqa" aria-hidden="true">Non. Un iPhone ou Android suffit avec l'application Google Street View (gratuite). Ou je gère la visite 360° de façon procédurale sans aucune photo de votre part.</div>
+        <button class="faqq" aria-expanded="false">Est-ce que ça fonctionne sur mobile/tablette ?<span class="faqbtn">+</span></button>
+        <div class="faqa" aria-hidden="true"><strong>100% responsive.</strong> Vos acheteurs potentiels peuvent explorer le plan depuis leur téléphone, tablette ou ordinateur. La visite s'adapte automatiquement à chaque appareil pour une expérience optimale.</div>
       </div>
       <div class="faqitem">
-        <button class="faqq" aria-expanded="false">Combien de temps mon URL reste-t-elle active ?<span class="faqbtn">+</span></button>
-        <div class="faqa" aria-hidden="true">6 mois minimum. Si votre bien n'est pas vendu au bout de 6 mois, je renouvelle gratuitement l'hébergement.</div>
+        <button class="faqq" aria-expanded="false">Qui peut accéder au plan ? C'est public sur Google ?<span class="faqbtn">+</span></button>
+        <div class="faqa" aria-hidden="true">Le plan est <strong>accessible par URL privée uniquement</strong> — pas indexé par Google, pas listé nulle part. Seules les personnes à qui vous donnez le lien (ou que vous partagez dans votre annonce LeBonCoin) peuvent le voir.</div>
       </div>
       <div class="faqitem">
-        <button class="faqq" aria-expanded="false">Quand dois-je payer ?<span class="faqbtn">+</span></button>
-        <div class="faqa" aria-hidden="true">Après livraison et validation du résultat. Si le rendu ne vous convient pas, vous ne payez rien.</div>
+        <button class="faqq" aria-expanded="false">Vous faites des retouches infinies ?<span class="faqbtn">+</span></button>
+        <div class="faqa" aria-hidden="true">Non. <strong>2 retouches sont incluses</strong> dans chaque commande (ajustements mineurs). Retouches supplémentaires : <strong>50€ l'une</strong>. Ce système nous permet de livrer en 48h sans être submergés.</div>
+      </div>
+      <div class="faqitem">
+        <button class="faqq" aria-expanded="false">Quel délai si j'ai 5 biens à faire (agence) ?<span class="faqbtn">+</span></button>
+        <div class="faqa" aria-hidden="true"><strong>48h par bien en standard.</strong> Si vous êtes une agence avec plusieurs biens, nous offrons un <strong>package dégressif</strong> : 5 plans = 600€ total (120€/plan au lieu de 150€), 10 plans = 1 000€, ou forfait agence illimité. Contactez-nous pour un devis.</div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- COMPARATIF MATTERPORT -->
+<section id="comparatif">
+  <div class="wrap" style="text-align:center">
+    <p class="stag reveal" style="justify-content:center">Comparatif</p>
+    <h2 class="reveal">ImmoViz 3D <em>vs</em> Matterport</h2>
+    <p class="sub reveal" style="margin:0 auto 2.5rem">Même qualité, fraction du prix. Voici la comparaison.</p>
+    <div class="glass reveal" style="overflow-x:auto;text-align:left">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Critère</th>
+            <th class="comp-us">ImmoViz 3D</th>
+            <th class="comp-them">Matterport</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>💰 Prix</td><td class="comp-us">150€ (une fois)</td><td class="comp-them">3 500€/an</td></tr>
+          <tr><td>⏱️ Délai</td><td class="comp-us">48h</td><td class="comp-them">5-7 jours</td></tr>
+          <tr><td>📐 Plan 2D</td><td class="comp-yes">✓</td><td class="comp-yes">✓</td></tr>
+          <tr><td>🎨 Vue 3D</td><td class="comp-yes">✓</td><td class="comp-yes">✓</td></tr>
+          <tr><td>🌀 Visite 360°</td><td class="comp-yes">✓</td><td class="comp-yes">✓</td></tr>
+          <tr><td>👤 Propriétaire du fichier</td><td class="comp-yes">✓</td><td class="comp-no">✗</td></tr>
+          <tr><td>🔄 Abonnement obligatoire</td><td class="comp-yes">Non</td><td class="comp-no">Oui</td></tr>
+          <tr><td>🛠️ Installation matériel</td><td class="comp-yes">Aucune</td><td class="comp-no">Caméra pro requise</td></tr>
+          <tr><td>🇫🇷 Support français</td><td class="comp-yes">✓</td><td class="comp-unk">?</td></tr>
+          <tr class="comp-total"><td>Économies annuelles</td><td class="comp-us">3 350€</td><td class="comp-them">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="sub reveal" style="margin:1.5rem auto 0">✅ Avec ImmoViz 3D, vous obtenez le même résultat que Matterport pour <em>95% moins cher</em> et <em>4× plus vite</em>.</p>
   </div>
 </section>
 
