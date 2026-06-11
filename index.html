@@ -1351,7 +1351,7 @@
 
       <!-- Résultat ROI -->
       <div class="bg-black p-6 rounded-lg border-l-4 border-green-500 mt-10">
-        <p class="text-gray-400 text-sm mb-2">Gains supplémentaires estimés par an (avec +40% de visites) :</p>
+        <p class="text-gray-400 text-sm mb-2">Gains supplémentaires estimés par an <span class="text-gray-500">(+40% de visites → estimation prudente de +15% de ventes conclues)</span> :</p>
         <div class="text-5xl font-bold text-green-500 mb-4" id="roiResult">
           0€
         </div>
@@ -2443,11 +2443,15 @@ Les agents comme toi gagnent en moyenne 2 500€ de PLUS par an avec ImmoViz 3D 
     document.getElementById('commissionValue').textContent = (commission * 100).toFixed(1) + '%';
 
     // Calcul ROI
+    // ImmoViz génère +40% de visites qualifiées. On NE traduit PAS ça par +40% de ventes
+    // (irréaliste) : hypothèse prudente de +15% de ventes effectivement conclues grâce à la
+    // meilleure visibilité de l'annonce.
+    const UPLIFT_VENTES = 0.15;
     const commissionParBien = prix * commission;
-    const gainsAnnuelsSansImmo = biens * commissionParBien * 12;
-    const gainAvecImmoPlus40 = gainsAnnuelsSansImmo * 1.4;
-    const gainSupplementaire = gainAvecImmoPlus40 - gainsAnnuelsSansImmo;
-    const coutAnnuelImmo = biens * 150 * 12; // 150€ par bien/mois
+    const ventesAnnuelles = biens * 12;                        // biens mis en vente sur l'année
+    const ventesSupp = ventesAnnuelles * UPLIFT_VENTES;        // ventes additionnelles estimées
+    const gainSupplementaire = Math.round(ventesSupp * commissionParBien);
+    const coutAnnuelImmo = ventesAnnuelles * 150;              // 1 plan ImmoViz (150€) par bien
     const gainNet = gainSupplementaire - coutAnnuelImmo;
     const roi = coutAnnuelImmo > 0 ? ((gainNet / coutAnnuelImmo) * 100).toFixed(0) : 0;
 
