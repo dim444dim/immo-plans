@@ -2203,6 +2203,11 @@
   });
 </script>
 
+<style>
+  /* Rehausse le chatbot et son toggle au-dessus de la barre "places limitées" (#places-bar, z-index:80) */
+  #chatbot, #chatToggle { bottom: calc(1rem + var(--places-bar-h)) !important; z-index: 90 !important; }
+</style>
+
 <div id="chatbot" class="fixed bottom-4 right-4 z-30 w-96 bg-gray-900 rounded-lg shadow-2xl border border-gray-800 flex flex-col" style="height: 500px;">
   <!-- Header -->
   <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-4 rounded-t-lg flex justify-between items-center">
