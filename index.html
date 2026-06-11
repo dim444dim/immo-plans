@@ -2071,7 +2071,25 @@
 </script>
 
 <!-- QUIZ INTERACTIF "QUEL AGENT ES-TU ?" -->
-<div id="quizModal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center hidden p-4">
+<style>
+  /* Bouton flottant en bas-GAUCHE : le coin bas-droite est déjà pris par
+     #chatToggle (z-90), #whatsapp-btn (z-999) et le panneau #chatbot.
+     On s'ancre au-dessus de la bannière #places-bar via --places-bar-h. */
+  #quizButton{
+    position:fixed;left:max(20px,env(safe-area-inset-left));
+    bottom:calc(1.5rem + var(--places-bar-h));
+    z-index:95;border:none;cursor:pointer;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  #quizButton:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(37,99,235,.5)}
+  #quizButton:active{transform:scale(.97)}
+  /* La modale doit passer AU-DESSUS de tout (whatsapp z-999, chatbot z-90). */
+  #quizModal{z-index:1001}
+  @media(max-width:480px){
+    #quizButton{font-size:.85rem;padding:.6rem 1rem !important}
+  }
+</style>
+<div id="quizModal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden p-4">
   <div class="bg-gray-900 rounded-lg max-w-2xl w-full border border-gray-800 p-8">
     <h2 class="text-3xl font-bold text-white mb-2">Quel agent es-tu ?</h2>
     <p class="text-gray-400 mb-8">5 questions pour découvrir ta stratégie ImmoViz idéale.</p>
@@ -2093,7 +2111,7 @@
   </div>
 </div>
 
-<button id="quizButton" class="fixed bottom-44 right-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full shadow-lg z-40 font-bold">
+<button id="quizButton" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full shadow-lg font-bold">
   📋 Découvre ton profil
 </button>
 
