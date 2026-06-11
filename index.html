@@ -1302,6 +1302,74 @@
   </div>
 </section>
 
+<!-- CALCULATEUR ROI -->
+<section class="py-16 px-4 bg-gradient-to-b from-[#1a1a1a] to-[#0d0d0d]">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-4xl font-bold text-white mb-8 text-center">
+      💰 Combien pouvez-vous gagner avec ImmoViz 3D ?
+    </h2>
+
+    <div class="bg-gray-900 p-8 rounded-lg border border-gray-800">
+      <!-- Slider 1 : Biens par mois -->
+      <div class="mb-8">
+        <label class="text-white font-semibold block mb-3">
+          Combien de biens vendez-vous par mois ?
+        </label>
+        <input type="range" id="biensSlider" min="1" max="20" value="5" class="w-full">
+        <div class="flex justify-between text-gray-400 text-sm mt-2">
+          <span>1 bien</span>
+          <span id="biensValue" class="text-green-500 font-bold">5 biens</span>
+          <span>20+ biens</span>
+        </div>
+      </div>
+
+      <!-- Slider 2 : Prix moyen -->
+      <div class="mb-8">
+        <label class="text-white font-semibold block mb-3">
+          Prix moyen de vente (€)
+        </label>
+        <input type="range" id="prixSlider" min="100000" max="500000" step="10000" value="250000" class="w-full">
+        <div class="flex justify-between text-gray-400 text-sm mt-2">
+          <span>100k€</span>
+          <span id="prixValue" class="text-green-500 font-bold">250k€</span>
+          <span>500k€</span>
+        </div>
+      </div>
+
+      <!-- Slider 3 : Commission -->
+      <div class="mb-8">
+        <label class="text-white font-semibold block mb-3">
+          Votre commission moyenne (%)
+        </label>
+        <input type="range" id="commissionSlider" min="3" max="10" step="0.5" value="5" class="w-full">
+        <div class="flex justify-between text-gray-400 text-sm mt-2">
+          <span>3%</span>
+          <span id="commissionValue" class="text-green-500 font-bold">5%</span>
+          <span>10%</span>
+        </div>
+      </div>
+
+      <!-- Résultat ROI -->
+      <div class="bg-black p-6 rounded-lg border-l-4 border-green-500 mt-10">
+        <p class="text-gray-400 text-sm mb-2">Gains supplémentaires estimés par an (avec +40% de visites) :</p>
+        <div class="text-5xl font-bold text-green-500 mb-4" id="roiResult">
+          0€
+        </div>
+        <div class="space-y-2 text-gray-300 text-sm">
+          <p>💚 ImmoViz coûte <strong id="roiAnnualCost">0€</strong> par an</p>
+          <p>✅ Vous gagnez <strong id="roiNet">0€</strong> net après ImmoViz</p>
+          <p>🚀 ROI : <strong id="roiPercent">0%</strong></p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <button onclick="scrollToContact()" class="w-full mt-6 bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-lg text-lg">
+        Je veux ce gain supplémentaire →
+      </button>
+    </div>
+  </div>
+</section>
+
 <!-- COMPARATIF MATTERPORT -->
 <section id="comparatif">
   <div class="wrap" style="text-align:center">
@@ -2224,6 +2292,11 @@
 <style>
   /* Rehausse le chatbot et son toggle au-dessus de la barre "places limitées" (#places-bar, z-index:80) */
   #chatbot, #chatToggle { bottom: calc(1rem + var(--places-bar-h)) !important; z-index: 90 !important; }
+  /* Sur mobile, le bouton WhatsApp (56px) apparaît dans le même coin : on empile
+     la bulle chatToggle au-dessus pour éviter le chevauchement. */
+  @media(max-width:768px){
+    #chatToggle { bottom: calc(88px + var(--places-bar-h)) !important; }
+  }
 </style>
 
 <div id="chatbot" class="fixed bottom-4 right-4 z-30 w-96 bg-gray-900 rounded-lg shadow-2xl border border-gray-800 flex flex-col" style="height: 500px;">
@@ -2341,16 +2414,65 @@ Les agents comme toi gagnent en moyenne 2 500€ de PLUS par an avec ImmoViz 3D 
     }
   }
 
-  // Init : chatbot visible, toggle caché
+  // Init : chatbot FERMÉ, bulle toggle visible (UX standard, ne masque pas le hero).
   document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('chatbot').style.display = 'flex';
-    document.getElementById('chatToggle').style.display = 'none';
+    document.getElementById('chatbot').style.display = 'none';
+    document.getElementById('chatToggle').style.display = 'flex';
   });
 
   // Envoi au clavier (touche Entrée)
   document.getElementById('chatInput').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') sendChatMessage();
   });
+</script>
+
+<!-- CALCULATEUR ROI — LOGIQUE -->
+<script>
+  const biensSlider = document.getElementById('biensSlider');
+  const prixSlider = document.getElementById('prixSlider');
+  const commissionSlider = document.getElementById('commissionSlider');
+
+  function updateROI() {
+    const biens = parseInt(biensSlider.value);
+    const prix = parseInt(prixSlider.value);
+    const commission = parseFloat(commissionSlider.value) / 100;
+
+    // Update des labels
+    document.getElementById('biensValue').textContent = biens + ' bien' + (biens > 1 ? 's' : '');
+    document.getElementById('prixValue').textContent = (prix / 1000).toFixed(0) + 'k€';
+    document.getElementById('commissionValue').textContent = (commission * 100).toFixed(1) + '%';
+
+    // Calcul ROI
+    const commissionParBien = prix * commission;
+    const gainsAnnuelsSansImmo = biens * commissionParBien * 12;
+    const gainAvecImmoPlus40 = gainsAnnuelsSansImmo * 1.4;
+    const gainSupplementaire = gainAvecImmoPlus40 - gainsAnnuelsSansImmo;
+    const coutAnnuelImmo = biens * 150 * 12; // 150€ par bien/mois
+    const gainNet = gainSupplementaire - coutAnnuelImmo;
+    const roi = coutAnnuelImmo > 0 ? ((gainNet / coutAnnuelImmo) * 100).toFixed(0) : 0;
+
+    document.getElementById('roiResult').textContent = gainSupplementaire.toLocaleString('fr-FR') + '€';
+    document.getElementById('roiAnnualCost').textContent = coutAnnuelImmo.toLocaleString('fr-FR') + '€';
+    document.getElementById('roiNet').textContent = gainNet.toLocaleString('fr-FR') + '€';
+    document.getElementById('roiPercent').textContent = roi + '%';
+  }
+
+  biensSlider.addEventListener('input', updateROI);
+  prixSlider.addEventListener('input', updateROI);
+  commissionSlider.addEventListener('input', updateROI);
+
+  function scrollToContact() {
+    // Le site n'a pas de #contact : on ouvre le vrai formulaire modal (comme le reste du site)
+    if (window.openForm) {
+      window.openForm();
+    } else {
+      const contactForm = document.getElementById('contact');
+      if (contactForm) contactForm.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  // Init au load
+  updateROI();
 </script>
 
 </body>
