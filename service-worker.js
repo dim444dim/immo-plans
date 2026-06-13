@@ -1,9 +1,23 @@
-const CACHE_NAME = 'immoviz-v1';
+// Versioning : incrémenter ce numéro (v1 -> v2 -> ...) à chaque modification
+// d'une ressource listée dans urlsToCache. Le handler "activate" supprime
+// automatiquement les caches portant un ancien nom, ce qui force le
+// téléchargement des nouvelles versions au prochain chargement.
+const CACHE_NAME = 'immoviz-v2';
 const urlsToCache = [
   '/immo-plans/',
   '/immo-plans/index.html',
   '/immo-plans/privacy.html',
-  '/immo-plans/conditions.html'
+  '/immo-plans/conditions.html',
+  '/immo-plans/livraison.html',
+  '/immo-plans/plan-interactif-romorantin.html',
+  '/immo-plans/plan-interactif-niort.html',
+  '/immo-plans/plan-interactif-tours.html',
+  '/immo-plans/manifest.json',
+  '/immo-plans/icons/icon-192.png',
+  '/immo-plans/icons/icon-512.png',
+  '/immo-plans/icons/icon-maskable-192.png',
+  '/immo-plans/icons/icon-maskable-512.png',
+  '/immo-plans/icons/apple-touch-icon.png'
 ];
 
 self.addEventListener('install', event => {

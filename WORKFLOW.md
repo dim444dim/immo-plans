@@ -46,3 +46,21 @@
   - FAQ : `aria-expanded="false/true"` sur .faqq, `aria-hidden="true/false"` sur .faqa (HTML + JS)
   - Slider avant/après : `role="slider"` aria-valuenow/min/max + tabindex="0" + navigation clavier ←→
   - Mobile menu close : `aria-label="Fermer le menu"` ajouté (burger avait déjà aria-label="Menu")
+
+## Vague 8 — Audit PWA (corrections) — 2026-06-13
+- [x] 8A — Icônes PNG (remplacent les SVG data-URI, incompatibles iOS Safari) :
+  - `icons/icon-192.png`, `icons/icon-512.png` (purpose "any")
+  - `icons/icon-maskable-192.png`, `icons/icon-maskable-512.png` (purpose "maskable", contenu dans la safe zone à 80%)
+  - `icons/apple-touch-icon.png` (180x180) + `<link rel="apple-touch-icon">` et `<link rel="icon">` dans index.html
+  - Générées via `icons/generate_icons.py` (Pillow, fond #159500 + texte "3D", police arialbd) — relancer ce script si le logo change
+- [x] 8B — `orientation`: `portrait-primary` → `any` dans manifest.json. Justification : le site est 100% responsive (breakpoints 740/640/480px) et contient un viewer 3D interactif (#demo-frame) qu'il est préférable de pouvoir consulter en paysage une fois l'app installée.
+- [x] 8C — `service-worker.js` : `CACHE_NAME` bump `v1` → `v2` (commentaire ajouté expliquant la politique de versioning) + `urlsToCache` complété avec toutes les pages réelles (privacy, conditions, livraison, les 3 plans interactifs), `manifest.json` et les 5 icônes.
+- [x] 8D — Bouton "Installer l'application" (`data-install-pwa`) ajouté dans le footer (icône download, masqué par défaut, affiché par le handler `beforeinstallprompt`, masqué à nouveau via `appinstalled`).
+- [x] 8E — Test réel Service Worker / offline via Playwright (`C:\Dev\tools\playwright\pwa-test.js`), serveur local `python -m http.server` sur `C:\Dev\immobilier-3d\` (port 8088) :
+  - SW actif sur le scope `http://localhost:8088/immo-plans/` (`active: "activating"` → puis `activated`)
+  - Cache `immoviz-v2` contient les 14 ressources attendues (vérifié par `caches.keys()`)
+  - Rechargement hors-ligne de `/immo-plans/` → page servie depuis le cache (titre OK)
+  - Navigation hors-ligne vers `/immo-plans/livraison.html` → `status: 200` (servie depuis le cache, pas de fallback)
+  - Captures (preuve, dans ce repo) : `test-evidence/pwa-online.png`, `test-evidence/pwa-offline.png`
+  - Script de test : `C:\Dev\tools\playwright\pwa-test.js`
+  - Pour rejouer : `node pwa-test.js http://localhost:8088/immo-plans/`
