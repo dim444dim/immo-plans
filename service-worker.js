@@ -2,28 +2,32 @@
 // d'une ressource listée dans urlsToCache. Le handler "activate" supprime
 // automatiquement les caches portant un ancien nom, ce qui force le
 // téléchargement des nouvelles versions au prochain chargement.
-const CACHE_NAME = 'immoviz-v2';
+const CACHE_NAME = 'immoviz-v4';
+// Precache volontairement limité à l'app shell (page d'accueil + assets
+// critiques) : les pages secondaires (privacy/conditions/livraison, les 3
+// plans interactifs avec Three.js) sont lourdes et ne doivent pas bloquer
+// l'event "install" au premier chargement. Elles sont mises en cache à la
+// volée par le handler "fetch" (stale-while-revalidate) dès leur première
+// visite réelle.
 const urlsToCache = [
   '/immo-plans/',
   '/immo-plans/index.html',
-  '/immo-plans/privacy.html',
-  '/immo-plans/conditions.html',
-  '/immo-plans/livraison.html',
-  '/immo-plans/plan-interactif-romorantin.html',
-  '/immo-plans/plan-interactif-niort.html',
-  '/immo-plans/plan-interactif-tours.html',
   '/immo-plans/manifest.json',
-  '/immo-plans/icons/icon-192.png',
+  '/immo-plans/css/tailwind.min.css?v=20260614',
+  '/immo-plans/fonts/inter-tight-latin-700-900.woff2?v=20260614',
+  '/immo-plans/fonts/playfair-display-italic-400-latin.woff2?v=20260614',
+  '/immo-plans/icons/icon-192.png?v=20260614',
   '/immo-plans/icons/icon-512.png',
   '/immo-plans/icons/icon-maskable-192.png',
   '/immo-plans/icons/icon-maskable-512.png',
-  '/immo-plans/icons/apple-touch-icon.png'
+  '/immo-plans/icons/apple-touch-icon.png?v=20260614'
 ];
 
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -37,14 +41,35 @@ self.addEventListener('activate', event => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
 });
 
+// Stratégie "stale-while-revalidate" : on répond immédiatement avec la
+// version en cache si elle existe (instantané, fonctionne hors-ligne), tout
+// en relançant une requête réseau en arrière-plan pour rafraîchir le cache.
+// Les ressources jamais vues (CDN Three.js/OrbitControls/qrcode, polices,
+// images, panoramas...) sont mises en cache dès leur premier chargement.
 self.addEventListener('fetch', event => {
+  const request = event.request;
+  if (request.method !== 'GET') return;
+
   event.respondWith(
-    caches.match(event.request)
-      .then(response => response || fetch(event.request))
-      .catch(() => caches.match('/immo-plans/index.html'))
+    caches.open(CACHE_NAME).then(cache =>
+      cache.match(request).then(cached => {
+        const networkFetch = fetch(request).then(response => {
+          if (response && (response.status === 200 || response.type === 'opaque')) {
+            cache.put(request, response.clone());
+          }
+          return response;
+        }).catch(() => {
+          if (cached) return cached;
+          if (request.mode === 'navigate') return caches.match('/immo-plans/index.html');
+          return Promise.reject('Ressource indisponible (hors-ligne et non mise en cache)');
+        });
+
+        return cached || networkFetch;
+      })
+    )
   );
 });

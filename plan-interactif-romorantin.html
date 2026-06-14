@@ -68,298 +68,12 @@
   }
   </script>
 
-  <style>
-    :root {
-      --bg-primary: #ffffff;
-      --bg-secondary: #f0f2f5;
-      --bg-3d: #f0ede8;
-      --text-primary: #111111;
-      --text-secondary: #666666;
-      --border: #e4e7ec;
-    }
-    [data-theme="dark"] {
-      --bg-primary: #1a1a2e;
-      --bg-secondary: #16213e;
-      --bg-3d: #0d0d1a;
-      --text-primary: #ffffff;
-      --text-secondary: #b0b5c0;
-      --border: #2d3748;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) {
-        --bg-primary: #1a1a2e;
-        --bg-secondary: #16213e;
-        --bg-3d: #0d0d1a;
-        --text-primary: #ffffff;
-        --text-secondary: #b0b5c0;
-        --border: #2d3748;
-      }
-    }
-    #dark-toggle {
-      background: var(--bg-primary); border: 1.5px solid var(--border);
-      border-radius: 8px; padding: 6px 10px; cursor: pointer;
-      font-size: 16px; transition: all 0.2s; line-height: 1;
-      flex-shrink: 0;
-    }
-    #dark-toggle:hover { opacity: 0.8; }
-    [data-theme="dark"] #hint3d { background: rgba(10,10,30,0.88) !important; color: var(--text-secondary) !important; }
-    [data-theme="dark"] #legend3d { background: rgba(10,10,30,0.9) !important; color: var(--text-secondary) !important; }
-    [data-theme="dark"] #legend3d h3 { color: var(--text-primary) !important; }
-    [data-theme="dark"] #room-info-panel { background: var(--bg-primary) !important; border-left: 1px solid var(--border) !important; }
-    [data-theme="dark"] #qr-modal > div { background: var(--bg-primary) !important; color: var(--text-primary) !important; }
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) #hint3d { background: rgba(10,10,30,0.88) !important; color: var(--text-secondary) !important; }
-      :root:not([data-theme="light"]) #legend3d { background: rgba(10,10,30,0.9) !important; color: var(--text-secondary) !important; }
-      :root:not([data-theme="light"]) #legend3d h3 { color: var(--text-primary) !important; }
-      :root:not([data-theme="light"]) #room-info-panel { background: var(--bg-primary) !important; border-left: 1px solid var(--border) !important; }
-      :root:not([data-theme="light"]) #qr-modal > div { background: var(--bg-primary) !important; color: var(--text-primary) !important; }
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-secondary); color: var(--text-primary); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+  <style>:root{--bg-primary:#ffffff;--bg-secondary:#f0f2f5;--bg-3d:#f0ede8;--text-primary:#111111;--text-secondary:#666666;--border:#e4e7ec}[data-theme=dark]{--bg-primary:#1a1a2e;--bg-secondary:#16213e;--bg-3d:#0d0d1a;--text-primary:#ffffff;--text-secondary:#b0b5c0;--border:#2d3748}@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg-primary:#1a1a2e;--bg-secondary:#16213e;--bg-3d:#0d0d1a;--text-primary:#ffffff;--text-secondary:#b0b5c0;--border:#2d3748}}#dark-toggle{background:var(--bg-primary);border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:16px;transition:all .2s;line-height:1;flex-shrink:0}#dark-toggle:hover{opacity:.8}[data-theme=dark] #hint3d{background:rgba(10,10,30,.88)!important;color:var(--text-secondary)!important}[data-theme=dark] #legend3d{background:rgba(10,10,30,.9)!important;color:var(--text-secondary)!important}[data-theme=dark] #legend3d h3{color:var(--text-primary)!important}[data-theme=dark] #room-info-panel{background:var(--bg-primary)!important;border-left:1px solid var(--border)!important}[data-theme=dark] #qr-modal>div{background:var(--bg-primary)!important;color:var(--text-primary)!important}@media (prefers-color-scheme:dark){:root:not([data-theme=light]) #hint3d{background:rgba(10,10,30,.88)!important;color:var(--text-secondary)!important}:root:not([data-theme=light]) #legend3d{background:rgba(10,10,30,.9)!important;color:var(--text-secondary)!important}:root:not([data-theme=light]) #legend3d h3{color:var(--text-primary)!important}:root:not([data-theme=light]) #room-info-panel{background:var(--bg-primary)!important;border-left:1px solid var(--border)!important}:root:not([data-theme=light]) #qr-modal>div{background:var(--bg-primary)!important;color:var(--text-primary)!important}}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg-secondary);color:var(--text-primary);display:flex;flex-direction:column;height:100vh;overflow:hidden}#header{height:52px;background:var(--bg-primary);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;z-index:100}#header h1{font-size:14px;font-weight:700;color:var(--text-primary)}#tabs{display:flex;gap:4px}.tab-btn{padding:7px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--bg-secondary);color:var(--text-secondary);transition:all .15s}.tab-btn:hover{background:var(--bg-secondary);filter:brightness(.95)}.tab-btn.active{background:#111;color:#fff;border-color:#111}#body{flex:1;display:flex;overflow:hidden}#views{flex:1;position:relative;overflow:hidden}.view{position:absolute;inset:0;display:none}.view.active{display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:16px}#view-2d svg{width:100%;height:auto;max-width:1200px;display:block}.room-overlay{opacity:0;transition:opacity .28s ease;pointer-events:none}.room-overlay.active{opacity:.38}.room-zone{fill:transparent;cursor:pointer;stroke:transparent;stroke-width:2;transition:fill .15s,stroke .15s}.room-zone:hover{fill:rgba(255,255,255,0.08);stroke:rgba(255,210,0,0.75);stroke-width:2}.room-zone.active{stroke:rgba(255,210,0,1);stroke-width:2.5}#view-3d.active{padding:0!important;overflow:hidden!important;display:block!important}#view-3d{background:var(--bg-3d);cursor:grab}#view-3d:active{cursor:grabbing}#view-3d canvas{position:absolute;inset:0;width:100%!important;height:100%!important}#view-360.active{padding:0!important;overflow:hidden!important;display:block!important}#view-360{background:#111;cursor:grab}#view-360:active{cursor:grabbing}#view-360 canvas{position:absolute;inset:0;width:100%!important;height:100%!important}#hint-360{position:absolute;top:16px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.65);color:#fff;padding:8px 20px;border-radius:20px;font-size:12px;pointer-events:none;transition:opacity 1.5s;z-index:10}#hint-360.fade{opacity:0}#room-label-360{position:absolute;top:16px;left:20px;background:rgba(0,0,0,.65);color:#fff;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:700;pointer-events:none;z-index:10}#nav-360{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.75);display:flex;gap:8px;overflow-x:auto;padding:12px 16px;z-index:10}#nav-360::-webkit-scrollbar{height:4px}#nav-360::-webkit-scrollbar-thumb{background:rgba(255,255,255,.3);border-radius:2px}.nav-btn-360{flex-shrink:0;padding:8px 18px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.2);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}.nav-btn-360:hover{background:rgba(255,255,255,.2);color:#fff}.nav-btn-360.active{background:#fff;color:#111;border-color:#fff}#add-img-360{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);border:1px dashed rgba(255,255,255,.3);border-radius:8px;padding:8px 14px;font-size:11px;cursor:pointer;z-index:10;transition:all .2s}#add-img-360:hover{background:rgba(255,255,255,.2);color:#fff}#diag-3d{position:absolute;bottom:80px;left:16px;right:16px;background:rgba(200,0,0,.85);color:#fff;padding:10px 14px;border-radius:8px;font-size:11px;font-family:monospace;white-space:pre-wrap;z-index:50;display:none;max-height:150px;overflow:auto}#controls-3d{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:10;pointer-events:all}.btn3d{padding:9px 22px;border:2px solid transparent;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;transition:all .18s;box-shadow:0 2px 8px rgba(0,0,0,.13)}.btn3d.on{background:#1d4ed8;color:#fff;border-color:#1e40af}.btn3d.off{background:#e5e7eb;color:#4b5563;border-color:#d1d5db}.btn3d.active{background:#047857;color:#fff;border-color:#065f46}#hint3d{position:absolute;top:12px;left:16px;background:rgba(255,255,255,.88);padding:8px 12px;border-radius:8px;font-size:11px;color:#555;line-height:1.9;pointer-events:none}#legend3d{position:absolute;top:12px;right:16px;background:rgba(255,255,255,.9);padding:12px 16px;border-radius:10px;font-size:11px;color:#333;line-height:2;pointer-events:none}#legend3d h3{font-size:10px;font-weight:700;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;color:#111}.li{display:flex;align-items:center;gap:8px}.lc{width:13px;height:13px;border-radius:3px;border:1px solid rgba(0,0,0,.1);flex-shrink:0}#info-panel{width:300px;min-width:260px;background:var(--bg-primary);border-left:1px solid var(--border);padding:24px 18px 18px;overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column}.panel-title{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text-secondary);margin-bottom:20px;letter-spacing:.9px}.default-view{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px 0}.default-view .icon{font-size:38px;margin-bottom:12px;opacity:.2}.default-view h3{font-size:14px;color:#aaa;margin-bottom:8px;font-weight:600}.default-view p{font-size:12px;color:#ccc;line-height:1.6}.room-info{display:none;animation:slideIn .2s ease}.room-info.active{display:block}@keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}.room-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.6px}.room-name{font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:14px;line-height:1.2}.room-stats{background:var(--bg-secondary);border-radius:10px;padding:13px;margin-bottom:14px}.stat-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border)}.stat-row:last-child{border-bottom:none}.stat-label{font-size:12px;color:var(--text-secondary)}.stat-value{font-size:13px;font-weight:600;color:var(--text-primary)}.room-desc{font-size:12px;color:var(--text-secondary);line-height:1.65;margin-bottom:14px}.features-list{display:flex;flex-wrap:wrap;gap:6px}.feature-tag{background:#f0f4ff;color:#4a6cf7;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500}.global-stats{margin-top:auto;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--text-secondary);text-align:center;line-height:1.7}@media (max-width:860px){#body{flex-direction:column}#info-panel{width:100%;border-left:none;border-top:1px solid var(--border);max-height:220px;min-width:unset}}#whatsapp-btn{position:fixed;bottom:max(20px,env(safe-area-inset-bottom));right:max(20px,env(safe-area-inset-right));width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:999;box-shadow:0 4px 16px rgba(37,211,102,.4);border:none;font-size:24px;transition:all .25s ease;user-select:none;-webkit-user-select:none}#whatsapp-btn:hover{transform:scale(1.12) translateY(-3px);box-shadow:0 6px 24px rgba(37,211,102,.5)}#whatsapp-btn:active{transform:scale(.96)}@media (max-width:768px){#whatsapp-btn{display:flex}}#exit-popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(4px);z-index:10000;align-items:center;justify-content:center;padding:1rem;animation:exitFadeIn .3s ease-out forwards}#exit-popup.show{display:flex}@keyframes exitFadeIn{from{opacity:0}to{opacity:1}}.exit-modal{background:rgba(20,20,30,.98);border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:420px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:exitSlideIn .3s cubic-bezier(.22,1,.36,1) forwards}@keyframes exitSlideIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}.exit-modal h2{font-family:Arial,sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:.5rem;color:#fff}.exit-modal p{font-size:.95rem;color:rgba(255,255,255,.65);margin-bottom:1.75rem;line-height:1.6}.exit-close{position:absolute;top:1.25rem;right:1.25rem;background:0 0;border:1px solid rgba(255,255,255,.15);border-radius:8px;color:rgba(255,255,255,.5);font-size:.9rem;cursor:pointer;padding:.35rem .6rem;transition:color .2s,border-color .2s;width:32px;height:32px;display:flex;align-items:center;justify-content:center}.exit-close:hover{color:#fff;border-color:rgba(255,255,255,.4)}.exit-buttons{display:flex;gap:.75rem;flex-direction:column}.exit-btn{padding:.85rem 1.5rem;border-radius:50px;font-weight:700;font-size:.95rem;border:none;cursor:pointer;transition:all .2s;text-align:center;display:inline-flex;align-items:center;justify-content:center}.exit-btn-yes{background:#25d366;color:#fff;box-shadow:0 4px 16px rgba(37,211,102,.3)}.exit-btn-yes:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,.4)}.exit-btn-no{background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15)}.exit-btn-no:hover{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)}[role=slider]:focus-visible,[tabindex]:focus-visible,a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #2563eb;outline-offset:3px;border-radius:4px}@media (prefers-reduced-motion:reduce){*,::after,::before{animation-duration:NaNs!important;animation-iteration-count:1!important;transition-duration:NaNs!important;scroll-behavior:auto!important}}</style>
 
-    /* ── HEADER ─────────────────────────────────────────── */
-    #header {
-      height: 52px; background: var(--bg-primary); border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 20px; flex-shrink: 0; z-index: 100;
-    }
-    #header h1 { font-size: 14px; font-weight: 700; color: var(--text-primary); }
-    #tabs { display: flex; gap: 4px; }
-    .tab-btn {
-      padding: 7px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
-      cursor: pointer; border: 1.5px solid var(--border); background: var(--bg-secondary);
-      color: var(--text-secondary); transition: all 0.15s;
-    }
-    .tab-btn:hover { background: var(--bg-secondary); filter: brightness(0.95); }
-    .tab-btn.active { background: #111; color: #fff; border-color: #111; }
+  <style>@media (max-width:768px){.main-container{flex-direction:column!important;height:auto!important}#view-2d,#view-360,#view-3d{min-height:300px!important}#room-info-panel{width:100%!important;max-height:50vh!important;overflow-y:auto!important;order:2}.main-container>div:first-child{order:1;min-height:50vh!important}#tabs{flex-direction:row!important;flex-wrap:wrap!important}}</style>
 
-    /* ── BODY ────────────────────────────────────────────── */
-    #body { flex: 1; display: flex; overflow: hidden; }
+  <style>.skip-link{position:absolute;top:-40px;left:0;background:#4a5bcf;color:#fff;padding:8px 16px;text-decoration:none;font-weight:600;z-index:9999;border-radius:0 0 4px 0;transition:top .15s}.skip-link:focus{top:0}a:focus,button:focus,input:focus,select:focus,textarea:focus{outline:2px solid #4a5bcf;outline-offset:2px}.tab-btn:focus{outline:2px solid #4a5bcf;outline-offset:2px}.room-zone:focus{outline:2px solid #ffcc00;outline-offset:2px}.nav-btn-360:focus{outline:2px solid white;outline-offset:2px}.btn3d:focus{outline:2px solid #4a5bcf;outline-offset:2px}.form-label{display:block;font-size:.85rem;color:#555;margin-bottom:.3rem;font-weight:500}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}</style>
 
-    /* ── VIEWS ───────────────────────────────────────────── */
-    #views { flex: 1; position: relative; overflow: hidden; }
-    .view { position: absolute; inset: 0; display: none; }
-    .view.active { display: flex; align-items: flex-start; justify-content: center; overflow: auto; padding: 16px; }
-
-    /* Vue 2D */
-    #view-2d svg { width: 100%; height: auto; max-width: 1200px; display: block; }
-    .room-overlay { opacity: 0; transition: opacity 0.28s ease; pointer-events: none; }
-    .room-overlay.active { opacity: 0.38; }
-    .room-zone { fill: transparent; cursor: pointer; stroke: transparent; stroke-width: 2; transition: fill 0.15s, stroke 0.15s; }
-    .room-zone:hover { fill: rgba(255,255,255,0.08); stroke: rgba(255,210,0,0.75); stroke-width: 2; }
-    .room-zone.active { stroke: rgba(255,210,0,1); stroke-width: 2.5; }
-
-    /* Vue 3D — override display:flex et padding hérités de .view.active */
-    #view-3d.active  { padding: 0 !important; overflow: hidden !important; display: block !important; }
-    #view-3d { background: var(--bg-3d); cursor: grab; }
-    #view-3d:active { cursor: grabbing; }
-    #view-3d canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
-
-    /* Vue 360° */
-    #view-360.active { padding: 0 !important; overflow: hidden !important; display: block !important; }
-    #view-360 { background: #111; cursor: grab; }
-    #view-360:active { cursor: grabbing; }
-    #view-360 canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
-    #hint-360 {
-      position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
-      background: rgba(0,0,0,0.65); color: #fff; padding: 8px 20px; border-radius: 20px;
-      font-size: 12px; pointer-events: none; transition: opacity 1.5s; z-index: 10;
-    }
-    #hint-360.fade { opacity: 0; }
-    #room-label-360 {
-      position: absolute; top: 16px; left: 20px;
-      background: rgba(0,0,0,0.65); color: #fff; padding: 8px 16px; border-radius: 8px;
-      font-size: 14px; font-weight: 700; pointer-events: none; z-index: 10;
-    }
-    #nav-360 {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      background: rgba(0,0,0,0.75); display: flex; gap: 8px;
-      overflow-x: auto; padding: 12px 16px; z-index: 10;
-    }
-    #nav-360::-webkit-scrollbar { height: 4px; }
-    #nav-360::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 2px; }
-    .nav-btn-360 {
-      flex-shrink: 0; padding: 8px 18px; background: rgba(255,255,255,0.1);
-      color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s;
-    }
-    .nav-btn-360:hover { background: rgba(255,255,255,0.2); color: #fff; }
-    .nav-btn-360.active { background: #fff; color: #111; border-color: #fff; }
-    #add-img-360 {
-      position: absolute; top: 16px; right: 16px;
-      background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7);
-      border: 1px dashed rgba(255,255,255,0.3); border-radius: 8px;
-      padding: 8px 14px; font-size: 11px; cursor: pointer; z-index: 10;
-      transition: all 0.2s;
-    }
-    #add-img-360:hover { background: rgba(255,255,255,0.2); color: #fff; }
-    #diag-3d {
-      position: absolute; bottom: 80px; left: 16px; right: 16px;
-      background: rgba(200,0,0,0.85); color: #fff; padding: 10px 14px;
-      border-radius: 8px; font-size: 11px; font-family: monospace; white-space: pre-wrap;
-      z-index: 50; display: none; max-height: 150px; overflow: auto;
-    }
-    #controls-3d {
-      position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-      display: flex; gap: 10px; z-index: 10; pointer-events: all;
-    }
-    .btn3d {
-      padding: 9px 22px; border: 2px solid transparent; border-radius: 8px;
-      cursor: pointer; font-size: 13px; font-weight: 700;
-      transition: all 0.18s; box-shadow: 0 2px 8px rgba(0,0,0,0.13);
-    }
-    .btn3d.on     { background: #1d4ed8; color: #fff; border-color: #1e40af; }
-    .btn3d.off    { background: #e5e7eb; color: #9ca3af; border-color: #d1d5db; }
-    .btn3d.active { background: #059669; color: #fff; border-color: #047857; }
-    #hint3d {
-      position: absolute; top: 12px; left: 16px;
-      background: rgba(255,255,255,0.88); padding: 8px 12px; border-radius: 8px;
-      font-size: 11px; color: #555; line-height: 1.9; pointer-events: none;
-    }
-    #legend3d {
-      position: absolute; top: 12px; right: 16px;
-      background: rgba(255,255,255,0.9); padding: 12px 16px; border-radius: 10px;
-      font-size: 11px; color: #333; line-height: 2; pointer-events: none;
-    }
-    #legend3d h3 { font-size: 10px; font-weight: 700; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; color: #111; }
-    .li { display: flex; align-items: center; gap: 8px; }
-    .lc { width: 13px; height: 13px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
-
-    /* ── PANNEAU INFO ────────────────────────────────────── */
-    #info-panel {
-      width: 300px; min-width: 260px; background: var(--bg-primary); border-left: 1px solid var(--border);
-      padding: 24px 18px 18px; overflow-y: auto; flex-shrink: 0;
-      display: flex; flex-direction: column;
-    }
-    .panel-title { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 20px; letter-spacing: 0.9px; }
-    .default-view { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px 0; }
-    .default-view .icon { font-size: 38px; margin-bottom: 12px; opacity: 0.2; }
-    .default-view h3 { font-size: 14px; color: #aaa; margin-bottom: 8px; font-weight: 600; }
-    .default-view p { font-size: 12px; color: #ccc; line-height: 1.6; }
-    .room-info { display: none; animation: slideIn 0.2s ease; }
-    .room-info.active { display: block; }
-    @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-    .room-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.6px; }
-    .room-name { font-size: 22px; font-weight: 700; color: var(--text-primary); margin-bottom: 14px; line-height: 1.2; }
-    .room-stats { background: var(--bg-secondary); border-radius: 10px; padding: 13px; margin-bottom: 14px; }
-    .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--border); }
-    .stat-row:last-child { border-bottom: none; }
-    .stat-label { font-size: 12px; color: var(--text-secondary); }
-    .stat-value { font-size: 13px; font-weight: 600; color: var(--text-primary); }
-    .room-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 14px; }
-    .features-list { display: flex; flex-wrap: wrap; gap: 6px; }
-    .feature-tag { background: #f0f4ff; color: #4a6cf7; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
-    .global-stats { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-secondary); text-align: center; line-height: 1.7; }
-
-    @media (max-width: 860px) {
-      #body { flex-direction: column; }
-      #info-panel { width: 100%; border-left: none; border-top: 1px solid var(--border); max-height: 220px; min-width: unset; }
-    }
-  
-    /* ── BOUTON WHATSAPP FLOTTANT ── */
-    #whatsapp-btn {
-      position: fixed;
-      bottom: max(20px, env(safe-area-inset-bottom));
-      right: max(20px, env(safe-area-inset-right));
-      width: 56px; height: 56px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #25d366, #128c7e);
-      color: #fff;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 999;
-      box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
-      border: none;
-      font-size: 24px;
-      transition: all 0.25s ease;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-    #whatsapp-btn:hover { transform: scale(1.12) translateY(-3px); box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5); }
-    #whatsapp-btn:active { transform: scale(0.96); }
-    @media (max-width: 768px) { #whatsapp-btn { display: flex; } }
-
-    /* ── POP-UP EXIT INTENT ── */
-    #exit-popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(4px);z-index:10000;align-items:center;justify-content:center;padding:1rem;animation:exitFadeIn .3s ease-out forwards}
-    #exit-popup.show{display:flex}
-    @keyframes exitFadeIn{from{opacity:0}to{opacity:1}}
-    .exit-modal{background:rgba(20,20,30,.98);border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:420px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:exitSlideIn .3s cubic-bezier(.22,1,.36,1) forwards}
-    @keyframes exitSlideIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
-    .exit-modal h2{font-family:Arial,sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:.5rem;color:#fff}
-    .exit-modal p{font-size:.95rem;color:rgba(255,255,255,.65);margin-bottom:1.75rem;line-height:1.6}
-    .exit-close{position:absolute;top:1.25rem;right:1.25rem;background:none;border:1px solid rgba(255,255,255,.15);border-radius:8px;color:rgba(255,255,255,.5);font-size:.9rem;cursor:pointer;padding:.35rem .6rem;transition:color .2s,border-color .2s;width:32px;height:32px;display:flex;align-items:center;justify-content:center}
-    .exit-close:hover{color:#fff;border-color:rgba(255,255,255,.4)}
-    .exit-buttons{display:flex;gap:.75rem;flex-direction:column}
-    .exit-btn{padding:.85rem 1.5rem;border-radius:50px;font-weight:700;font-size:.95rem;border:none;cursor:pointer;transition:all .2s;text-align:center;display:inline-flex;align-items:center;justify-content:center}
-    .exit-btn-yes{background:#25d366;color:#fff;box-shadow:0 4px 16px rgba(37,211,102,.3)}
-    .exit-btn-yes:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,.4)}
-    .exit-btn-no{background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15)}
-    .exit-btn-no:hover{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)}
-  </style>
-
-  <style>
-    @media (max-width: 768px) {
-      .main-container {
-        flex-direction: column !important;
-        height: auto !important;
-      }
-
-      #view-2d, #view-3d, #view-360 {
-        min-height: 300px !important;
-      }
-
-      #room-info-panel {
-        width: 100% !important;
-        max-height: 50vh !important;
-        overflow-y: auto !important;
-        order: 2;
-      }
-
-      .main-container > div:first-child {
-        order: 1;
-        min-height: 50vh !important;
-      }
-
-      #tabs {
-        flex-direction: row !important;
-        flex-wrap: wrap !important;
-      }
-    }
-  </style>
-
-  <style>
-    /* ── ACCESSIBILITÉ ── */
-    .skip-link {
-      position: absolute; top: -40px; left: 0;
-      background: #4a5bcf; color: white;
-      padding: 8px 16px; text-decoration: none;
-      font-weight: 600; z-index: 9999;
-      border-radius: 0 0 4px 0;
-      transition: top 0.15s;
-    }
-    .skip-link:focus { top: 0; }
-    button:focus, a:focus, input:focus, textarea:focus, select:focus {
-      outline: 2px solid #4a5bcf;
-      outline-offset: 2px;
-    }
-    .tab-btn:focus { outline: 2px solid #4a5bcf; outline-offset: 2px; }
-    .room-zone:focus { outline: 2px solid #ffcc00; outline-offset: 2px; }
-    .nav-btn-360:focus { outline: 2px solid white; outline-offset: 2px; }
-    .btn3d:focus { outline: 2px solid #4a5bcf; outline-offset: 2px; }
-    .form-label { display: block; font-size: 0.85rem; color: #555; margin-bottom: 0.3rem; font-weight: 500; }
-    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
-  </style>
-
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WBK9XWSGCT"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-WBK9XWSGCT');
-  </script>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Aller au contenu principal</a>
@@ -629,7 +343,7 @@
       <button onclick="closeQRModal()" aria-label="Fermer le partage QR Code" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer;">✕</button>
       <h3 id="qr-modal-title" style="margin: 0 0 1rem; color: #2c3e50;">Partager cette visite</h3>
       <div id="qrcode-container" style="margin: 1.5rem 0; background: #f5f7fa; padding: 1rem; border-radius: 8px;"></div>
-      <p style="margin: 0 0 1rem; color: #7f8c8d; font-size: 0.9rem;">Scannez pour accéder à la visite interactive</p>
+      <p style="margin: 0 0 1rem; color: #4b5563; font-size: 0.9rem;">Scannez pour accéder à la visite interactive</p>
       <button onclick="printQR()" aria-label="Imprimer le QR Code" style="width: 100%; padding: 0.75rem; background: #4a5bcf; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;"><span aria-hidden="true">🖨️</span> Imprimer</button>
     </div>
   </div>
@@ -645,31 +359,31 @@
     </div>
 
     <div style="background: #f5f7fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-      <p style="margin: 0 0 0.5rem; color: #7f8c8d; font-size: 0.9rem;">PRIX</p>
+      <p style="margin: 0 0 0.5rem; color: #4b5563; font-size: 0.9rem;">PRIX</p>
       <p style="margin: 0; font-size: 1.8rem; font-weight: bold; color: #2c3e50;">265 000 €</p>
     </div>
 
     <!-- PRICE COMPARISON -->
     <div style="background: linear-gradient(135deg, #4a5bcf15 0%, #764ba215 100%); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid #4a5bcf;">
-      <p style="margin: 0 0 0.5rem; color: #7f8c8d; font-size: 0.85rem;">📊 COMPARAISON MARCHÉ</p>
+      <p style="margin: 0 0 0.5rem; color: #4b5563; font-size: 0.85rem;">📊 COMPARAISON MARCHÉ</p>
       <div style="display: flex; align-items: center; gap: 1rem;">
         <div style="flex: 1;">
-          <p style="margin: 0; font-size: 0.9rem; color: #7f8c8d;">Votre prix : <strong>265 000 €</strong></p>
-          <p style="margin: 0.5rem 0 0; font-size: 0.9rem; color: #7f8c8d;">Marché : <strong id="market-price">280 000 €</strong></p>
+          <p style="margin: 0; font-size: 0.9rem; color: #4b5563;">Votre prix : <strong>265 000 €</strong></p>
+          <p style="margin: 0.5rem 0 0; font-size: 0.9rem; color: #4b5563;">Marché : <strong id="market-price">280 000 €</strong></p>
         </div>
         <div id="price-badge" style="text-align: center; padding: 0.75rem 1rem; border-radius: 8px; font-weight: bold; font-size: 0.95rem;"></div>
       </div>
-      <p style="margin-top: 0.75rem; font-size: 0.85rem; color: #7f8c8d; font-style: italic; margin-bottom: 0;">
+      <p style="margin-top: 0.75rem; font-size: 0.85rem; color: #4b5563; font-style: italic; margin-bottom: 0;">
         📈 Prix moyen maisons 170 m² région Romorantin
       </p>
     </div>
 
     <div style="background: #f5f7fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-      <p style="margin: 0 0 0.5rem; color: #7f8c8d; font-size: 0.9rem;">SURFACE</p>
+      <p style="margin: 0 0 0.5rem; color: #4b5563; font-size: 0.9rem;">SURFACE</p>
       <p style="margin: 0; font-size: 1.8rem; font-weight: bold; color: #2c3e50;">170 m²</p>
     </div>
 
-    <p style="margin: 0 0 1rem; color: #7f8c8d; font-size: 0.9rem;"><strong>📍 Romorantin-Lanthenay, 41200</strong></p>
+    <p style="margin: 0 0 1rem; color: #4b5563; font-size: 0.9rem;"><strong>📍 Romorantin-Lanthenay, 41200</strong></p>
     <p style="margin: 0; color: #555; font-size: 0.95rem;">Cliquez sur une pièce pour voir les détails</p>
   </div>
 
@@ -679,10 +393,10 @@
     <h3 id="room-name" style="margin: 0 0 0.5rem; color: #2c3e50;"></h3>
     <span id="room-badge" style="display: inline-block; background: #4a5bcf; color: white; padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.85rem; margin-bottom: 1rem;"></span>
     <div style="background: #f5f7fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-      <p style="margin: 0 0 0.5rem; color: #7f8c8d; font-size: 0.9rem;">SURFACE</p>
+      <p style="margin: 0 0 0.5rem; color: #4b5563; font-size: 0.9rem;">SURFACE</p>
       <p id="room-surface" style="margin: 0; font-size: 1.3rem; font-weight: bold;"></p>
     </div>
-    <p id="room-orientation" style="margin: 0 0 1rem; color: #7f8c8d; font-size: 0.9rem;"></p>
+    <p id="room-orientation" style="margin: 0 0 1rem; color: #4b5563; font-size: 0.9rem;"></p>
     <p id="room-desc" style="margin: 0 0 1rem; color: #555; line-height: 1.6;"></p>
     <div id="room-features" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e0e6ed;"></div>
   </div>
@@ -704,7 +418,7 @@
     </div>
     <button onclick="calculerMensualite()" aria-label="Calculer la mensualité estimée" style="width: 100%; padding: 0.75rem; background: #4a5bcf; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">Calculer</button>
     <div id="resultat-mensualite" role="status" aria-live="polite" style="margin-top: 1rem; padding: 1rem; background: #f0f4ff; border-radius: 4px; display: none;">
-      <p style="margin: 0 0 0.5rem; color: #7f8c8d; font-size: 0.9rem;">MENSUALITÉ ESTIMÉE</p>
+      <p style="margin: 0 0 0.5rem; color: #4b5563; font-size: 0.9rem;">MENSUALITÉ ESTIMÉE</p>
       <p id="mensualite-value" style="margin: 0; font-size: 1.5rem; font-weight: bold; color: #4a5bcf;"></p>
     </div>
   </div>
@@ -733,15 +447,40 @@
 </aside>
 </main><!-- /main-content -->
 
-<!-- Three.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/objects/Sky.js"></script>
-
-
 <script>
 'use strict';
+
+// ── Chargement différé de Three.js + OrbitControls (uniquement à l'ouverture des onglets 3D/360) ──
+let threeJsPromise = null;
+function loadThreeJS() {
+  if (typeof THREE !== 'undefined') return Promise.resolve();
+  if (threeJsPromise) return threeJsPromise;
+  const load = src => new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+  threeJsPromise = load('https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js')
+    .then(() => load('https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js'));
+  return threeJsPromise;
+}
+
+// ── Chargement différé de qrcode.js (uniquement à l'ouverture de la modale QR) ──
+let qrCodePromise = null;
+function loadQRCodeLib() {
+  if (typeof QRCode !== 'undefined') return Promise.resolve();
+  if (qrCodePromise) return qrCodePromise;
+  qrCodePromise = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+  return qrCodePromise;
+}
 
 // ══════════════════════════════════════════════════════
 //  DONNÉES PIÈCES (partagées 2D + 3D)
@@ -787,9 +526,9 @@ const ROOMS = {
   sejour:        { name:'Séjour',          badge:'RDC',   badgeBg:'#e8f2ff', badgeColor:'#4a90e2', surface:'~30 m²', level:'Rez-de-chaussée', orientation:'Nord / Ouest', desc:'Grande pièce de vie lumineuse avec triple fenêtrage. Poêle à bois au centre.', features:['Poêle à bois','3 fenêtres','Parquet','Lumineux'] },
   sam:           { name:'Salle à Manger',  badge:'RDC',   badgeBg:'#e8fff2', badgeColor:'#27ae60', surface:'~15 m²', level:'Rez-de-chaussée', orientation:'Nord',        desc:'Espace repas convivial en communication directe avec le séjour et la cuisine.', features:['Parquet','Ouvert','Lumineux'] },
   cuisine:       { name:'Cuisine',         badge:'RDC',   badgeBg:'#fff4e8', badgeColor:'#e67e22', surface:'~20 m²', level:'Rez-de-chaussée', orientation:null,           desc:'Cuisine semi-ouverte spacieuse avec îlot central et grande surface de plan de travail.', features:['Équipée','Îlot central','Carrelage','Fenêtre'] },
-  entree:        { name:'Entrée / Hall',   badge:'RDC',   badgeBg:'#f0f0f0', badgeColor:'#7f8c8d', surface:'~8 m²',  level:'Rez-de-chaussée', orientation:null,           desc:'Hall d\'entrée avec escalier colimaçon métal donnant accès à l\'étage.', features:['Escalier colimaçon','Carrelage'] },
-  wc:            { name:'WC',              badge:'RDC',   badgeBg:'#f0f0f0', badgeColor:'#7f8c8d', surface:'~3 m²',  level:'Rez-de-chaussée', orientation:null,           desc:'WC indépendant accessible depuis le hall d\'entrée.', features:['Carrelage','Indépendant'] },
-  garage:        { name:'Garage',          badge:'RDC',   badgeBg:'#f0f0f0', badgeColor:'#7f8c8d', surface:'~15 m²', level:'Rez-de-chaussée', access:'Extérieur uniquement', desc:'Garage attenant avec porte double. Accès depuis l\'extérieur uniquement.', features:['Attenant','Porte double','Accès ext.'] },
+  entree:        { name:'Entrée / Hall',   badge:'RDC',   badgeBg:'#f0f0f0', badgeColor:'#4b5563', surface:'~8 m²',  level:'Rez-de-chaussée', orientation:null,           desc:'Hall d\'entrée avec escalier colimaçon métal donnant accès à l\'étage.', features:['Escalier colimaçon','Carrelage'] },
+  wc:            { name:'WC',              badge:'RDC',   badgeBg:'#f0f0f0', badgeColor:'#4b5563', surface:'~3 m²',  level:'Rez-de-chaussée', orientation:null,           desc:'WC indépendant accessible depuis le hall d\'entrée.', features:['Carrelage','Indépendant'] },
+  garage:        { name:'Garage',          badge:'RDC',   badgeBg:'#f0f0f0', badgeColor:'#4b5563', surface:'~15 m²', level:'Rez-de-chaussée', access:'Extérieur uniquement', desc:'Garage attenant avec porte double. Accès depuis l\'extérieur uniquement.', features:['Attenant','Porte double','Accès ext.'] },
   'ch-principale':{ name:'Ch. Principale', badge:'Étage', badgeBg:'#f4e8ff', badgeColor:'#9b59b6', surface:'~18 m²', level:'1er (combles)',    orientation:'Ouest',        desc:'Suite parentale spacieuse avec dressing intégré et grande fenêtre exposée côté ouest.', features:['Dressing','Fenêtre ouest','Parquet'] },
   ch2:           { name:'Chambre 2',       badge:'Étage', badgeBg:'#f4e8ff', badgeColor:'#8e44ad', surface:'~12 m²', level:'1er (combles)',    orientation:'Nord',         desc:'Chambre lumineuse avec fenêtre exposée nord. Idéale pour chambre d\'enfant.', features:['Fenêtre nord','Parquet'] },
   ch3:           { name:'Chambre 3',       badge:'Étage', badgeBg:'#e8f4ff', badgeColor:'#2980b9', surface:'~12 m²', level:'1er (combles)',    orientation:null,           desc:'Chambre sous combles avec velux pour une luminosité naturelle zénithale.', features:['Velux','Parquet','Combles'] },
@@ -836,13 +575,10 @@ Object.entries(ROOMS).forEach(([id, r]) => {
 //  PANNEAU INFO — activation commune
 // ══════════════════════════════════════════════════════
 let currentRoom = null;
-const defaultView = document.getElementById('default-view');
-
 function activateRoom(id) {
   deactivateRoom();
   if (!id || !ROOMS[id]) return;
   currentRoom = id;
-  defaultView.style.display = 'none';
   document.querySelectorAll('.room-info').forEach(el => {
     if (el.dataset.room === id) el.classList.add('active');
   });
@@ -851,7 +587,6 @@ function activateRoom(id) {
 function deactivateRoom() {
   currentRoom = null;
   document.querySelectorAll('.room-info').forEach(el => el.classList.remove('active'));
-  defaultView.style.display = 'flex';
 }
 
 function showRoomInfo(roomKey) {
@@ -930,20 +665,21 @@ function calculerMensualite() {
 function showQRModal() {
   const url = window.location.href;
   const qrContainer = document.getElementById('qrcode-container');
+  const modal = document.getElementById('qr-modal');
 
   qrContainer.innerHTML = '';
-
-  new QRCode(qrContainer, {
-    text: url,
-    width: 250,
-    height: 250,
-    colorDark: "#667eea",
-    colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.H
-  });
-
-  const modal = document.getElementById('qr-modal');
   modal.style.display = 'flex';
+
+  loadQRCodeLib().then(() => {
+    new QRCode(qrContainer, {
+      text: url,
+      width: 250,
+      height: 250,
+      colorDark: "#667eea",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  });
 }
 
 function closeQRModal() {
@@ -960,12 +696,7 @@ function printQR() {
     <html>
       <head>
         <title>QR Code - Visite 3D</title>
-        <style>
-          body { text-align: center; padding: 2rem; font-family: Arial; }
-          img { width: 300px; height: 300px; margin: 1rem 0; }
-          h2 { color: #4a5bcf; }
-          p { color: #666; }
-        </style>
+        <style>body{text-align:center;padding:2rem;font-family:Arial}img{width:300px;height:300px;margin:1rem 0}h2{color:#4a5bcf}p{color:#666}</style>
       </head>
       <body>
         <h2>Visite 3D Immobilière</h2>
@@ -1097,24 +828,25 @@ function switchTab(tab) {
   deactivate2D(); deactivateRoom();
   stopLoop(); stop360Loop();
   if (tab === '3d') {
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      const c = document.getElementById('view-3d');
-      const d = document.getElementById('diag-3d');
-      if (d) { d.textContent = ''; d.style.display='none'; }
-      if (typeof THREE === 'undefined') {
-        if (d) { d.style.display='block'; d.textContent = '❌ Three.js non chargé (CDN inaccessible)'; }
-        return;
-      }
-      if (!threeReady) initThree();
-      if (renderer) { resizeRenderer(); startLoop(); }
-    }));
+    const c = document.getElementById('view-3d');
+    const d = document.getElementById('diag-3d');
+    if (d) { d.textContent = ''; d.style.display='none'; }
+    loadThreeJS().then(() => {
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        if (!threeReady) initThree();
+        if (renderer) { resizeRenderer(); startLoop(); }
+      }));
+    }).catch(() => {
+      if (d) { d.style.display='block'; d.textContent = '❌ Three.js non chargé (CDN inaccessible)'; }
+    });
   } else if (tab === '360') {
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      if (typeof THREE === 'undefined') return;
-      if (!three60Ready) init360();
-      else resize360();
-      if (renderer360) start360Loop();
-    }));
+    loadThreeJS().then(() => {
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        if (!three60Ready) init360();
+        else resize360();
+        if (renderer360) start360Loop();
+      }));
+    }).catch(() => {});
   }
 }
 
@@ -1317,16 +1049,12 @@ function initThree() {
   const F0 = FT / 2, W0 = FT + WH / 2, EB = FT + WH, EF = EB + FT / 2, EW = EB + FT + WH / 2, TB = EB + FT + WH;
   const SR = FT + 0.01, SE = EF + 0.01;
 
-  // Terrain — herbe (texture CDN ou canvas fallback)
+  // Terrain — herbe (texture générée en canvas, pas de dépendance CDN)
   const gnd = new THREE.Mesh(new THREE.PlaneGeometry(70, 55), M3d.ground);
   gnd.rotation.x = -Math.PI / 2; gnd.position.set(3, -0.01, 4); gnd.receiveShadow = true;
   scene.add(gnd);
-  new THREE.TextureLoader().load(
-    'https://cdn.jsdelivr.net/npm/three@0.134.0/examples/textures/terrain/grasslight-big.jpg',
-    tex => { tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(14, 11); M3d.ground.map = tex; M3d.ground.needsUpdate = true; },
-    undefined,
-    ()  => { M3d.ground.map = makeGrassTex(); M3d.ground.needsUpdate = true; }
-  );
+  M3d.ground.map = makeGrassTex();
+  M3d.ground.needsUpdate = true;
 
   // ── RDC ──
   box(13, FT, 9, M3d.wallIn,  6.5, F0, 4.5, G.rdc);
@@ -1897,49 +1625,36 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── EXIT INTENT POP-UP ──
-(function(){
-  console.log('[EXIT INTENT] Initializing...');
+// Initialisation différée car le markup #exit-popup est plus bas dans le document
+// (pas encore présent dans le DOM au moment où ce script s'exécute).
+document.addEventListener('DOMContentLoaded', function(){
   const isMobile = window.innerWidth < 768;
-  console.log(`[EXIT INTENT] isMobile = ${isMobile} (width: ${window.innerWidth})`);
-  if (isMobile) {
-    console.log('[EXIT INTENT] Skipping: mobile device');
-    return;
-  }
+  if (isMobile) return;
 
   const popup = document.getElementById('exit-popup');
   const closeBtn = document.getElementById('exit-close-btn');
   const noBtn = document.getElementById('exit-btn-no');
   const yesBtn = document.getElementById('exit-btn-yes');
-  console.log(`[EXIT INTENT] Elements found: popup=${!!popup}, closeBtn=${!!closeBtn}, noBtn=${!!noBtn}, yesBtn=${!!yesBtn}`);
-  if (!popup) {
-    console.log('[EXIT INTENT] Skipping: popup element not found');
-    return;
-  }
+  if (!popup) return;
 
-  let lastMouseY = window.innerHeight;
+  let lastMouseY = null;
   let popupShown = localStorage.getItem('exitPopupShown');
-  console.log(`[EXIT INTENT] Initial popupShown = ${popupShown}`);
 
   const handleMouseMove = (e) => {
-    if (popupShown || popup.classList.contains('show')) {
-      console.log(`[EXIT INTENT] Skipping mousemove: popupShown=${popupShown}, popup.show=${popup.classList.contains('show')}`);
-      return;
-    }
+    if (popupShown || popup.classList.contains('show')) return;
 
     const currentY = e.clientY;
+    if (lastMouseY === null) { lastMouseY = currentY; return; }
     const isMovingUp = currentY < lastMouseY;
-    console.log(`[EXIT INTENT] mousemove: currentY=${currentY}, lastMouseY=${lastMouseY}, isMovingUp=${isMovingUp}`);
     lastMouseY = currentY;
 
     // Déclencher si souris remonte vers la barre adresse (y < 50 et mouvement vers le haut)
     if (currentY < 50 && isMovingUp) {
-      console.log('[EXIT INTENT] Trigger condition met: showing popup');
       showExitPopup();
     }
   };
 
   window.addEventListener('mousemove', handleMouseMove, true);
-  document.addEventListener('mousemove', handleMouseMove, true);
 
   // Déclencher aussi avec mouseLeave (quitter le viewport par le haut)
   document.addEventListener('mouseleave', e => {
@@ -1978,7 +1693,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && popup.classList.contains('show')) closeExitPopup();
   });
-})();
+});
 </script>
 
 <button id="whatsapp-btn" title="Nous contacter sur WhatsApp">💬</button>
@@ -1996,17 +1711,7 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </div>
 
-<style>
-  #cookieBanner { position: fixed; bottom: 0; left: 0; right: 0; background: #111827; border-top: 1px solid #1f2937; padding: 1rem; z-index: 9999; }
-  #cookieBanner .cookie-inner { max-width: 56rem; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-  #cookieBanner p { color: #d1d5db; font-size: 0.875rem; flex: 1; margin: 0; min-width: 200px; }
-  #cookieBanner a { color: #60a5fa; text-decoration: none; }
-  #cookieBanner a:hover { text-decoration: underline; }
-  #cookieBanner .cookie-actions { display: flex; gap: 0.75rem; flex-shrink: 0; }
-  #cookieBanner button { padding: 0.5rem 1rem; border-radius: 0.25rem; font-size: 0.875rem; border: none; cursor: pointer; font-family: inherit; }
-  #cookieBanner .cookie-reject { background: #374151; color: #fff; }
-  #cookieBanner .cookie-accept { background: #16a34a; color: #fff; font-weight: 700; }
-</style>
+<style>#cookieBanner{position:fixed;bottom:0;left:0;right:0;background:#111827;border-top:1px solid #1f2937;padding:1rem;z-index:9999}#cookieBanner .cookie-inner{max-width:56rem;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}#cookieBanner p{color:#d1d5db;font-size:.875rem;flex:1;margin:0;min-width:200px}#cookieBanner a{color:#60a5fa;text-decoration:underline}#cookieBanner .cookie-actions{display:flex;gap:.75rem;flex-shrink:0}#cookieBanner button{padding:.5rem 1rem;border-radius:.25rem;font-size:.875rem;border:none;cursor:pointer;font-family:inherit}#cookieBanner .cookie-reject{background:#374151;color:#fff}#cookieBanner .cookie-accept{background:#15803d;color:#fff;font-weight:700}</style>
 
 <div id="cookieBanner">
   <div class="cookie-inner">

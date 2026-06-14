@@ -18,3 +18,7 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.log
+
+# Captures de vérification ad-hoc (Playwright) — pas du contenu du site
+/screenshots/
+/chatbot-*.png
