@@ -177,19 +177,19 @@ function disableTrackers() {
 }
 
 function acceptCookies() {
-  localStorage.setItem('cookieConsent', 'accepted');
+  localStorage.setItem('immoviz_cookieConsent', 'accepted');
   loadTrackers();
   document.getElementById('cookieBanner').style.display = 'none';
 }
 
 function rejectCookies() {
-  localStorage.setItem('cookieConsent', 'rejected');
+  localStorage.setItem('immoviz_cookieConsent', 'rejected');
   disableTrackers();
   document.getElementById('cookieBanner').style.display = 'none';
 }
 
 window.addEventListener('load', () => {
-  const consent = localStorage.getItem('cookieConsent');
+  const consent = localStorage.getItem('immoviz_cookieConsent');
 
   if (consent === 'accepted') {
     loadTrackers();

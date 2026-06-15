@@ -51,7 +51,7 @@
     <strong>🍪 Contrôle total.</strong> Un banneau vous permet d'accepter ou refuser les cookies à votre première visite. Vous pouvez modifier votre choix à tout moment.
   </div>
   <ul>
-    <li><strong>cookieConsent</strong> — Enregistre votre choix (accept/reject), stocké en localStorage</li>
+    <li><strong>immoviz_cookieConsent</strong> — Enregistre votre choix (accept/reject), stocké en localStorage</li>
     <li><strong>Plausible Analytics</strong> — Script sans cookies persistants (pas de tracking ID)</li>
   </ul>
 
@@ -119,23 +119,22 @@ function loadTrackers() {
 function disableTrackers() {
   window.plausible = () => {};
   document.querySelectorAll('script[data-tracker]').forEach(el => el.remove());
-  console.log('[COOKIES] Trackers désactivés');
 }
 
 function acceptCookies() {
-  localStorage.setItem('cookieConsent', 'accepted');
+  localStorage.setItem('immoviz_cookieConsent', 'accepted');
   loadTrackers();
   document.getElementById('cookieBanner').style.display = 'none';
 }
 
 function rejectCookies() {
-  localStorage.setItem('cookieConsent', 'rejected');
+  localStorage.setItem('immoviz_cookieConsent', 'rejected');
   disableTrackers();
   document.getElementById('cookieBanner').style.display = 'none';
 }
 
 window.addEventListener('load', () => {
-  const consent = localStorage.getItem('cookieConsent');
+  const consent = localStorage.getItem('immoviz_cookieConsent');
 
   if (consent === 'accepted') {
     loadTrackers();

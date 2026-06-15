@@ -47,6 +47,18 @@
   - Slider avant/après : `role="slider"` aria-valuenow/min/max + tabindex="0" + navigation clavier ←→
   - Mobile menu close : `aria-label="Fermer le menu"` ajouté (burger avait déjà aria-label="Menu")
 
+## Vague 7bis — Fonctionnalités marketing & conversion — 2026-06-11/12
+- [x] 7bis-A — Garantie 7 jours, FAQ enrichie, comparatif Matterport, badges certifications (0fabab9, 020abb4, ae09d90 — harmonisation garantie 7j / paiement après livraison)
+- [x] 7bis-B — Bloc "Objectifs 2026" animé dans le hero (e72796f)
+- [x] 7bis-C — Bannière sticky "places limitées" avec compteur jour/semaine (d8a0e6b, 56b07f8)
+- [x] 7bis-D — Modale quiz interactif "Quel agent es-tu ?" (1a24aae), repositionnée en bas-gauche avec correction du z-index (54ae7a6)
+- [x] 7bis-E — Chatbot IA conseiller ImmoViz : 4 questions + résumé personnalisé (d6db6b5), fermé par défaut et empilé au-dessus du bouton WhatsApp sur mobile (037b393)
+- [x] 7bis-F — Calculateur ROI interactif (3 sliders) (a230a2a)
+- [x] 7bis-G — Section dashboard "En chiffres" avec compteurs animés au scroll (27420f6)
+- [x] 7bis-H — `.gitignore` standard (secrets, dumps DB) (6fb22a8)
+- [x] 7bis-I — Boutons paiement Stripe (mode démo) sur les offres Tarifs (78bf3c9)
+- [x] 7bis-J — RGPD : blocage réel des trackers (Plausible) tant que le consentement cookies n'est pas donné (5e29569)
+
 ## Vague 8 — Audit PWA (corrections) — 2026-06-13
 - [x] 8A — Icônes PNG (remplacent les SVG data-URI, incompatibles iOS Safari) :
   - `icons/icon-192.png`, `icons/icon-512.png` (purpose "any")
@@ -124,3 +136,15 @@
   - `index.html` : `test-index-features.js` (cookies, ROI), `test-exit-popup.js` (popup absente du DOM au chargement, apparaît au mouvement vers le haut), `test-chatbot.js` (lazy-build au 1er clic, flux 4 questions, toggle), `quiz-test.js` (lazy-build, 5 questions, résultat personnalisé)
   - `plan-interactif-tours.html`, `plan-interactif-romorantin.html`, `plan-interactif-niort.html` : `test-tabs.js` — onglets 2D/3D/360° OK, Three.js lazy-load OK
 - [x] 10L — PERF-238/243 (fix majeur découvert pendant l'audit, hors liste initiale) : viewer 3D de démo (`#demo-frame`) converti en **click-to-load** avec overlay `#demo-overlay` (CSS `.demo-overlay`/`.demo-overlay-icon`, gradient cyan/marine, icône ▶). `#scene-hint` masqué par défaut (`hidden`) jusqu'au premier `load` de l'iframe. **Changement de comportement utilisateur à noter** : la démo 3D interactive ne se charge plus automatiquement à l'arrivée sur la page — elle nécessite un clic/Entrée sur l'overlay. C'est ce fix qui explique l'essentiel du gain de 10I (41 → 71/100, TBT ÷4.2).
+
+## Vague 11 — Audit qualité de code / refactoring (Phase 2) — 2026-06-15
+> Suite de la Phase 1 (corrections ciblées CODE-6xx). Phase 2 = refactoring à risque plus élevé, validé point par point avec tests Playwright après chaque étape. Aucun changement visuel pour le visiteur (vérifié captures + computed styles).
+- [x] 11-A — CODE-632/634 : ajout de `.editorconfig` (LF, UTF-8, indent 2 espaces ; `trim_trailing_whitespace=false` pour `*.md`), `.prettierrc` (singleQuote, semi, printWidth 100) et `README.md` (présentation, build, conventions, sécurité). Aucun impact sur le site.
+- [x] 11-B — CODE-604/614 : extraction du monolithe `index.html` (2320 lignes) → `css/main.css` (4 blocs `<style>` concaténés) + `js/main.js` (12 blocs `<script>` concaténés, chargé en `<script defer>` dans le `<head>`). `index.html` ramené à ~1170 lignes. `'unsafe-inline'` **conservé** dans la CSP (le retrait complet — réécriture de tous les `onclick=` — est un chantier séparé non fait ici). Conséquences traitées : `tailwind.config.js` scanne désormais `./js/main.js` (sinon purge des classes des modals quiz/chatbot construits en templates JS) ; `service-worker.js` précache `css/main.css` + `js/main.js`, cache bumpé `immoviz-v4` → `immoviz-v5` ; `css/tailwind.min.css` rebuildé (purge de 3 classes mortes : `animate-pulse`, `ease-out`, `sepia`, -367 o). Validé : 0 violation CSP, rendu pixel-identique, toutes fonctions OK.
+- [x] 11-C — CODE-620 : design system couleurs. `:root` de `css/main.css` enrichi et documenté comme **source unique de vérité** (`--cyan`, `--bg-dark`, `--bg-dark-2`, `--whatsapp`, `--text-main`). Valeurs en dur identiques remplacées par `var(--…)` dans `css/main.css` + styles inline `index.html`/`js/main.js`. Couleurs de marque exposées en classes Tailwind via `tailwind.config.js` (`colors.brand.{cyan,dark,dark2,whatsapp}` pointant vers les variables CSS) ; 8 classes arbitraires `bg-[#0d0d0d]`/`from-[#1a1a1a]`… converties en `bg-brand-dark`/`from-brand-dark2`. Règle appliquée : **fusion uniquement de valeurs strictement identiques** → zéro changement de teinte (les `stroke="#00e5ff"` des SVG ne sont pas touchés, `var()` non supporté dans les attributs de présentation SVG). Validé : variables résolues correctes, 0 erreur.
+- [x] 11-D — CODE-618 : réduction des `!important` (78 → 47, soit **31 retirés**). Méthode : retrait uniquement des `!important` **prouvés redondants** (par spécificité), conservation de ceux **structurellement nécessaires**.
+  - `plan-interactif-romorantin.html` : 55 → 34. Retirés : surcharges mode sombre `[data-theme=dark] #X` / `:root:not([data-theme=light]) #X` (spécificité 0,1,1,0 > base 0,1,0,0), vues `#view-Xd.active` (id+classe > `.view.active`), `#tabs`/`#view-* min-height` mobiles. **Conservés (nécessaires)** : `canvas{width/height:100%!important}` (écrase le style inline de Three.js), `#room-info-panel` + `#qr-modal>div` en dark (écrasent `style="background:white"` inline — régression détectée au test et corrigée en les restaurant), `.main-container{height:auto!important}` + `#room-info-panel{width:100%!important}` mobiles (écrasent styles inline), slider `::-webkit-slider-thumb` (pseudo-éléments natifs). **Bug corrigé** : `prefers-reduced-motion` avait `animation-duration:NaNs` (invalide) → `.01ms` (accessibilité réelle).
+  - `plan-interactif-niort.html` : 10 → 4 (vues `.active` retirées ; canvas conservés).
+  - `plan-interactif-tours.html` : 4 → 4 (uniquement canvas, tous nécessaires).
+  - `css/main.css` : 9 → 5. Retirés : `#quizButton` padding, `#chatToggle`/`#chatbot` bottom/z-index (id bat les classes Tailwind `bottom-4`/`px-6`, pas de style inline). Conservés : curseur custom `.hov{transform:scale(2)!important}` (écrase le transform inline JS), `prefers-reduced-motion` (accessibilité).
+  - Validé : mode clair/sombre, vues 2D/3D/360°, layout mobile 390px, positionnement chatbot/quiz — tous corrects, 0 erreur console.
