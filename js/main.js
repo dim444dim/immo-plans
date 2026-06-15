@@ -1016,30 +1016,8 @@ Les agents comme toi gagnent en moyenne 2 500€ de PLUS par an avec ImmoViz 3D 
       + 'réponse et lien de commande sous 24h.');
   }
 
-  function emailDevis(){
-    window.location.href = 'mailto:dimitri444art@gmail.com?subject=Demande de devis ImmoViz 3D';
-  }
-
-  /* ===== CODE RÉEL (à décommenter une fois Stripe + CSP configurés) =====
-  // <script src="https://js.stripe.com/v3/"><\/script>  // à ajouter dans le <head>
-  const stripe = Stripe('pk_test_VOTRE_CLEF_STRIPE');
-  async function checkoutStripe(priceId, amount){
-    try {
-      const res = await fetch('/api/create-checkout-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId })
-      });
-      if (!res.ok) throw new Error('Erreur serveur (' + res.status + ')');
-      const { sessionId } = await res.json();
-      const { error } = await stripe.redirectToCheckout({ sessionId });
-      if (error) throw error;
-    } catch (err) {
-      console.error('Erreur paiement Stripe :', err);
-      alert('Une erreur est survenue lors du paiement. Veuillez réessayer ou nous contacter.');
-    }
-  }
-  ======================================================================= */
+  // checkoutStripe ci-dessus = démo. Procédure d'activation Stripe réelle
+  // documentée dans index.html (bloc commenté "PAIEMENT EN LIGNE — STRIPE").
 
 
 /* ---- bloc JS #10 ---- */
