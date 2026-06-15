@@ -436,7 +436,6 @@
   const WHATSAPP_PHONE = '33767519437';
   const PLAUSIBLE_DOMAIN = 'dim444dim.github.io/immo-plans';
   const COUNTER_TARGETS = { agentCount: 234, planCount: 1203, visitCount: 45234 };
-  const LIVE_STATS_TARGETS = { dashStat1: 12, dashStat2: 18, dashStat3: 540, dashStat4: 3.2 };
 
   // ── GESTION CENTRALISÉE DES POPUPS (évite l'empilement exit-popup / lead-magnet) ──
   const PopupManager = {
@@ -924,47 +923,6 @@ Les agents comme toi gagnent en moyenne 2 500€ de PLUS par an avec ImmoViz 3D 
 
   // Init au load
   updateROI();
-
-
-/* ---- bloc JS #7 ---- */
-
-  // ── DASHBOARD : compteurs animés au scroll (IntersectionObserver + rAF) ──
-  function animDashStat(el, target, duration = 1500) {
-    const start = performance.now();
-    function step(now) {
-      const p = Math.min((now - start) / duration, 1);
-      if (p < 1) {
-        const current = target * p;
-        el.textContent = target < 10 ? current.toFixed(1) : Math.floor(current).toLocaleString('fr-FR');
-        requestAnimationFrame(step);
-      } else {
-        el.textContent = target < 10 ? target.toFixed(1) : target.toLocaleString('fr-FR');
-        el.setAttribute('data-animated', 'true');
-      }
-    }
-    requestAnimationFrame(step);
-  }
-
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        [
-          {id: 'dashStat1', target: LIVE_STATS_TARGETS.dashStat1},
-          {id: 'dashStat2', target: LIVE_STATS_TARGETS.dashStat2},
-          {id: 'dashStat3', target: LIVE_STATS_TARGETS.dashStat3},
-          {id: 'dashStat4', target: LIVE_STATS_TARGETS.dashStat4}
-        ].forEach(stat => {
-          const el = document.getElementById(stat.id);
-          if (!el || el.getAttribute('data-animated')) return;
-          animDashStat(el, stat.target);
-        });
-        observer.unobserve(entry.target);
-      }
-    });
-  });
-
-  const section = document.querySelector('section:has(#dashStat1)');
-  if (section) observer.observe(section);
 
 
 /* ---- bloc JS #8 ---- */
