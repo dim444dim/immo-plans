@@ -676,7 +676,9 @@
   }
 
   function showQuizResult() {
-    const winnerIndex = quizScore.indexOf(Math.max(...quizScore));
+    // En cas d'égalité, on retient le profil le plus avancé (lastIndexOf)
+    // plutôt que de toujours retomber sur « Solo Efficient » (indexOf).
+    const winnerIndex = quizScore.lastIndexOf(Math.max(...quizScore));
     const results = [
       {
         title: "🎯 Tu es du type « Solo Efficient »",
@@ -691,7 +693,7 @@
       {
         title: "🏆 Tu es du type « Boss Immobilier »",
         text: "10+ biens/mois, tu cherches l'excellence et l'efficacité maximale.",
-        offer: "Forfait agence illimité = 2 500€/mois. Support prioritaire 24/7 + updates mensuelles + white-label possible (tu vends ImmoViz sous ta marque et tu gardes la marge). Tu deviens un expert incontournable dans ta région."
+        offer: "Forfait Boss : jusqu'à 28 plans/mois (notre capacité maximale, 7/semaine) à 80€/plan au lieu de 150€, soit 2 240€ pour un volume complet. Créneaux réservés en priorité + retouches illimitées sur chaque plan."
       }
     ];
 
