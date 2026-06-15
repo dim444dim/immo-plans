@@ -1,0 +1,16 @@
+# EditorConfig — https://editorconfig.org
+# Harmonise les réglages d'édition entre éditeurs (indentation, fins de ligne…).
+# N'affecte PAS le site en ligne ; uniquement le confort d'édition du code.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# Markdown : deux espaces en fin de ligne = saut de ligne volontaire → ne pas les couper
+[*.md]
+trim_trailing_whitespace = false
