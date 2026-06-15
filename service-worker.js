@@ -2,7 +2,7 @@
 // d'une ressource listée dans urlsToCache. Le handler "activate" supprime
 // automatiquement les caches portant un ancien nom, ce qui force le
 // téléchargement des nouvelles versions au prochain chargement.
-const CACHE_NAME = 'immoviz-v5';
+const CACHE_NAME = 'immoviz-v6';
 // Precache volontairement limité à l'app shell (page d'accueil + assets
 // critiques) : les pages secondaires (privacy/conditions/livraison, les 3
 // plans interactifs avec Three.js) sont lourdes et ne doivent pas bloquer
