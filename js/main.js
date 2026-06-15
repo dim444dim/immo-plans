@@ -436,6 +436,15 @@
   const WHATSAPP_PHONE = '33767519437';
   const PLAUSIBLE_DOMAIN = 'dim444dim.github.io/immo-plans';
   const COUNTER_TARGETS = { agentCount: 234, planCount: 1203, visitCount: 45234 };
+  const LIVE_STATS_TARGETS = { dashStat1: 12, dashStat2: 18, dashStat3: 540, dashStat4: 3.2 };
+
+  // ── GESTION CENTRALISÉE DES POPUPS (évite l'empilement exit-popup / lead-magnet) ──
+  const PopupManager = {
+    actif: null,
+    estDisponible(id) { return this.actif === null || this.actif === id; },
+    ouvrir(id) { this.actif = id; },
+    fermer(id) { if (this.actif === id) this.actif = null; }
+  };
 
   // ── WHATSAPP BUTTON ──
   function initWhatsAppButton(){
@@ -501,8 +510,10 @@
       }
 
       function showExitPopup() {
+        if (!PopupManager.estDisponible('exit')) return;
         popupShown = true;
         localStorage.setItem('immoviz_exitPopupShown', 'true');
+        PopupManager.ouvrir('exit');
         exitPreviousFocus = document.activeElement;
         buildPopup();
         popup.classList.add('show');
@@ -514,6 +525,7 @@
       function closeExitPopup() {
         popup.classList.remove('show');
         document.body.style.overflow = '';
+        PopupManager.fermer('exit');
         if (exitPreviousFocus && exitPreviousFocus.focus) exitPreviousFocus.focus();
       }
 
@@ -935,10 +947,10 @@ Les agents comme toi gagnent en moyenne 2 500€ de PLUS par an avec ImmoViz 3D 
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         [
-          {id: 'dashStat1', target: COUNTER_TARGETS.agentCount},
-          {id: 'dashStat2', target: COUNTER_TARGETS.planCount},
-          {id: 'dashStat3', target: COUNTER_TARGETS.visitCount},
-          {id: 'dashStat4', target: 3.2}
+          {id: 'dashStat1', target: LIVE_STATS_TARGETS.dashStat1},
+          {id: 'dashStat2', target: LIVE_STATS_TARGETS.dashStat2},
+          {id: 'dashStat3', target: LIVE_STATS_TARGETS.dashStat3},
+          {id: 'dashStat4', target: LIVE_STATS_TARGETS.dashStat4}
         ].forEach(stat => {
           const el = document.getElementById(stat.id);
           if (!el || el.getAttribute('data-animated')) return;
@@ -1060,11 +1072,13 @@ Les agents comme toi gagnent en moyenne 2 500€ de PLUS par an avec ImmoViz 3D 
     if (shown) return;
 
     setTimeout(() => {
+      if (!PopupManager.estDisponible('leadMagnet')) return;
       buildLeadMagnetModal();
       const modal = document.getElementById('leadMagnetModal');
       leadMagnetPreviousFocus = document.activeElement;
       modal.classList.remove('hidden');
       modal.querySelector('[role="dialog"]').focus();
+      PopupManager.ouvrir('leadMagnet');
       localStorage.setItem('immoviz_leadMagnetShown', 'true');
     }, 30000);
   }
@@ -1072,6 +1086,7 @@ Les agents comme toi gagnent en moyenne 2 500€ de PLUS par an avec ImmoViz 3D 
   function closeLeadMagnet() {
     const modal = document.getElementById('leadMagnetModal');
     if (modal) modal.classList.add('hidden');
+    PopupManager.fermer('leadMagnet');
     if (leadMagnetPreviousFocus && leadMagnetPreviousFocus.focus) leadMagnetPreviousFocus.focus();
   }
 
