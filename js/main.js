@@ -437,7 +437,7 @@
   const PLAUSIBLE_DOMAIN = 'dim444dim.github.io/immo-plans';
   const COUNTER_TARGETS = { agentCount: 234, planCount: 1203, visitCount: 45234 };
 
-  // ── GESTION CENTRALISÉE DES POPUPS (évite l'empilement exit-popup / lead-magnet) ──
+  // ── GESTION CENTRALISÉE DES POPUPS (garde-fou anti-empilement) ──
   const PopupManager = {
     actif: null,
     estDisponible(id) { return this.actif === null || this.actif === id; },
@@ -464,9 +464,8 @@
 
 /* ---- bloc JS #2 ---- */
 
+  // Pop-up de conversion unifié : exit-intent (desktop) + scroll > 50% (mobile).
   (function(){
-    const isMobile = window.innerWidth < 768;
-    if (isMobile) return;
     if (localStorage.getItem('immoviz_exitPopupShown')) return;
 
     const EXIT_POPUP_HTML = `
@@ -543,6 +542,19 @@
         if (popupShown) return;
         if (e.clientY < 0) showExitPopup();
       }, true);
+
+      // Déclencheur scroll > 50% : couvre le mobile (pas d'exit-intent souris).
+      // Reprend le comportement de l'ancien lead-magnet, fusionné ici.
+      let scrollTicking = false;
+      window.addEventListener('scroll', () => {
+        if (popupShown || scrollTicking) return;
+        scrollTicking = true;
+        requestAnimationFrame(() => {
+          const h = document.body.scrollHeight - window.innerHeight;
+          if (h > 0 && (window.scrollY / h) > 0.5) showExitPopup();
+          scrollTicking = false;
+        });
+      }, { passive: true });
 
       document.addEventListener('keydown', e => {
         if (popup && e.key === 'Escape' && popup.classList.contains('show')) closeExitPopup();
@@ -829,76 +841,6 @@ Les agents comme toi gagnent en moyenne 2 500€ de PLUS par an avec ImmoViz 3D 
 
   // checkoutStripe ci-dessus = démo. Procédure d'activation Stripe réelle
   // documentée dans index.html (bloc commenté "PAIEMENT EN LIGNE — STRIPE").
-
-
-/* ---- bloc JS #10 ---- */
-
-  const LEAD_MAGNET_HTML = `
-    <div class="bg-gray-900 rounded-lg max-w-md w-full border border-gray-800 p-8 relative" role="dialog" aria-modal="true" aria-labelledby="lead-magnet-title" tabindex="-1">
-      <button id="leadMagnetClose" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl" aria-label="Fermer">✕</button>
-
-      <div style="text-align: center; padding: 20px 0;">
-        <h3 style="color: white; margin: 0 0 15px 0; font-size: 1.5rem; font-weight: bold;">Intéressé par mes services ?</h3>
-        <p style="color: rgba(255,255,255,0.9); margin: 0 0 20px 0; font-size: 1rem;">Contacte-moi directement sur WhatsApp</p>
-        <a href="https://wa.me/33767519437" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: white; color: var(--whatsapp); padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; font-size: 1rem;">💬 Parle-moi sur WhatsApp</a>
-      </div>
-    </div>
-  `;
-
-  let leadMagnetModalBuilt = false;
-  function buildLeadMagnetModal() {
-    if (leadMagnetModalBuilt) return;
-    leadMagnetModalBuilt = true;
-    const modal = document.createElement('div');
-    modal.id = 'leadMagnetModal';
-    modal.className = 'fixed inset-0 bg-black/70 z-50 flex items-center justify-center hidden p-4';
-    modal.innerHTML = LEAD_MAGNET_HTML;
-    document.body.appendChild(modal);
-    modal.querySelector('#leadMagnetClose').addEventListener('click', closeLeadMagnet);
-  }
-
-  let leadMagnetPreviousFocus = null;
-
-  function showLeadMagnet() {
-    const shown = localStorage.getItem('immoviz_leadMagnetShown');
-    if (shown) return;
-
-    setTimeout(() => {
-      if (!PopupManager.estDisponible('leadMagnet')) return;
-      buildLeadMagnetModal();
-      const modal = document.getElementById('leadMagnetModal');
-      leadMagnetPreviousFocus = document.activeElement;
-      modal.classList.remove('hidden');
-      modal.querySelector('[role="dialog"]').focus();
-      PopupManager.ouvrir('leadMagnet');
-      localStorage.setItem('immoviz_leadMagnetShown', 'true');
-    }, 30000);
-  }
-
-  function closeLeadMagnet() {
-    const modal = document.getElementById('leadMagnetModal');
-    if (modal) modal.classList.add('hidden');
-    PopupManager.fermer('leadMagnet');
-    if (leadMagnetPreviousFocus && leadMagnetPreviousFocus.focus) leadMagnetPreviousFocus.focus();
-  }
-
-  document.addEventListener('keydown', e => {
-    const leadModal = document.getElementById('leadMagnetModal');
-    if (e.key === 'Escape' && leadModal && !leadModal.classList.contains('hidden')) closeLeadMagnet();
-  });
-
-  let leadMagnetTicking = false;
-  window.addEventListener('scroll', () => {
-    if (!leadMagnetTicking) {
-      leadMagnetTicking = true;
-      requestAnimationFrame(() => {
-        if ((window.scrollY / (document.body.scrollHeight - window.innerHeight)) > 0.5) {
-          showLeadMagnet();
-        }
-        leadMagnetTicking = false;
-      });
-    }
-  });
 
 
 /* ---- bloc JS #11 ---- */
