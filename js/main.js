@@ -54,6 +54,11 @@
     const overlay = document.getElementById('demo-overlay');
     if (!frame || !overlay) return;
 
+    if (!window.WebGLRenderingContext) {
+      overlay.innerHTML = '<p style="color:#666;padding:40px;text-align:center">Votre navigateur ne supporte pas la 3D. <a href="#plan-2d">Voir le plan 2D</a></p>';
+      return;
+    }
+
     frame.addEventListener('load', () => {
       try {
         // Passe directement en Vue 3D
