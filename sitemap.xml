@@ -6,6 +6,21 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://dim444dim.github.io/immo-plans/tours.html</loc>
+    <lastmod>2026-06-16</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://dim444dim.github.io/immo-plans/blois.html</loc>
+    <lastmod>2026-06-16</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://dim444dim.github.io/immo-plans/amboise.html</loc>
+    <lastmod>2026-06-16</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://dim444dim.github.io/immo-plans/livraison.html</loc>
     <priority>0.3</priority>
   </url>
