@@ -1,5 +1,17 @@
 /* ---- bloc JS #1 ---- */
 
+  // ── BANDEAU PROMO TOP ──
+  (function(){
+    const banner  = document.getElementById('top-promo-banner');
+    const dismiss = document.getElementById('top-promo-dismiss');
+    if (!banner) return;
+    if (localStorage.getItem('ctaDismissed')) { banner.style.display = 'none'; return; }
+    if (dismiss) dismiss.addEventListener('click', function() {
+      banner.style.display = 'none';
+      localStorage.setItem('ctaDismissed', '1');
+    });
+  })();
+
   // ── LOADER ──
   (function(){
     const loaderStart = performance.now();
