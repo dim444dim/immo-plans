@@ -445,6 +445,25 @@
     fermer(id) { if (this.actif === id) this.actif = null; }
   };
 
+  // Piège à focus clavier (Tab / Shift+Tab) dans un modal pendant qu'il est ouvert.
+  // Calqué sur le pattern .mobile-menu, généralisé aux modals dynamiques.
+  function installFocusTrap(container, isOpen) {
+    container.addEventListener('keydown', e => {
+      if (e.key !== 'Tab' || !isOpen()) return;
+      const focusables = container.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusables.length) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault(); last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault(); first.focus();
+      }
+    });
+  }
+
   // ── WHATSAPP BUTTON ──
   function initWhatsAppButton(){
     const btn = document.getElementById('whatsapp-btn');
@@ -504,6 +523,7 @@
           closeExitPopup();
         });
         popup.addEventListener('click', e => { if (e.target === popup) closeExitPopup(); });
+        installFocusTrap(popup, () => popup.classList.contains('show'));
         return popup;
       }
 
@@ -634,6 +654,7 @@
     });
     bot.querySelector('#chatClose').addEventListener('click', toggleChatbot);
     bot.querySelector('#chatSend').addEventListener('click', sendChatMessage);
+    installFocusTrap(bot, () => bot.style.display === 'flex');
   }
 
   const chatFlowQuestions = [
