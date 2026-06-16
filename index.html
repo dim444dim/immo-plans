@@ -24,22 +24,22 @@
     "email": "dimitri444art@gmail.com",
     "telephone": "+33767519437",
     "areaServed": "FR",
-    "priceRange": "150€ - 450€",
+    "priceRange": "150€ - 300€",
     "description": "Plans interactifs 2D + Vue 3D + Visite 360° pour annonces immobilières, livrés en 48h à partir de 150€, sans abonnement.",
     "makesOffer": [
       {
         "@type": "Offer",
-        "name": "Offre Essentielle",
+        "name": "Offre Start",
         "price": "150",
         "priceCurrency": "EUR",
-        "description": "Plan 2D interactif, Vue 3D navigable, Visite 360°, fichier HTML autonome, URL hébergée 6 mois."
+        "description": "Plan 2D interactif, description du bien, 5 photos retouchées, fichier HTML autonome, URL hébergée 6 mois."
       },
       {
         "@type": "Offer",
-        "name": "Offre Photoréaliste",
-        "price": "450",
+        "name": "Offre Pro",
+        "price": "300",
         "priceCurrency": "EUR",
-        "description": "Rendu Blender photoréaliste 4K, textures réalistes, vidéo de présentation 30s, 3 retouches incluses."
+        "description": "Tout l'offre Start, plus Vue 3D navigable, Visite 360° et virtual staging."
       }
     ]
   }
@@ -163,8 +163,8 @@
         <div class="fgroup">
           <label>Offre souhaitée</label>
           <div class="fradios">
-            <label class="fradio checked"><input type="radio" name="budget" value="Essentielle 150€" checked>Essentielle — 150€</label>
-            <label class="fradio"><input type="radio" name="budget" value="Photoréaliste 450€">Photoréaliste — 450€</label>
+            <label class="fradio checked"><input type="radio" name="budget" value="Start 150€" checked>Start — 150€</label>
+            <label class="fradio"><input type="radio" name="budget" value="Pro 300€">Pro — 300€</label>
             <label class="fradio"><input type="radio" name="budget" value="Je ne sais pas encore">Je ne sais pas encore</label>
           </div>
         </div>
@@ -620,38 +620,37 @@
     <p class="sub reveal">Pas d'abonnement. Pas de frais cachés. Vous payez une fois, le fichier est à vous pour toujours.</p>
     <div class="tgrid">
       <div class="glass tcard reveal d1">
-        <p class="tlbl">Offre Essentielle</p>
+        <p class="tlbl">Offre Start</p>
         <div class="tprice"><sup>€</sup>150</div>
         <p class="tdesc">Livraison 48h · Paiement après livraison</p>
         <ul class="tfeats">
           <li>Plan 2D interactif (toutes pièces)</li>
-          <li>Vue 3D navigable (rotation + zoom)</li>
-          <li>Visite 360° (si photos fournies)</li>
+          <li>Description du bien rédigée</li>
+          <li>5 photos retouchées</li>
           <li>Fichier HTML autonome</li>
           <li>URL hébergée 6 mois</li>
-          <li>1 retouche incluse</li>
+          <li>2 retouches incluses</li>
         </ul>
         <div style="display:flex;flex-direction:column;gap:.55rem">
-          <a href="mailto:dimitri444art@gmail.com?subject=Commande Essentielle" class="btn-g" style="display:block;text-align:center;justify-content:center">Demander un devis</a>
-          <button type="button" data-checkout="price_essentielle" data-amount="150" class="bg-green-700 hover:bg-green-800 text-white font-bold" style="width:100%;border:none;border-radius:10px;padding:.8rem 1rem;cursor:pointer;font-size:.95rem">Acheter maintenant — 150€</button>
+          <a href="mailto:dimitri444art@gmail.com?subject=Commande Start" class="btn-g" style="display:block;text-align:center;justify-content:center">Demander un devis</a>
+          <button type="button" data-checkout="price_start" data-amount="150" class="bg-green-700 hover:bg-green-800 text-white font-bold" style="width:100%;border:none;border-radius:10px;padding:.8rem 1rem;cursor:pointer;font-size:.95rem">Acheter maintenant — 150€</button>
         </div>
       </div>
       <div class="glass tcard reveal d2" style="border-color:rgba(0,229,255,.45)">
         <div class="tbadge">Recommandé</div>
-        <p class="tlbl">Offre Photoréaliste</p>
-        <div class="tprice"><sup>€</sup>450</div>
-        <p class="tdesc">Rendu Blender · Délai 5-7 jours</p>
+        <p class="tlbl">Offre Pro</p>
+        <div class="tprice"><sup>€</sup>300</div>
+        <p class="tdesc">Vue 3D + 360° · Livraison 48h</p>
         <ul class="tfeats">
-          <li>Tout l'Offre Essentielle</li>
-          <li>Modélisation Blender photoréaliste</li>
-          <li>Textures et matériaux réalistes</li>
-          <li>Rendu haute définition (4K)</li>
-          <li>Vidéo de présentation 30s</li>
-          <li>3 retouches incluses</li>
+          <li>Tout l'Offre Start</li>
+          <li>Vue 3D navigable (rotation + zoom)</li>
+          <li>Visite 360° (si photos fournies)</li>
+          <li>Virtual staging</li>
+          <li>2 retouches incluses</li>
         </ul>
         <div style="display:flex;flex-direction:column;gap:.55rem">
-          <a href="mailto:dimitri444art@gmail.com?subject=Commande Photoréaliste" class="btn-p" style="display:block;text-align:center;justify-content:center">Demander un devis →</a>
-          <button type="button" data-checkout="price_photorealiste" data-amount="450" class="bg-green-700 hover:bg-green-800 text-white font-bold" style="width:100%;border:none;border-radius:10px;padding:.8rem 1rem;cursor:pointer;font-size:.95rem">Acheter maintenant — 450€</button>
+          <a href="mailto:dimitri444art@gmail.com?subject=Commande Pro" class="btn-p" style="display:block;text-align:center;justify-content:center">Demander un devis →</a>
+          <button type="button" data-checkout="price_pro" data-amount="300" class="bg-green-700 hover:bg-green-800 text-white font-bold" style="width:100%;border:none;border-radius:10px;padding:.8rem 1rem;cursor:pointer;font-size:.95rem">Acheter maintenant — 300€</button>
         </div>
       </div>
     </div>
@@ -974,7 +973,7 @@
        1. Créer un compte sur https://stripe.com/fr
        2. Récupérer la clé publique (pk_live_... ou pk_test_...)
        3. Créer les 2 prix dans le Dashboard Stripe
-          (Essentielle 150€ → price_xxx, Photoréaliste 450€ → price_yyy)
+          (Start 150€ → price_xxx, Pro 300€ → price_yyy)
        4. Backend : route qui crée une Checkout Session et renvoie son id
        5. ⚠️ METTRE À JOUR LA CSP (ligne 6) — ajouter dans script-src :
           https://js.stripe.com  | dans frame-src : https://js.stripe.com
