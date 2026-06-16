@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://plausible.io 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https://plausible.io; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://gmail.us8.list-manage.com">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://plausible.io; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https://plausible.io; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://gmail.us8.list-manage.com">
   <title>ImmoViz 3D — Plan interactif pour votre annonce LeBonCoin</title>
   <meta name="description" content="Plan 2D + Vue 3D + Visite 360° pour valoriser votre bien. Livré en 48h à partir de 150€.">
   <meta property="og:title" content="ImmoViz 3D — Votre annonce immobilière, enfin remarquée">
@@ -633,7 +633,7 @@
         </ul>
         <div style="display:flex;flex-direction:column;gap:.55rem">
           <a href="mailto:dimitri444art@gmail.com?subject=Commande Essentielle" class="btn-g" style="display:block;text-align:center;justify-content:center">Demander un devis</a>
-          <button type="button" onclick="checkoutStripe('price_essentielle',150)" class="bg-green-700 hover:bg-green-800 text-white font-bold" style="width:100%;border:none;border-radius:10px;padding:.8rem 1rem;cursor:pointer;font-size:.95rem">Acheter maintenant — 150€</button>
+          <button type="button" data-checkout="price_essentielle" data-amount="150" class="bg-green-700 hover:bg-green-800 text-white font-bold" style="width:100%;border:none;border-radius:10px;padding:.8rem 1rem;cursor:pointer;font-size:.95rem">Acheter maintenant — 150€</button>
         </div>
       </div>
       <div class="glass tcard reveal d2" style="border-color:rgba(0,229,255,.45)">
@@ -651,7 +651,7 @@
         </ul>
         <div style="display:flex;flex-direction:column;gap:.55rem">
           <a href="mailto:dimitri444art@gmail.com?subject=Commande Photoréaliste" class="btn-p" style="display:block;text-align:center;justify-content:center">Demander un devis →</a>
-          <button type="button" onclick="checkoutStripe('price_photorealiste',450)" class="bg-green-700 hover:bg-green-800 text-white font-bold" style="width:100%;border:none;border-radius:10px;padding:.8rem 1rem;cursor:pointer;font-size:.95rem">Acheter maintenant — 450€</button>
+          <button type="button" data-checkout="price_photorealiste" data-amount="450" class="bg-green-700 hover:bg-green-800 text-white font-bold" style="width:100%;border:none;border-radius:10px;padding:.8rem 1rem;cursor:pointer;font-size:.95rem">Acheter maintenant — 450€</button>
         </div>
       </div>
     </div>
@@ -753,7 +753,7 @@
       </div>
 
       <!-- CTA -->
-      <button onclick="scrollToContact()" class="w-full mt-6 bg-green-700 hover:bg-green-800 text-white font-bold py-4 rounded-lg text-lg">
+      <button id="roi-cta-btn" class="w-full mt-6 bg-green-700 hover:bg-green-800 text-white font-bold py-4 rounded-lg text-lg">
         Je veux ce gain supplémentaire →
       </button>
     </div>
@@ -888,7 +888,7 @@
 
 
 <!-- Bouton flottant pour ouvrir le chatbot — #chatbot injecté au premier clic -->
-<button id="chatToggle" class="fixed bottom-4 right-4 bg-purple-600 hover:bg-purple-700 text-white w-12 h-12 rounded-full shadow-lg z-30 flex items-center justify-center text-xl" onclick="toggleChatbot()" aria-label="Ouvrir le chat assistant ImmoViz">
+<button id="chatToggle" class="fixed bottom-4 right-4 bg-purple-600 hover:bg-purple-700 text-white w-12 h-12 rounded-full shadow-lg z-30 flex items-center justify-center text-xl" aria-label="Ouvrir le chat assistant ImmoViz">
   <span aria-hidden="true">🤖</span>
 </button>
 
@@ -994,8 +994,8 @@
   <div class="max-w-4xl mx-auto flex items-center justify-between gap-4">
     <p class="text-gray-300 text-sm flex-1"><span aria-hidden="true">✅</span> Cookies pour améliorer l'expérience. <a href="/immo-plans/privacy.html" class="text-blue-400 hover:no-underline" style="text-decoration: underline;">Politique</a></p>
     <div class="flex gap-3">
-      <button onclick="rejectCookies()" class="bg-gray-700 text-white px-4 py-2 rounded text-sm">Refuser</button>
-      <button onclick="acceptCookies()" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded text-sm font-bold">Accepter</button>
+      <button id="cookie-reject" class="bg-gray-700 text-white px-4 py-2 rounded text-sm">Refuser</button>
+      <button id="cookie-accept" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded text-sm font-bold">Accepter</button>
     </div>
   </div>
 </div>

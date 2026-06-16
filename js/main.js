@@ -600,7 +600,7 @@
         <div class="bg-gray-800 p-4 rounded mb-6 border-l-4 border-green-500">
           <p class="text-white font-semibold" id="resultOffer"></p>
         </div>
-        <button onclick="closeQuiz()" class="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 rounded">
+        <button id="quizResultClose" class="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 rounded">
           ✅ Je veux mon devis gratuit
         </button>
       </div>
@@ -616,6 +616,7 @@
     modal.className = 'fixed inset-0 bg-black/80 flex items-center justify-center hidden p-4';
     modal.innerHTML = QUIZ_MODAL_HTML;
     document.body.appendChild(modal);
+    modal.querySelector('#quizResultClose').addEventListener('click', closeQuiz);
   }
 
   const quizQuestions = [
@@ -652,7 +653,7 @@
       <p class="text-white font-semibold mb-4">${currentQuestion + 1}/5 - ${q.q}</p>
       <div class="grid gap-3">
         ${q.answers.map((ans, i) => `
-          <button onclick="answerQuestion(${i})" class="bg-gray-800 hover:bg-gray-700 text-white text-left px-4 py-3 rounded border border-gray-700 hover:border-blue-500 transition">
+          <button data-answer="${i}" class="bg-gray-800 hover:bg-gray-700 text-white text-left px-4 py-3 rounded border border-gray-700 hover:border-blue-500 transition">
             ${ans}
           </button>
         `).join('')}
@@ -661,6 +662,10 @@
         <div class="h-full bg-blue-600" style="width: ${(currentQuestion / quizQuestions.length) * 100}%"></div>
       </div>
     `;
+
+    container.querySelectorAll('[data-answer]').forEach(btn => {
+      btn.addEventListener('click', () => answerQuestion(+btn.dataset.answer));
+    });
   }
 
   function answerQuestion(index) {
@@ -738,7 +743,7 @@
   const CHATBOT_HTML = `
     <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-4 rounded-t-lg flex justify-between items-center">
       <h3 class="text-white font-bold"><span aria-hidden="true">🤖</span> Conseiller ImmoViz</h3>
-      <button onclick="toggleChatbot()" class="text-white hover:text-gray-200 text-xl" aria-label="Fermer le chat">✕</button>
+      <button id="chatClose" class="text-white hover:text-gray-200 text-xl" aria-label="Fermer le chat">✕</button>
     </div>
 
     <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-3" role="log" aria-live="polite">
@@ -749,7 +754,7 @@
 
     <div class="border-t border-gray-800 p-3 flex gap-2">
       <input id="chatInput" type="text" placeholder="Tape ta réponse..." class="flex-1 bg-gray-800 text-white rounded px-3 py-2 text-sm outline-none border border-gray-700 focus:border-blue-500">
-      <button onclick="sendChatMessage()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-bold">→</button>
+      <button id="chatSend" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-bold">→</button>
     </div>
   `;
 
@@ -770,6 +775,8 @@
     document.getElementById('chatInput').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') sendChatMessage();
     });
+    bot.querySelector('#chatClose').addEventListener('click', toggleChatbot);
+    bot.querySelector('#chatSend').addEventListener('click', sendChatMessage);
   }
 
   const chatFlowQuestions = [
@@ -829,7 +836,8 @@ Les agents comme toi gagnent en moyenne 2 500€ de PLUS par an avec ImmoViz 3D 
     // Bouton final
     const btnDiv = document.createElement('div');
     btnDiv.className = 'mt-4';
-    btnDiv.innerHTML = `<button onclick="goToContact()" class="w-full bg-green-700 hover:bg-green-800 text-white py-2 rounded font-bold text-sm">✅ Je veux un devis gratuit</button>`;
+    btnDiv.innerHTML = `<button class="w-full bg-green-700 hover:bg-green-800 text-white py-2 rounded font-bold text-sm">✅ Je veux un devis gratuit</button>`;
+    btnDiv.querySelector('button').addEventListener('click', goToContact);
     document.getElementById('chatMessages').appendChild(btnDiv);
   }
 
@@ -982,7 +990,7 @@ Les agents comme toi gagnent en moyenne 2 500€ de PLUS par an avec ImmoViz 3D 
 
   const LEAD_MAGNET_HTML = `
     <div class="bg-gray-900 rounded-lg max-w-md w-full border border-gray-800 p-8 relative" role="dialog" aria-modal="true" aria-labelledby="lead-magnet-title" tabindex="-1">
-      <button onclick="closeLeadMagnet()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl" aria-label="Fermer">✕</button>
+      <button id="leadMagnetClose" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl" aria-label="Fermer">✕</button>
 
       <div style="text-align: center; padding: 20px 0;">
         <h3 style="color: white; margin: 0 0 15px 0; font-size: 1.5rem; font-weight: bold;">Intéressé par mes services ?</h3>
@@ -1001,6 +1009,7 @@ Les agents comme toi gagnent en moyenne 2 500€ de PLUS par an avec ImmoViz 3D 
     modal.className = 'fixed inset-0 bg-black/70 z-50 flex items-center justify-center hidden p-4';
     modal.innerHTML = LEAD_MAGNET_HTML;
     document.body.appendChild(modal);
+    modal.querySelector('#leadMagnetClose').addEventListener('click', closeLeadMagnet);
   }
 
   let leadMagnetPreviousFocus = null;
@@ -1124,3 +1133,32 @@ window.addEventListener('load', () => {
     document.getElementById('cookieBanner').style.display = 'flex';
   }
 });
+
+
+/* ---- bloc JS #13 — câblage des handlers statiques (CSP : remplace les onclick=) ---- */
+
+  // main.js est chargé en `defer` : le DOM est entièrement parsé ici.
+  // Ces listeners remplacent les anciens attributs onclick= inline du HTML,
+  // ce qui permet de retirer 'unsafe-inline' de script-src dans la CSP.
+  (function wireStaticHandlers(){
+    // Boutons « Acheter maintenant » (offres tarifaires)
+    document.querySelectorAll('[data-checkout]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        checkoutStripe(btn.dataset.checkout, parseInt(btn.dataset.amount, 10));
+      });
+    });
+
+    // CTA calculateur ROI
+    const roiCta = document.getElementById('roi-cta-btn');
+    if (roiCta) roiCta.addEventListener('click', scrollToContact);
+
+    // Bouton flottant chatbot
+    const chatToggle = document.getElementById('chatToggle');
+    if (chatToggle) chatToggle.addEventListener('click', toggleChatbot);
+
+    // Bannière cookies
+    const cookieReject = document.getElementById('cookie-reject');
+    if (cookieReject) cookieReject.addEventListener('click', rejectCookies);
+    const cookieAccept = document.getElementById('cookie-accept');
+    if (cookieAccept) cookieAccept.addEventListener('click', acceptCookies);
+  })();
