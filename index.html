@@ -868,7 +868,18 @@
 
 <button id="whatsapp-btn" title="Nous contacter sur WhatsApp" aria-label="Nous contacter sur WhatsApp"><span aria-hidden="true">💬</span></button>
 
-<!-- EXIT INTENT POP-UP — markup injecté seulement à l'affichage, listeners différés (idle/1ère interaction) -->
+<!-- EXIT INTENT POP-UP -->
+<div id="exit-popup" role="dialog" aria-modal="true" aria-labelledby="exit-popup-title">
+  <div class="exit-modal" tabindex="-1">
+    <button id="exit-close-btn" class="exit-close" aria-label="Fermer">✕</button>
+    <h2 id="exit-popup-title">Avant de partir</h2>
+    <p>Aperçu gratuit 24h — sans engagement</p>
+    <div class="exit-buttons">
+      <button id="exit-btn-yes" class="exit-btn exit-btn-yes">Voir l'aperçu</button>
+      <button id="exit-btn-no" class="exit-btn exit-btn-no">Non merci</button>
+    </div>
+  </div>
+</div>
 
 
 <div id="placesBar" class="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-red-600 to-red-700 text-white py-4 px-6 z-40">
