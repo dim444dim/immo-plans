@@ -498,18 +498,49 @@
 
 
 
-/* ---- bloc JS #2 — Exit Intent Detector ---- */
+/* ---- bloc JS #2 — Exit Intent Popup ---- */
 
   (function(){
     var shown = localStorage.getItem('exitPopupShown');
     if (shown) return;
 
+    var popup = document.getElementById('exit-popup');
     var ready = false;
     setTimeout(function(){ ready = true; }, 3000);
 
+    function showExitPopup() {
+      if (!ready || shown) return;
+      shown = true;
+      localStorage.setItem('exitPopupShown', '1');
+      popup.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      popup.querySelector('.exit-modal').focus();
+      if (window.plausible) plausible('Exit intent pop-up affiché');
+    }
+
+    function closeExitPopup() {
+      popup.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('exit-close-btn').addEventListener('click', closeExitPopup);
+    document.getElementById('exit-btn-no').addEventListener('click', closeExitPopup);
+    popup.addEventListener('click', function(e) { if (e.target === popup) closeExitPopup(); });
+
+    document.getElementById('exit-btn-yes').addEventListener('click', function() {
+      var msg = encodeURIComponent('Bonjour, je souhaite un aperçu gratuit de mon bien');
+      window.open('https://wa.me/' + WHATSAPP_PHONE + '?text=' + msg, '_blank', 'noopener,noreferrer');
+      if (window.plausible) plausible('Exit intent: WhatsApp cliqué');
+      closeExitPopup();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && popup.classList.contains('show')) closeExitPopup();
+    });
+
     document.addEventListener('mousemove', function(e) {
       if (e.clientY < 10 && window.innerWidth >= 768 && ready && !shown) {
-        console.log('[exit-intent] déclenché');
+        showExitPopup();
       }
     });
   })();
