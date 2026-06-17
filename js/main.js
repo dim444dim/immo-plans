@@ -498,109 +498,20 @@
 
 
 
-/* ---- bloc JS #2 ---- */
+/* ---- bloc JS #2 — Exit Intent Detector ---- */
 
-  // Pop-up de conversion unifié : exit-intent (desktop) + scroll > 50% (mobile).
   (function(){
-    if (localStorage.getItem('immoviz_exitPopupShown')) return;
+    var shown = localStorage.getItem('exitPopupShown');
+    if (shown) return;
 
-    const EXIT_POPUP_HTML = `
-      <div class="exit-modal" role="dialog" aria-modal="true" aria-labelledby="exit-popup-title" tabindex="-1">
-        <button id="exit-close-btn" class="exit-close" aria-label="Fermer">✕</button>
-        <h2 id="exit-popup-title">Avant de partir — Aperçu gratuit 24h</h2>
-        <p>Pas d'engagement. Aucun frais cachés.</p>
-        <div class="exit-buttons">
-          <button id="exit-btn-yes" class="exit-btn exit-btn-yes">Oui, je suis intéressé</button>
-          <button id="exit-btn-no" class="exit-btn exit-btn-no">Non, fermer</button>
-        </div>
-      </div>
-    `;
+    var ready = false;
+    setTimeout(function(){ ready = true; }, 3000);
 
-    function init() {
-      let lastMouseY = null;
-      let popupShown = false;
-      let exitPreviousFocus = null;
-      let popup = null;
-
-      function buildPopup() {
-        if (popup) return popup;
-        popup = document.createElement('div');
-        popup.id = 'exit-popup';
-        popup.innerHTML = EXIT_POPUP_HTML;
-        document.body.appendChild(popup);
-
-        popup.querySelector('#exit-close-btn').addEventListener('click', closeExitPopup);
-        popup.querySelector('#exit-btn-no').addEventListener('click', closeExitPopup);
-        popup.querySelector('#exit-btn-yes').addEventListener('click', () => {
-          const message = 'Bonjour, avant de partir j\'aimerais en savoir plus sur ImmoViz 3D';
-          const encodedMsg = encodeURIComponent(message);
-          const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodedMsg}`;
-          window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
-          if (window.plausible) plausible('Exit intent: WhatsApp cliqué');
-          closeExitPopup();
-        });
-        popup.addEventListener('click', e => { if (e.target === popup) closeExitPopup(); });
-        installFocusTrap(popup, () => popup.classList.contains('show'));
-        return popup;
+    document.addEventListener('mousemove', function(e) {
+      if (e.clientY < 10 && window.innerWidth >= 768 && ready && !shown) {
+        console.log('[exit-intent] déclenché');
       }
-
-      function showExitPopup() {
-        if (!PopupManager.estDisponible('exit')) return;
-        popupShown = true;
-        localStorage.setItem('immoviz_exitPopupShown', 'true');
-        PopupManager.ouvrir('exit');
-        exitPreviousFocus = document.activeElement;
-        buildPopup();
-        popup.classList.add('show');
-        document.body.style.overflow = 'hidden';
-        popup.querySelector('.exit-modal').focus();
-        if (window.plausible) plausible('Exit intent pop-up affiché');
-      }
-
-      function closeExitPopup() {
-        popup.classList.remove('show');
-        document.body.style.overflow = '';
-        PopupManager.fermer('exit');
-        if (exitPreviousFocus && exitPreviousFocus.focus) exitPreviousFocus.focus();
-      }
-
-      const handleMouseMove = (e) => {
-        if (popupShown) return;
-        const currentY = e.clientY;
-        if (lastMouseY === null) { lastMouseY = currentY; return; }
-        const isMovingUp = currentY < lastMouseY;
-        lastMouseY = currentY;
-        if (currentY < 50 && isMovingUp) showExitPopup();
-      };
-
-      window.addEventListener('mousemove', handleMouseMove, true);
-
-      document.addEventListener('mouseleave', e => {
-        if (popupShown) return;
-        if (e.clientY < 0) showExitPopup();
-      }, true);
-
-      // Déclencheur scroll > 50% : couvre le mobile (pas d'exit-intent souris).
-      // Reprend le comportement de l'ancien lead-magnet, fusionné ici.
-      let scrollTicking = false;
-      window.addEventListener('scroll', () => {
-        if (popupShown || scrollTicking) return;
-        scrollTicking = true;
-        requestAnimationFrame(() => {
-          const h = document.body.scrollHeight - window.innerHeight;
-          if (h > 0 && (window.scrollY / h) > 0.5) showExitPopup();
-          scrollTicking = false;
-        });
-      }, { passive: true });
-
-      document.addEventListener('keydown', e => {
-        if (popup && e.key === 'Escape' && popup.classList.contains('show')) closeExitPopup();
-      });
-    }
-
-    // Détection d'intention de sortie différée : ne coûte rien au chargement initial
-    if ('requestIdleCallback' in window) requestIdleCallback(init, { timeout: 2000 });
-    else setTimeout(init, 1500);
+    });
   })();
 
 
