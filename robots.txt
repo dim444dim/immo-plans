@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /node_modules/
 
 Sitemap: https://dim444dim.github.io/immo-plans/sitemap.xml
