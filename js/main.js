@@ -86,14 +86,17 @@
       setTimeout(() => hint && hint.classList.add('hidden'), 1500);
     });
 
-    function loadDemo() {
-      overlay.classList.add('hidden');
-      frame.src = 'plan-interactif-romorantin.html';
-    }
-    overlay.addEventListener('click', loadDemo);
-    overlay.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); loadDemo(); }
-    });
+    // Démo désactivée : aucun exemple de plan publié pour l'instant.
+    // Quand un nouvel exemple sera ajouté, remettre frame.src = '<nouveau-plan>.html'
+    // et réactiver les listeners click/keydown ci-dessous.
+    // function loadDemo() {
+    //   overlay.classList.add('hidden');
+    //   frame.src = 'plan-interactif-EXEMPLE.html';
+    // }
+    // overlay.addEventListener('click', loadDemo);
+    // overlay.addEventListener('keydown', e => {
+    //   if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); loadDemo(); }
+    // });
   })();
 
   // Parallax zoom au scroll (géré dans le mousemove aussi — ici juste la mise à jour au scroll sans souris)
