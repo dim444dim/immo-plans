@@ -50,6 +50,8 @@
     .city-links { display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem; }
     .city-link { color: rgba(255,255,255,.45); font-size: .82rem; text-decoration: none; padding: .3rem .75rem; border: 1px solid rgba(255,255,255,.12); border-radius: 20px; transition: color .2s, border-color .2s; }
     .city-link:hover { color: var(--cyan); border-color: rgba(0,229,255,.35); }
+    .footlink { color: rgba(255,255,255,.5); font-size: .82rem; text-decoration: none; transition: color .2s; }
+    .footlink:hover { color: #fff; }
   </style>
 </head>
 <body>
@@ -166,9 +168,9 @@
     <div class="footer-inner">
       <span>© 2026 <strong style="color:#fff;">ImmoViz 3D</strong> — Blois · Amboise</span>
       <div style="display:flex;gap:1rem;">
-        <a href="index.html" style="color:rgba(255,255,255,.5);font-size:.82rem;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Accueil</a>
-        <a href="conditions.html" style="color:rgba(255,255,255,.5);font-size:.82rem;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'">CGV</a>
-        <a href="privacy.html" style="color:rgba(255,255,255,.5);font-size:.82rem;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Confidentialité</a>
+        <a href="index.html" class="footlink">Accueil</a>
+        <a href="conditions.html" class="footlink">CGV</a>
+        <a href="privacy.html" class="footlink">Confidentialité</a>
       </div>
     </div>
   </footer>
