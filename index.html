@@ -94,6 +94,10 @@
   <link rel="preload" as="font" type="font/woff2" href="fonts/inter-tight-latin-700-900.woff2?v=20260614" crossorigin>
   <link rel="stylesheet" href="css/tailwind.min.css?v=20260614">
   <link rel="stylesheet" href="css/main.css?v=20260615">
+  <!-- Analytics Plausible (sans cookie, conforme RGPD). data-tracker="plausible" :
+       le loader gaté-consentement de js/main.js détecte ce script (guard) → pas de
+       double comptage ; "Refuser" (disableTrackers) le retire toujours. -->
+  <script defer data-domain="dim444dim.github.io/immo-plans" data-tracker="plausible" src="https://plausible.io/js/script.js"></script>
   <script defer src="js/main.js?v=20260615"></script>
 </head>
 <body>
@@ -558,7 +562,10 @@
     <!-- Aperçu animé du viewer 3D -->
     <figure class="reveal" style="margin:0 0 3rem;display:flex;justify-content:center">
       <div class="glass" style="padding:1rem;border-radius:16px;display:inline-flex;flex-direction:column;align-items:center;gap:.65rem">
-        <img src="img/demo-3d.gif" alt="Aperçu animé du plan 3D interactif ImmoViz : rotation et zoom du plan" width="480" height="360" loading="lazy" decoding="async" style="width:100%;max-width:420px;height:auto;border-radius:10px;display:block">
+        <video muted autoplay loop playsinline preload="metadata" poster="img/demo-3d-poster.jpg" width="480" height="360" aria-label="Aperçu animé du plan 3D interactif ImmoViz : rotation et zoom du plan" style="width:100%;max-width:420px;height:auto;border-radius:10px;display:block">
+          <source src="img/demo-3d.webm" type="video/webm">
+          <source src="img/demo-3d.mp4" type="video/mp4">
+        </video>
         <figcaption style="font-size:.82rem;color:var(--muted)">Aperçu du viewer 3D — rotation, zoom &amp; visite 360°</figcaption>
       </div>
     </figure>

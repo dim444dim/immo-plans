@@ -21,6 +21,7 @@ Thumbs.db
 
 # Captures de vérification ad-hoc (Playwright) — pas du contenu du site
 /screenshots/
+/test-evidence/
 /chatbot-*.png
 
 # Rapports Lighthouse (audit local, pas du contenu du site)

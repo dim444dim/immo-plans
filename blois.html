@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self'; object-src 'none'; base-uri 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://plausible.io; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https://plausible.io; object-src 'none'; base-uri 'self'">
   <title>Plan interactif 3D maison Blois | ImmoViz</title>
   <meta name="description" content="Valorisez votre maison à Blois avec un plan interactif 3D. Marché à ~1 800€/m², biens avec cachet : la visite virtuelle est votre avantage concurrentiel. Livré en 48h à partir de 150€.">
   <meta property="og:title" content="Plan interactif 3D maison Blois | ImmoViz">
@@ -13,6 +13,8 @@
   <link rel="canonical" href="https://dim444dim.github.io/immo-plans/blois.html">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=20260614">
   <link rel="stylesheet" href="css/main.css">
+  <!-- Analytics Plausible (sans cookie, conforme RGPD) -->
+  <script defer data-domain="dim444dim.github.io/immo-plans" data-tracker="plausible" src="https://plausible.io/js/script.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",

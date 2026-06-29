@@ -3,7 +3,7 @@
 // logique du fetch handler ci-dessous (install/activate/fetch). Le handler
 // "activate" supprime automatiquement les caches portant un ancien nom, ce
 // qui force le téléchargement des nouvelles versions au prochain chargement.
-const CACHE_NAME = 'immoviz-v8';
+const CACHE_NAME = 'immoviz-v9';
 // Precache volontairement limité à l'app shell (page d'accueil + assets
 // critiques) : les pages secondaires (privacy/conditions/livraison, les 3
 // plans interactifs avec Three.js) sont lourdes et ne doivent pas bloquer
