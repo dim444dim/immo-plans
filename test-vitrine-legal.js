@@ -21,7 +21,7 @@ const PAGES = ['conditions.html', 'privacy.html', 'livraison.html'];
 const HOST = 'GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA';
 const CONTACT = 'dimitri444art@gmail.com';
 const PLAUSIBLE_SRC = 'https://plausible.io/js/script.js';
-const PLAUSIBLE_DOMAIN = 'dim444dim.github.io';
+const PLAUSIBLE_DOMAIN = 'dim444dim.github.io/immo-plans';
 const DIRECTEUR_LABEL = 'Directeur de la publication';
 // Phrase de rétractation 14j : doit apparaître MOT POUR MOT et à l'identique sur chaque page.
 const RETRACTATION = "Conformément à l'article L221-18 du Code de la consommation, vous disposez d'un délai de 14 jours à compter de la commande pour exercer votre droit de rétractation, sans avoir à justifier de motifs.";
