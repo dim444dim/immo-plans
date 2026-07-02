@@ -3,7 +3,7 @@
 // logique du fetch handler ci-dessous (install/activate/fetch). Le handler
 // "activate" supprime automatiquement les caches portant un ancien nom, ce
 // qui force le téléchargement des nouvelles versions au prochain chargement.
-const CACHE_NAME = 'immoviz-v9';
+const CACHE_NAME = 'immoviz-v10';
 // Precache volontairement limité à l'app shell (page d'accueil + assets
 // critiques) : les pages secondaires (privacy/conditions/livraison, les 3
 // plans interactifs avec Three.js) sont lourdes et ne doivent pas bloquer
@@ -16,7 +16,7 @@ const urlsToCache = [
   '/immo-plans/manifest.json',
   '/immo-plans/css/tailwind.min.css?v=20260614',
   '/immo-plans/css/main.css?v=20260615',
-  '/immo-plans/js/main.js?v=20260615',
+  '/immo-plans/js/main.js?v=20260702',
   '/immo-plans/fonts/inter-tight-latin-700-900.woff2?v=20260614',
   '/immo-plans/fonts/playfair-display-italic-400-latin.woff2?v=20260614',
   '/immo-plans/icons/icon-192.png?v=20260614',

@@ -98,7 +98,7 @@
        le loader gaté-consentement de js/main.js détecte ce script (guard) → pas de
        double comptage ; "Refuser" (disableTrackers) le retire toujours. -->
   <script defer data-domain="dim444dim.github.io/immo-plans" data-tracker="plausible" src="https://plausible.io/js/script.js"></script>
-  <script defer src="js/main.js?v=20260615"></script>
+  <script defer src="js/main.js?v=20260702"></script>
 </head>
 <body>
 
@@ -114,10 +114,10 @@
     <span>🔒</span> RGPD Compliant
   </div>
   <div class="flex items-center gap-1 bg-gray-800 px-3 py-1 rounded text-xs text-gray-300">
-    <span>⭐</span> Support Français 24/7
+    <span>⭐</span> Support français — réponse sous 24h
   </div>
   <div class="flex items-center gap-1 bg-gray-800 px-3 py-1 rounded text-xs text-gray-300">
-    <span>✅</span> Serveurs France (CNIL)
+    <span>💳</span> Paiement sécurisé (Stripe)
   </div>
 </div>
 
@@ -345,10 +345,10 @@
       <span class="iframe-dot" style="background:#28c840"></span>
       <span class="iframe-url">dim444dim.github.io/immo-plans/</span>
     </div>
-    <iframe id="demo-frame" title="Plan 3D interactif — exemple à venir"></iframe>
-    <div class="demo-overlay" id="demo-overlay" tabindex="0" aria-label="Exemple de plan 3D à venir">
-      <div class="demo-overlay-icon" aria-hidden="true">🏗️</div>
-      <p><strong>Exemple à venir</strong><br>Un plan 3D interactif sera bientôt présenté ici</p>
+    <iframe id="demo-frame" title="Plan 3D interactif — démonstration"></iframe>
+    <div class="demo-overlay" id="demo-overlay" tabindex="0" role="button" aria-label="Charger la démonstration interactive du plan 3D">
+      <div class="demo-overlay-icon" aria-hidden="true">🏠</div>
+      <p><strong>Explorer la démo interactive</strong><br>Maison d'architecte 142 m² — Plan 2D · Vue 3D · Visite 360°</p>
     </div>
     <div class="scene-hint hidden" id="scene-hint">⟳ &nbsp;Glissez pour tourner autour du plan</div>
   </div>
@@ -577,14 +577,14 @@
   <rect x="5" y="45" width="110" height="30" rx="2" fill="rgba(0,229,255,.06)" stroke="rgba(0,229,255,.5)" stroke-width="1"/>
   <line x1="30" y1="5" x2="30" y2="40" stroke="#00e5ff" stroke-width="1" opacity=".4"/>
   <line x1="5" y1="25" x2="55" y2="25" stroke="#00e5ff" stroke-width="1" opacity=".4"/>
-  <text x="60" y="76" font-size="8" fill="rgba(255,255,255,.4)" text-anchor="middle" font-family="sans-serif">Exemple à venir</text>
+  <text x="60" y="76" font-size="8" fill="rgba(255,255,255,.4)" text-anchor="middle" font-family="sans-serif">Démo en ligne</text>
 </svg></div>
         <div class="dbody">
-          <h3>Exemple à venir</h3>
-          <p class="dmeta">Un plan interactif complet sera bientôt présenté ici.</p>
+          <h3>Maison d'architecte — 142 m²</h3>
+          <p class="dmeta">3 niveaux · 8 pièces · sous-sol, RDC et étage empilés en 3D</p>
           <div class="dtags"><span class="tag">Plan 2D</span><span class="tag">Vue 3D</span><span class="tag">Visite 360°</span><span class="tag">Livrable complet</span></div>
-          <p style="font-size:.85rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">Notre prochain livrable de démonstration : plan 2D interactif, navigation 3D et visite 360°.</p>
-          <span class="btn-demo" aria-disabled="true" style="opacity:.6;cursor:default;">Bientôt disponible</span>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">Le livrable exact que vous recevez : plan 2D interactif, navigation 3D niveau par niveau et visite 360° pièce par pièce — un seul fichier HTML, aucun logiciel requis.</p>
+          <a class="btn-demo" href="plan-interactif-demo.html" target="_blank" rel="noopener">Ouvrir la démo interactive →</a>
         </div>
       </div>
     </div>
@@ -855,15 +855,16 @@
 </div>
 
 
+<!-- Bandeau capacité : message VRAI (capacité de production réelle),
+     sans compteur de rareté simulé (pratique trompeuse, art. L121-2 C. conso). -->
 <div id="placesBar" class="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-red-600 to-red-700 text-white py-4 px-6 z-40">
   <div class="max-w-4xl mx-auto flex items-center justify-between">
     <div>
-      <h3 class="font-bold text-lg">⚡ Max 7 projets/semaine</h3>
-      <p class="text-sm text-red-100 mt-1">Qualité garantie = places limitées</p>
+      <h3 class="font-bold text-lg">⚡ Capacité limitée : 7 projets/semaine</h3>
+      <p class="text-sm text-red-100 mt-1">Chaque plan est vérifié à la main avant livraison — premier arrivé, premier servi</p>
     </div>
     <div class="text-right">
-      <div class="text-3xl font-bold" id="placesLeft">7</div>
-      <div class="text-sm text-red-100">places restantes</div>
+      <a href="#tarifs" class="font-bold text-white" style="text-decoration:underline">Commander →</a>
     </div>
   </div>
 </div>
@@ -946,25 +947,14 @@
 </section>
 
 <!-- ============================================================
-     PAIEMENT EN LIGNE — STRIPE (mode démo)
+     PAIEMENT EN LIGNE
      ------------------------------------------------------------
-     En l'état c'est une DÉMO : aucun appel réseau, aucun débit.
-     Les boutons "Acheter maintenant" affichent une alerte.
-
-     POUR ACTIVER LE VRAI PAIEMENT :
-       1. Créer un compte sur https://stripe.com/fr
-       2. Récupérer la clé publique (pk_live_... ou pk_test_...)
-       3. Créer les 2 prix dans le Dashboard Stripe
-          (Start 150€ → price_xxx, Pro 300€ → price_yyy)
-       4. Backend : route qui crée une Checkout Session et renvoie son id
-       5. ⚠️ METTRE À JOUR LA CSP (ligne 6) — ajouter dans script-src :
-          https://js.stripe.com  | dans frame-src : https://js.stripe.com
-          https://hooks.stripe.com | dans connect-src : https://api.stripe.com
-       6. Décommenter le bloc "CODE RÉEL" ci-dessous + charger js.stripe.com
-
-     ⚠️ ÉTAPE 0 (avant tout) : supprimer (ou commenter) la fonction
-     checkoutStripe DÉMO ci-dessous — sinon les deux déclarations
-     entrent en conflit.
+     Les boutons "Acheter maintenant" (data-checkout) redirigent vers
+     le tunnel de commande (app Render) avec la formule présélectionnée :
+     c'est LE backend qui crée la session Stripe Checkout (webhook signé,
+     paywall 402 avant paiement). Aucun Stripe.js sur la vitrine → pas
+     de modification CSP nécessaire (simple navigation).
+     Voir js/main.js → checkoutStripe().
      ============================================================ -->
 
 <!-- PWA Service Worker Registration -->

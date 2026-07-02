@@ -86,17 +86,16 @@
       setTimeout(() => hint && hint.classList.add('hidden'), 1500);
     });
 
-    // Démo désactivée : aucun exemple de plan publié pour l'instant.
-    // Quand un nouvel exemple sera ajouté, remettre frame.src = '<nouveau-plan>.html'
-    // et réactiver les listeners click/keydown ci-dessous.
-    // function loadDemo() {
-    //   overlay.classList.add('hidden');
-    //   frame.src = 'plan-interactif-EXEMPLE.html';
-    // }
-    // overlay.addEventListener('click', loadDemo);
-    // overlay.addEventListener('keydown', e => {
-    //   if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); loadDemo(); }
-    // });
+    // Click-to-load (perf : l'iframe + Three.js ne se chargent qu'à la demande).
+    function loadDemo() {
+      overlay.classList.add('hidden');
+      frame.src = 'plan-interactif-demo.html';
+      if (window.plausible) plausible('Demo interactive chargée');
+    }
+    overlay.addEventListener('click', loadDemo);
+    overlay.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); loadDemo(); }
+    });
   })();
 
   // Parallax zoom au scroll (géré dans le mousemove aussi — ici juste la mise à jour au scroll sans souris)
@@ -775,55 +774,23 @@ Les agents comme toi gagnent en moyenne 2 500€ de PLUS par an avec ImmoViz 3D 
 
 /* ---- bloc JS #8 ---- */
 
-  function calculatePlacesLeft() {
-    const now = new Date();
-    const dayOfWeek = now.getDay();
-
-    // Lundi = 1 … Dimanche = 0
-    // Raréfaction progressive sur la semaine (Lun=7 → Sam/Dim=0)
-    const placesByDay = { 1: 7, 2: 6, 3: 5, 4: 3, 5: 2, 6: 0, 0: 0 };
-    const placesLeft = placesByDay[dayOfWeek];
-
-    const placesElement = document.getElementById('placesLeft');
-    const placesBar = document.getElementById('placesBar');
-
-    if (!placesElement || !placesBar) return;
-
-    placesElement.textContent = placesLeft;
-
-    // Si 0 places : change le design
-    if (placesLeft === 0) {
-      placesBar.classList.remove('from-red-600', 'to-red-700');
-      placesBar.classList.add('from-black', 'to-gray-900', 'border-t', 'border-red-600');
-      placesBar.innerHTML = `
-        <div class="max-w-4xl mx-auto text-center">
-          <h3 class="font-bold text-lg text-red-500">🔴 Complet cette semaine</h3>
-          <p class="text-sm text-gray-400 mt-1">Remplissez le formulaire pour la semaine prochaine</p>
-        </div>
-      `;
-    }
-  }
-
-  // Calcule au chargement
-  calculatePlacesLeft();
-
-  // Recalcule chaque heure (pour que le compteur change)
-  setInterval(calculatePlacesLeft, 3600000);
+  // (Ancien compteur « places restantes » supprimé : il simulait une rareté
+  // à partir du jour de la semaine — compteur de rareté fabriqué = pratique
+  // commerciale trompeuse. Le bandeau #placesBar affiche désormais la capacité
+  // réelle en statique, sans JS.)
 
 
 /* ---- bloc JS #9 ---- */
 
-  // --- DÉMO : pas de dépendance externe, fonctionne sans erreur ---
+  // --- ACHAT : navigation vers le tunnel de commande (app Render) ---
+  // Le backend de l'app crée la session Stripe Checkout (webhook signé,
+  // paywall 402 tant que non payé) — la vitrine ne manipule jamais de clé
+  // Stripe ni de paiement : simple lien sortant, aucune CSP à élargir.
   function checkoutStripe(priceId, amount){
-    alert('💳 Paiement en ligne — bientôt disponible\n\n'
-      + 'Offre sélectionnée : ' + amount + '€\n\n'
-      + 'Le paiement direct par carte arrive prochainement.\n'
-      + 'En attendant, cliquez sur « Demander un devis » : '
-      + 'réponse et lien de commande sous 24h.');
+    const formule = priceId === 'price_pro' ? 'Pro' : 'Start';
+    if (window.plausible) plausible('Checkout redirigé', { props: { formule: formule, montant: amount } });
+    window.location.href = 'https://immobilier-3d-scraper.onrender.com/?formule=' + formule + '#formSection';
   }
-
-  // checkoutStripe ci-dessus = démo. Procédure d'activation Stripe réelle
-  // documentée dans index.html (bloc commenté "PAIEMENT EN LIGNE — STRIPE").
 
 
 /* ---- bloc JS #11 ---- */

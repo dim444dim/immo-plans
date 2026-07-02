@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maison d'architecte — 142 m²</title>
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75' fill='%23667eea'>🏠</text></svg>">
+  <meta name="theme-color" content="#667eea">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+    /* ── HEADER ─────────────────────────────────────────── */
+    #header {
+      height: 52px; background: #fff; border-bottom: 1px solid #e4e7ec;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; flex-shrink: 0; z-index: 100;
+    }
+    #header h1 { font-size: 14px; font-weight: 700; color: #111; }
+    #tabs { display: flex; gap: 4px; }
+    .tab-btn {
+      padding: 7px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: 1.5px solid #e4e7ec; background: #f8f9fb;
+      color: #888; transition: all 0.15s;
+    }
+    .tab-btn:hover { background: #f0f0f0; }
+    .tab-btn.active { background: #111; color: #fff; border-color: #111; }
+
+    /* ── BODY ────────────────────────────────────────────── */
+    #body { flex: 1; display: flex; overflow: hidden; }
+
+    /* ── VIEWS ───────────────────────────────────────────── */
+    #views { flex: 1; position: relative; overflow: hidden; }
+    .view { position: absolute; inset: 0; display: none; }
+    .view.active { display: flex; align-items: flex-start; justify-content: center; overflow: auto; padding: 16px; }
+
+    /* Vue 2D */
+    #view-2d svg { width: 100%; height: auto; max-width: 1200px; display: block; }
+    .room-overlay { opacity: 0; transition: opacity 0.28s ease; pointer-events: none; }
+    .room-overlay.active { opacity: 0.38; }
+    .room-zone { fill: transparent; cursor: pointer; stroke: transparent; stroke-width: 2; transition: fill 0.15s, stroke 0.15s; }
+    .room-zone:hover { fill: rgba(255,255,255,0.08); stroke: rgba(255,210,0,0.75); stroke-width: 2; }
+    .room-zone.active { stroke: rgba(255,210,0,1); stroke-width: 2.5; }
+
+    /* Vue 3D — override display:flex et padding hérités de .view.active */
+    #view-3d.active  { padding: 0 !important; overflow: hidden !important; display: block !important; }
+    #view-3d { background: #f0ede8; cursor: grab; }
+    #view-3d:active { cursor: grabbing; }
+    #view-3d canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; filter: saturate(1.25) contrast(1.09); }
+
+    /* Vue 360° */
+    #view-360.active { padding: 0 !important; overflow: hidden !important; display: block !important; }
+    #view-360 { background: #111; cursor: grab; }
+    #view-360:active { cursor: grabbing; }
+    #view-360 canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; filter: saturate(1.20) contrast(1.07); }
+
+    /* Post-processing overlays */
+    .pp-vignette {
+      position: absolute; inset: 0; pointer-events: none; z-index: 2;
+      background: radial-gradient(ellipse 90% 82% at 50% 46%, transparent 36%, rgba(0,0,0,0.42) 100%);
+    }
+    .pp-grain {
+      position: absolute; inset: 0; pointer-events: none; z-index: 3; opacity: 0.038;
+      background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='256' height='256' filter='url(%23n)'/></svg>");
+      background-size: 256px 256px;
+    }
+    #hint-360 {
+      position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.65); color: #fff; padding: 8px 20px; border-radius: 20px;
+      font-size: 12px; pointer-events: none; transition: opacity 1.5s; z-index: 10;
+    }
+    #hint-360.fade { opacity: 0; }
+    #room-label-360 {
+      position: absolute; top: 16px; left: 20px;
+      background: rgba(0,0,0,0.65); color: #fff; padding: 8px 16px; border-radius: 8px;
+      font-size: 14px; font-weight: 700; pointer-events: none; z-index: 10;
+    }
+    #nav-360 {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.75); display: flex; gap: 8px;
+      overflow-x: auto; padding: 12px 16px; z-index: 10;
+    }
+    #nav-360::-webkit-scrollbar { height: 4px; }
+    #nav-360::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 2px; }
+    .nav-btn-360 {
+      flex-shrink: 0; padding: 8px 18px; background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .nav-btn-360:hover { background: rgba(255,255,255,0.2); color: #fff; }
+    .nav-btn-360.active { background: #fff; color: #111; border-color: #fff; }
+
+    /* Navigation walkthrough inter-pièces */
+    #nav-arrows-360 {
+      position: absolute;
+      bottom: 62px;
+      left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      pointer-events: none;
+      z-index: 11;
+    }
+    .nav-arrow-360 {
+      pointer-events: all;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.28);
+      border-radius: 20px;
+      padding: 9px 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.12s, opacity 0.2s;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      max-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      letter-spacing: 0.2px;
+    }
+    .nav-arrow-360:hover { background: rgba(255,255,255,0.22); transform: scale(1.06); }
+    .nav-arrow-360:active { transform: scale(0.97); }
+
+    /* Hotspots / éditeur de liens (visite 3D) */
+    #hotspot-edit-btn {
+      position: absolute; top: 14px; right: 14px; z-index: 13;
+      background: rgba(0,0,0,0.55); color: rgba(255,255,255,0.85);
+      border: 1.5px solid rgba(255,255,255,0.25); border-radius: 18px;
+      padding: 7px 14px; font-size: 12px; font-weight: 600; cursor: pointer;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: all .15s;
+    }
+    #hotspot-edit-btn:hover { background: rgba(255,255,255,0.18); color: #fff; }
+    #hotspot-edit-btn.on { background: #667eea; color: #fff; border-color: #667eea; }
+    #hotspot-edit-bar {
+      display: none; position: absolute; top: 54px; right: 14px; z-index: 13;
+      flex-direction: column; gap: 8px; width: 272px;
+      background: rgba(15,17,26,0.88); border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 12px; padding: 12px; color: #fff;
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    }
+    #hotspot-edit-bar .heb-title { font-size: 11.5px; line-height: 1.45; color: rgba(255,255,255,0.82); }
+    #hotspot-export {
+      width: 100%; height: 120px; resize: vertical; box-sizing: border-box;
+      font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; line-height: 1.35;
+      color: #cdd6f4; background: rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; padding: 8px;
+    }
+    #hotspot-edit-bar .heb-actions { display: flex; gap: 6px; }
+    #hotspot-edit-bar .heb-actions button {
+      flex: 1; font-size: 11px; font-weight: 600; cursor: pointer; padding: 7px 4px;
+      border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08); color: #fff; transition: background .15s;
+    }
+    #hotspot-edit-bar .heb-actions button:hover { background: rgba(255,255,255,0.2); }
+    #heb-copy { background: rgba(102,126,234,0.55); border-color: #667eea; }
+    #heb-save { background: rgba(39,174,96,0.55); border-color: #27ae60; }
+    #hotspot-edit-bar .heb-north { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.82); }
+    #hotspot-edit-bar .heb-north label { flex: 0 0 auto; }
+    #hotspot-edit-bar .heb-north input[type=range] { flex: 1 1 auto; min-width: 0; }
+    #hotspot-edit-bar .heb-north #heb-north-val { flex: 0 0 34px; text-align: right; font-variant-numeric: tabular-nums; }
+    #hotspot-edit-bar .heb-north #heb-north-save {
+      flex: 0 0 auto; font-size: 10.5px; font-weight: 600; cursor: pointer; padding: 5px 7px;
+      border-radius: 7px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: #fff;
+    }
+    #heb-status { font-size: 11px; min-height: 14px; line-height: 1.3; color: rgba(255,255,255,0.7); }
+    #heb-status.ok { color: #7cfca0; }
+    #heb-status.err { color: #ff9090; }
+    #hotspot-picker {
+      display: none; position: absolute; z-index: 14; min-width: 146px; max-height: 232px; overflow: auto;
+      background: rgba(15,17,26,0.96); border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 10px; padding: 6px; box-shadow: 0 8px 28px rgba(0,0,0,0.5);
+    }
+    #hotspot-picker .hp-head { font-size: 10.5px; color: rgba(255,255,255,0.55); padding: 4px 8px 6px; }
+    #hotspot-picker button {
+      display: block; width: 100%; text-align: left; font-size: 12px; color: #fff; cursor: pointer;
+      background: transparent; border: none; padding: 7px 8px; border-radius: 6px;
+    }
+    #hotspot-picker button:hover { background: rgba(102,126,234,0.4); }
+
+    /* Mode immersif : la visite 360 prend tout l'écran (sidebar masquée) */
+    body.v360 #info-panel { display: none; }
+    /* Bandeau d'infos discret (prix / surface / localisation) */
+    #immersive-info {
+      position: absolute; top: 58px; left: 20px; z-index: 10;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap; max-width: 70%;
+      background: rgba(0,0,0,0.5); color: rgba(255,255,255,0.92);
+      padding: 7px 14px; border-radius: 8px; font-size: 12px;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      pointer-events: none; letter-spacing: 0.2px;
+    }
+    #immersive-info .ii-price { font-weight: 700; color: #fff; }
+    #immersive-info .ii-sep { color: rgba(255,255,255,0.4); }
+
+    /* Mini-plan boussole */
+    #minimap {
+      position: absolute; right: 16px; bottom: 60px; z-index: 12;
+      width: 176px; background: rgba(15,17,26,0.80); border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 12px; padding: 10px 10px 8px; backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px); box-shadow: 0 6px 22px rgba(0,0,0,0.35);
+    }
+    #minimap .mm-title {
+      color: rgba(255,255,255,0.78); font-size: 11px; font-weight: 600;
+      margin-bottom: 7px; text-align: center; letter-spacing: 0.3px;
+    }
+    #minimap .mm-svg { width: 100%; height: auto; aspect-ratio: 1 / 1; display: block; overflow: visible; }
+    #minimap .mm-room {
+      fill: rgba(255,255,255,0.10); stroke: rgba(255,255,255,0.34); stroke-width: 0.8;
+      cursor: pointer; transition: fill .15s;
+    }
+    #minimap .mm-room:hover { fill: rgba(102,126,234,0.40); }
+    #minimap .mm-room.cur { fill: rgba(102,126,234,0.58); stroke: #fff; stroke-width: 1.3; }
+    #minimap .mm-extra { fill: rgba(255,255,255,0.04); stroke: rgba(255,255,255,0.13); stroke-width: 0.6; }
+    #minimap .mm-label { fill: #fff; font-size: 4px; text-anchor: middle; dominant-baseline: middle; pointer-events: none; font-family: system-ui, sans-serif; }
+    #minimap .mm-extra-label { fill: rgba(255,255,255,0.42); font-size: 3.4px; text-anchor: middle; dominant-baseline: middle; pointer-events: none; }
+    #minimap .mm-cone-path { fill: rgba(102,126,234,0.50); stroke: rgba(255,255,255,0.55); stroke-width: 0.5; pointer-events: none; }
+    #minimap .mm-dot { fill: #fff; pointer-events: none; }
+
+    #add-img-360 {
+      position: absolute; top: 16px; right: 16px;
+      background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7);
+      border: 1px dashed rgba(255,255,255,0.3); border-radius: 8px;
+      padding: 8px 14px; font-size: 11px; cursor: pointer; z-index: 10;
+      transition: all 0.2s;
+    }
+    #add-img-360:hover { background: rgba(255,255,255,0.2); color: #fff; }
+    #diag-3d {
+      position: absolute; bottom: 80px; left: 16px; right: 16px;
+      background: rgba(200,0,0,0.85); color: #fff; padding: 10px 14px;
+      border-radius: 8px; font-size: 11px; font-family: monospace; white-space: pre-wrap;
+      z-index: 50; display: none; max-height: 150px; overflow: auto;
+    }
+    #controls-3d {
+      position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 10px; z-index: 10; pointer-events: all;
+    }
+    .btn3d {
+      padding: 9px 22px; border: 2px solid transparent; border-radius: 8px;
+      cursor: pointer; font-size: 13px; font-weight: 700;
+      transition: all 0.18s; box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+    }
+    .btn3d.on     { background: #1d4ed8; color: #fff; border-color: #1e40af; }
+    .btn3d.off    { background: #e5e7eb; color: #9ca3af; border-color: #d1d5db; }
+    .btn3d.active { background: #059669; color: #fff; border-color: #047857; }
+    #hint3d {
+      position: absolute; top: 12px; left: 16px;
+      background: rgba(255,255,255,0.88); padding: 8px 12px; border-radius: 8px;
+      font-size: 11px; color: #555; line-height: 1.9; pointer-events: none;
+    }
+    #legend3d {
+      position: absolute; top: 12px; right: 16px;
+      background: rgba(255,255,255,0.9); padding: 12px 16px; border-radius: 10px;
+      font-size: 11px; color: #333; line-height: 2; pointer-events: none;
+    }
+    #legend3d h3 { font-size: 10px; font-weight: 700; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; color: #111; }
+    .li { display: flex; align-items: center; gap: 8px; }
+    .lc { width: 13px; height: 13px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
+
+    /* ── PANNEAU INFO ────────────────────────────────────── */
+    #info-panel {
+      width: 300px; min-width: 260px; background: #fff; border-left: 1px solid #e4e7ec;
+      padding: 24px 18px 18px; overflow-y: auto; flex-shrink: 0;
+      display: flex; flex-direction: column;
+    }
+    .panel-title { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #b0b8c8; margin-bottom: 20px; letter-spacing: 0.9px; }
+    .default-view { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px 0; }
+    .default-view .icon { font-size: 38px; margin-bottom: 12px; opacity: 0.2; }
+    .default-view h3 { font-size: 14px; color: #aaa; margin-bottom: 8px; font-weight: 600; }
+    .default-view p { font-size: 12px; color: #ccc; line-height: 1.6; }
+    .room-info { display: none; animation: slideIn 0.2s ease; }
+    .room-info.active { display: block; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .room-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.6px; }
+    .room-name { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 14px; line-height: 1.2; }
+    .room-stats { background: #f8f9fb; border-radius: 10px; padding: 13px; margin-bottom: 14px; }
+    .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #eef0f3; }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-label { font-size: 12px; color: #999; }
+    .stat-value { font-size: 13px; font-weight: 600; color: #222; }
+    .room-desc { font-size: 12px; color: #666; line-height: 1.65; margin-bottom: 14px; }
+    .features-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .feature-tag { background: #f0f4ff; color: #4a6cf7; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    /* ── CALCULATEUR FINANCEMENT ───────────────────────── */
+    #calc-panel {
+      margin-top: 16px; padding: 14px 14px 12px;
+      background: #f8f9fb; border-radius: 10px; border: 1px solid #eef0f3;
+      flex-shrink: 0;
+    }
+    #calc-panel h4 {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: #b0b8c8; margin-bottom: 12px;
+    }
+    .calc-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 8px;
+    }
+    .calc-label { font-size: 11px; color: #888; }
+    .calc-input {
+      width: 90px; padding: 5px 8px; border: 1px solid #dde2ea;
+      border-radius: 6px; font-size: 12px; text-align: right;
+      background: #fff; color: #222; outline: none;
+    }
+    .calc-input:focus { border-color: #4a6cf7; }
+    .calc-select {
+      width: 90px; padding: 5px 6px; border: 1px solid #dde2ea;
+      border-radius: 6px; font-size: 12px; background: #fff; color: #222; outline: none;
+    }
+    #calc-result {
+      margin-top: 12px; padding: 12px; background: #fff;
+      border-radius: 8px; border: 1px solid #eef0f3; text-align: center;
+    }
+    #calc-mensualite {
+      font-size: 22px; font-weight: 800; color: #1d4ed8; letter-spacing: -0.5px;
+    }
+    #calc-mensualite span { font-size: 13px; font-weight: 500; color: #888; }
+    #calc-details {
+      margin-top: 8px; font-size: 10px; color: #aaa; line-height: 1.9;
+    }
+
+    .global-stats { margin-top: auto; padding-top: 16px; border-top: 1px solid #eef0f3; font-size: 11px; color: #bbb; text-align: center; line-height: 1.7; }
+
+    @media (max-width: 860px) {
+      #body { flex-direction: column; }
+      #info-panel { width: 100%; border-left: none; border-top: 1px solid #e4e7ec; max-height: 220px; min-width: unset; }
+    }
+
+    /* ── BOUTON WHATSAPP FLOTTANT ──────────────────────── */
+    #whatsapp-btn {
+      position: fixed;
+      bottom: max(20px, env(safe-area-inset-bottom));
+      right: max(20px, env(safe-area-inset-right));
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #25d366, #128c7e);
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 999;
+      box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+      border: none;
+      font-size: 24px;
+      transition: all 0.25s ease;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    #whatsapp-btn:hover {
+      transform: scale(1.12) translateY(-3px);
+      box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5);
+    }
+    #whatsapp-btn:active {
+      transform: scale(0.96);
+    }
+    @media (max-width: 768px) {
+      #whatsapp-btn {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+<body class="v360">
+
+<!-- ══ HEADER ══ -->
+<div id="header">
+  <h1>Maison d'architecte — 142 m²</h1>
+  <div id="tabs">
+    <button class="tab-btn"        data-tab="2d"  onclick="switchTab('2d')">Plan 2D</button>
+    <button class="tab-btn"        data-tab="3d"  onclick="switchTab('3d')">Vue 3D</button>
+    <button class="tab-btn active" data-tab="360" onclick="switchTab('360')">Visite 360°</button>
+  </div>
+</div>
+
+<!-- ══ BODY ══ -->
+<div id="body">
+  <div id="views">
+
+    <!-- ════════════════ VUE 2D ════════════════ -->
+    <div id="view-2d" class="view"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1840 700" style="background:#fff;font-family:Arial,sans-serif;"><text x="920" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#111">Plan 2D — Maison d'architecte — 142 m²</text><text x="320" y="58" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Sous-sol (~40 m²)</text><rect class="room-zone" data-room="garage" x="62" y="92" width="246" height="515" rx="2" fill="#f7f7f7" stroke="#222" stroke-width="2"/><text x="186" y="350" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">Garage</text><text x="186" y="365" text-anchor="middle" font-size="10" fill="#666">~28 m²</text><rect class="room-zone" data-room="buanderie" x="331" y="92" width="246" height="515" rx="2" fill="#f7f7f7" stroke="#222" stroke-width="2"/><text x="454" y="350" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">Buanderie</text><text x="454" y="365" text-anchor="middle" font-size="10" fill="#666">~12 m²</text><text x="920" y="58" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Rez-de-chaussée (~62 m²)</text><rect class="room-zone" data-room="sejour" x="662" y="92" width="246" height="246" rx="2" fill="#f7f7f7" stroke="#222" stroke-width="2"/><text x="786" y="216" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">Séjour</text><text x="786" y="231" text-anchor="middle" font-size="10" fill="#666">~38 m²</text><rect class="room-zone" data-room="cuisine" x="931" y="92" width="246" height="246" rx="2" fill="#f7f7f7" stroke="#222" stroke-width="2"/><text x="1054" y="216" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">Cuisine</text><text x="1054" y="231" text-anchor="middle" font-size="10" fill="#666">~15 m²</text><rect class="room-zone" data-room="bureau" x="662" y="361" width="246" height="246" rx="2" fill="#f7f7f7" stroke="#222" stroke-width="2"/><text x="786" y="484" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">Bureau</text><text x="786" y="499" text-anchor="middle" font-size="10" fill="#666">~9 m²</text><text x="1520" y="58" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Étage (~40 m²)</text><rect class="room-zone" data-room="suite" x="1262" y="92" width="246" height="246" rx="2" fill="#f7f7f7" stroke="#222" stroke-width="2"/><text x="1386" y="216" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">Chambre principale</text><text x="1386" y="231" text-anchor="middle" font-size="10" fill="#666">~18 m²</text><rect class="room-zone" data-room="chambre2" x="1531" y="92" width="246" height="246" rx="2" fill="#f7f7f7" stroke="#222" stroke-width="2"/><text x="1654" y="216" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">Chambre 2</text><text x="1654" y="231" text-anchor="middle" font-size="10" fill="#666">~12 m²</text><rect class="room-zone" data-room="sdb" x="1262" y="361" width="246" height="246" rx="2" fill="#f7f7f7" stroke="#222" stroke-width="2"/><text x="1386" y="484" text-anchor="middle" font-size="11" font-weight="bold" fill="#222">Salle de bain</text><text x="1386" y="499" text-anchor="middle" font-size="10" fill="#666">~8 m²</text></svg></div>
+
+    <!-- ════════════════ VUE 3D ════════════════ -->
+    <div id="view-3d" class="view">
+      <div class="pp-vignette"></div>
+      <div class="pp-grain"></div>
+      <div id="hint3d">🖱 Clic + drag : rotation<br>🔍 Scroll : zoom<br>🖱 Clic pièce : détails</div>
+      <div id="legend3d">
+        <h3>Légende</h3>
+        <div class="li"><div class="lc" style="background:#c2e6bc"></div>Séjour</div>
+        <div class="li"><div class="lc" style="background:#fce49c"></div>Cuisine</div>
+        <div class="li"><div class="lc" style="background:#ffd09a"></div>Salle à manger</div>
+        <div class="li"><div class="lc" style="background:#f0f0d0"></div>Entrée / Hall</div>
+        <div class="li"><div class="lc" style="background:#e0ccf0"></div>Chambre</div>
+        <div class="li"><div class="lc" style="background:#a8d8f0"></div>SDB / WC</div>
+        <div class="li"><div class="lc" style="background:#d8d8d0"></div>Garage</div>
+      </div>
+      <div id="controls-3d">
+        <!-- Boutons de visibilité par niveau injectés dynamiquement par initThree() -->
+        <button class="btn3d off" id="b-interieur" onclick="toggleInterieur()">Vue intérieure</button>
+      </div>
+      <div id="diag-3d"></div>
+    </div>
+
+    <!-- ════════════════ VUE 360° ════════════════ -->
+    <div id="view-360" class="view active">
+      <div class="pp-vignette"></div>
+      <div class="pp-grain"></div>
+
+      <!-- LOADER SPINNER (caché jusqu'au 1er clic sur l'onglet 360°) -->
+      <div id="tour-loader" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 10; display: none; pointer-events: none;">
+        <div style="width: 50px; height: 50px; border: 4px solid #e0e6ed; border-top: 4px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
+        <p style="color: #667eea; font-weight: 500;">Chargement visite 360°...</p>
+      </div>
+
+      <div id="room-label-360">Séjour</div>
+      <div id="immersive-info"><span class="ii-price">345 000 €</span>
+        <span class="ii-sep">·</span><span>142 m²</span>
+        <span class="ii-sep">·</span><span>7 pièces</span>
+        <span class="ii-sep">·</span><span>Amboise, 37400</span></div>
+      <div id="hint-360">Faites glisser pour regarder autour · Scroll pour zoomer</div>
+      <div id="add-img-360" title="Remplacer par votre image 360°">&#x1F4F7; Ajouter image 360°</div>
+      <div id="nav-arrows-360"></div>
+      <div id="nav-360"></div>
+
+      <!-- Mini-plan boussole -->
+      <div id="minimap"></div>
+
+      <!-- Hotspots / éditeur de liens (visite 3D) -->
+      <button id="hotspot-edit-btn" title="Éditer les liens de navigation (touche E)">&#x270E; Liens</button>
+      <div id="hotspot-edit-bar">
+        <span class="heb-title">Montage admin : clique une porte dans le panorama, choisis la pièce cible, puis « Enregistrer les liens ». Le nord réoriente le panorama de la pièce courante.</span>
+        <div class="heb-north">
+          <label>Nord</label>
+          <input type="range" id="heb-north-slider" min="-180" max="180" step="1" value="0" aria-label="Calage nord (degrés)">
+          <span id="heb-north-val">0°</span>
+          <button id="heb-north-save" type="button">Enregistrer le nord</button>
+        </div>
+        <textarea id="hotspot-export" readonly spellcheck="false"></textarea>
+        <div class="heb-actions">
+          <button id="heb-save" type="button">Enregistrer les liens</button>
+          <button id="heb-copy" type="button">Copier JSON</button>
+          <button id="heb-undo" type="button">Annuler dernier</button>
+          <button id="heb-close" type="button">Fermer</button>
+        </div>
+        <div id="heb-status" class="heb-status" role="status" aria-live="polite"></div>
+      </div>
+      <div id="hotspot-picker"></div>
+    </div>
+
+  </div>
+
+  <!-- ══ PANNEAU INFO ══ -->
+  <div id="info-panel">
+    <div class="panel-title">Maison d'architecte — 142 m²</div>
+
+    <div id="default-view" class="default-view">
+      <div class="icon">🏠</div>
+      <h3>Cliquez sur une pièce</h3>
+      <p>Survolez puis cliquez sur n'importe quelle pièce pour découvrir ses caractéristiques.</p>
+    </div>
+    <div id="room-panels"></div>
+
+    <div class="global-stats"><div>Surface totale : ~142 m²</div>
+      <div>Sous-sol ~40 m² · Rez-de-chaussée ~62 m² · Étage ~40 m²</div>
+      <div style="font-size:10px;margin-top:4px;color:#d0d5e0;">Amboise, 37400</div></div>
+  </div>
+  </div>
+</div>
+
+<!-- Three.js (ESM, version récente) — import map + modulepreload SRI.
+     Remplace le vieux build global r0.134 (build/three.min.js + examples/js,
+     API dépréciée outputEncoding/sRGBEncoding) : ce style de build n'existe
+     plus au-delà de r147, donc moderniser Three.js IMPOSE de passer en ESM. -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.185.0/examples/jsm/"
+  }
+}
+</script>
+<!-- SRI pour des modules ES : un <script type="module"> n'a pas d'attribut
+     integrity exploitable pour les imports bare-specifier résolus via import
+     map ; modulepreload est le mécanisme standard pour vérifier l'intégrité
+     de CE contenu avant que l'import ne le réutilise depuis le cache. -->
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.module.js"
+  integrity="sha384-Ecdwhw2t8c3nTR0hkEDZbwj+5rkKqzJ376RCQN2x1uofujOCuW/EvGg3BQzE7TS6" crossorigin="anonymous">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.185.0/examples/jsm/controls/OrbitControls.js"
+  integrity="sha384-4rziNxOBZKQ69i+w+f89KJ55TCYquwchVbByQwmaOeIOXdOU2PLDn3kOfXHwIJC9" crossorigin="anonymous">
+<script type="module">
+  // Bootstrap minimal : charge Three.js + OrbitControls en ESM et les expose sur
+  // window.THREE pour que le script principal (classique, plus bas, ~30 usages
+  // THREE.xxx) les consomme tel quel, sans réécriture. Échec CDN (réseau coupé,
+  // intégrité invalide) → __threeState='failed' ; le script suivant affiche
+  // alors le message de repli existant, jamais une page cassée.
+  window.__threeState = 'loading';
+  try {
+    const ns = await import('three');
+    const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+    window.THREE = Object.assign({}, ns, { OrbitControls });
+    window.__threeState = 'ready';
+  } catch (err) {
+    console.error('❌ Three.js (CDN) inaccessible:', err && err.message);
+    window.__threeState = 'failed';
+  }
+  window.dispatchEvent(new Event('three:settled'));
+</script>
+<script>
+  // Diagnostic : Three.js chargé ? (attend la résolution du module ESM ci-dessus
+  // avant de juger — au chargement de la page, l'import est encore en vol).
+  window.addEventListener('DOMContentLoaded', () => {
+    const report = () => {
+      if (typeof THREE === 'undefined') {
+        const d = document.createElement('div');
+        d.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#c0392b;color:#fff;padding:10px 20px;border-radius:8px;z-index:9999;font-size:13px;';
+        d.textContent = '⚠️ Three.js non chargé — vérifiez votre connexion internet';
+        document.body.appendChild(d);
+      }
+    };
+    if (window.__threeState === 'ready' || window.__threeState === 'failed') report();
+    else window.addEventListener('three:settled', report, { once: true });
+  });
+</script>
+
+
+<script>
+'use strict';
+
+// THREE est chargé en ESM par le <script type="module"> au-dessus (async) et
+// exposé sur window.THREE une fois prêt — ce script CLASSIQUE le lit comme une
+// globale ordinaire (bare `THREE`), donc tous les usages THREE.xxx plus bas
+// restent inchangés. waitForThree() retarde juste le PREMIER accès jusqu'à ce
+// que le chargement soit réglé (réussi ou échoué).
+function waitForThree() {
+  if (window.__threeState === 'ready' || window.__threeState === 'failed') return Promise.resolve();
+  return new Promise(resolve => window.addEventListener('three:settled', resolve, { once: true }));
+}
+
+// ══════════════════════════════════════════════════════
+//  DONNÉES PIÈCES (partagées 2D + 3D)
+// ══════════════════════════════════════════════════════
+const ROOMS = {"garage":{"name":"Garage","badge":"Sous-sol","badgeBg":"#e8f2ff","badgeColor":"#4a90e2","surface":"~28 m²","level":"Sous-sol","orientation":"Nord","desc":"Garage double carrelé avec porte sectionnelle motorisée et accès direct à la buanderie.","features":["Double","Porte motorisée"]},"buanderie":{"name":"Buanderie","badge":"Sous-sol","badgeBg":"#e8f2ff","badgeColor":"#4a90e2","surface":"~12 m²","level":"Sous-sol","orientation":"Est","desc":"Buanderie équipée d'un point d'eau et de rangements sur mesure.","features":["Point d'eau","Rangements"]},"sejour":{"name":"Séjour","badge":"RDC","badgeBg":"#f4e8ff","badgeColor":"#9b59b6","surface":"~38 m²","level":"Rez-de-chaussée","orientation":"Sud","desc":"Séjour cathédrale baigné de lumière : baie vitrée plein sud sur le jardin, poêle à bois contemporain.","features":["Cathédrale 4,5 m","Baie vitrée","Poêle à bois"]},"cuisine":{"name":"Cuisine","badge":"RDC","badgeBg":"#f4e8ff","badgeColor":"#9b59b6","surface":"~15 m²","level":"Rez-de-chaussée","orientation":"Est","desc":"Cuisine ouverte entièrement équipée, îlot central avec plan de travail en quartz.","features":["Équipée","Îlot central"]},"bureau":{"name":"Bureau","badge":"RDC","badgeBg":"#f4e8ff","badgeColor":"#9b59b6","surface":"~9 m²","level":"Rez-de-chaussée","orientation":"Ouest","desc":"Bureau au calme, idéal télétravail, raccordé à la fibre.","features":["Fibre optique"]},"suite":{"name":"Chambre principale","badge":"Étage","badgeBg":"#e8fff2","badgeColor":"#27ae60","surface":"~18 m²","level":"Étage","orientation":"Sud","desc":"Chambre principale avec dressing aménagé et salle d'eau privative, exposition sud.","features":["Salle d'eau privative","Dressing"]},"chambre2":{"name":"Chambre 2","badge":"Étage","badgeBg":"#e8fff2","badgeColor":"#27ae60","surface":"~12 m²","level":"Étage","orientation":"Est","desc":"Chambre lumineuse au soleil levant, placard intégré.","features":["Placard intégré"]},"sdb":{"name":"Salle de bain","badge":"Étage","badgeBg":"#e8fff2","badgeColor":"#27ae60","surface":"~8 m²","level":"Étage","orientation":"Nord","desc":"Salle de bain familiale : douche à l'italienne, double vasque, sèche-serviettes.","features":["Douche italienne","Double vasque"]}};
+
+// Défense en profondeur (ceinture + bretelles) : le serveur échappe déjà ces champs
+// LLM, mais on ré-échappe à CHAQUE point d'injection innerHTML/insertAdjacentHTML pour
+// rester sûr même si un futur champ partait non échappé côté serveur.
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// Générer les panneaux HTML
+const roomPanels = document.getElementById('room-panels');
+Object.entries(ROOMS).forEach(([id, r]) => {
+  const statsRows = [
+    `<div class="stat-row"><span class="stat-label">Surface</span><span class="stat-value">${esc(r.surface)}</span></div>`,
+    `<div class="stat-row"><span class="stat-label">Niveau</span><span class="stat-value">${esc(r.level)}</span></div>`,
+    r.orientation ? `<div class="stat-row"><span class="stat-label">Orientation</span><span class="stat-value">${esc(r.orientation)}</span></div>` : '',
+    r.access      ? `<div class="stat-row"><span class="stat-label">Accès</span><span class="stat-value">${esc(r.access)}</span></div>` : ''
+  ].join('');
+  const featureTags = r.features.map(f => `<span class="feature-tag">${esc(f)}</span>`).join('');
+  roomPanels.insertAdjacentHTML('beforeend', `
+    <div class="room-info" data-room="${esc(id)}">
+      <span class="room-badge" style="background:${r.badgeBg};color:${r.badgeColor};">${esc(r.badge)}</span>
+      <div class="room-name">${esc(r.name)}</div>
+      <div class="room-stats">${statsRows}</div>
+      <p class="room-desc">${esc(r.desc)}</p>
+      <div class="features-list">${featureTags}</div>
+    </div>`);
+});
+
+// ══════════════════════════════════════════════════════
+//  PANNEAU INFO — activation commune
+// ══════════════════════════════════════════════════════
+let currentRoom = null;
+const defaultView = document.getElementById('default-view');
+
+function activateRoom(id) {
+  deactivateRoom();
+  if (!id || !ROOMS[id]) return;
+  currentRoom = id;
+  defaultView.style.display = 'none';
+  document.querySelectorAll('.room-info').forEach(el => {
+    if (el.dataset.room === id) el.classList.add('active');
+  });
+}
+
+function deactivateRoom() {
+  currentRoom = null;
+  document.querySelectorAll('.room-info').forEach(el => el.classList.remove('active'));
+  defaultView.style.display = 'flex';
+}
+
+// ══════════════════════════════════════════════════════
+//  VUE 2D — interactions SVG
+// ══════════════════════════════════════════════════════
+document.querySelectorAll('.room-zone').forEach(zone => {
+  zone.addEventListener('click', e => {
+    e.stopPropagation();
+    const id = zone.dataset.room;
+    if (currentRoom === id) { deactivate2D(); deactivateRoom(); }
+    else { activate2D(id); activateRoom(id); }
+  });
+});
+
+function activate2D(id) {
+  deactivate2D();
+  const ov = document.getElementById('ov-' + id);
+  if (ov) ov.classList.add('active');
+  document.querySelectorAll('.room-zone').forEach(z => { if (z.dataset.room === id) z.classList.add('active'); });
+}
+function deactivate2D() {
+  document.querySelectorAll('.room-overlay').forEach(o => o.classList.remove('active'));
+  document.querySelectorAll('.room-zone').forEach(z => z.classList.remove('active'));
+}
+
+document.getElementById('view-2d').addEventListener('click', e => {
+  if (!e.target.closest('.room-zone')) { deactivate2D(); deactivateRoom(); }
+});
+
+// ══════════════════════════════════════════════════════
+//  SWITCH TAB
+// ══════════════════════════════════════════════════════
+let threeReady = false;
+let animRunning = false;
+
+// Capture erreurs JS → affichage dans #diag-3d
+window.addEventListener('error', e => {
+  const d = document.getElementById('diag-3d');
+  if (d) { d.style.display = 'block'; d.textContent += '❌ ' + e.message + '\n   ' + e.filename + ':' + e.lineno + '\n'; }
+});
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + tab).classList.add('active');
+  document.body.classList.toggle('v360', tab === '360'); // mode immersif plein écran
+  deactivate2D(); deactivateRoom();
+  stopLoop(); stop360Loop();
+  if (tab === '3d') {
+    requestAnimationFrame(() => requestAnimationFrame(async () => {
+      const c = document.getElementById('view-3d');
+      const d = document.getElementById('diag-3d');
+      if (d) { d.textContent = ''; d.style.display='none'; }
+      await waitForThree(); // l'import ESM peut encore être en vol au premier clic
+      if (typeof THREE === 'undefined') {
+        if (d) { d.style.display='block'; d.textContent = '❌ Three.js non chargé (CDN inaccessible)'; }
+        return;
+      }
+      if (!threeReady) await initThree();
+      if (renderer) { resizeRenderer(); startLoop(); }
+    }));
+  } else if (tab === '360') {
+    requestAnimationFrame(() => requestAnimationFrame(async () => {
+      await waitForThree();
+      if (typeof THREE === 'undefined') return;
+      if (!three60Ready) await init360();
+      else resize360();
+      if (renderer360) start360Loop();
+    }));
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  TROIS.JS
+// ══════════════════════════════════════════════════════
+let scene, camera, renderer, controls3d, raycaster, mouse;
+const clickables3d = [];
+let selectedMesh = null;
+let G, M3d, vis;
+let animId;
+
+async function initThree() {
+  await waitForThree();
+  if (typeof THREE === 'undefined') {
+    document.getElementById('view-3d').insertAdjacentHTML('afterbegin',
+      '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;color:#888;text-align:center;padding:20px;pointer-events:none;">' +
+      '⚠️ Three.js non disponible.<br>Vérifiez votre connexion internet.</div>');
+    return;
+  }
+  threeReady = true;
+  const container = document.getElementById('view-3d');
+
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xf0ede8);
+
+  const W3 = container.clientWidth || window.innerWidth;
+  const H3 = container.clientHeight || window.innerHeight;
+  camera = new THREE.PerspectiveCamera(35, W3 / H3, 0.1, 300);
+  camera.position.set(14, 15, -10);
+
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(W3, H3);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.18;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.domElement.style.cssText = 'position:absolute;top:0;left:0;z-index:0;';
+  container.appendChild(renderer.domElement);
+
+  if (typeof THREE.OrbitControls !== 'undefined') {
+    controls3d = new THREE.OrbitControls(camera, renderer.domElement);
+    controls3d.enableDamping = true; controls3d.dampingFactor = 0.06;
+    controls3d.minDistance = 5; controls3d.maxDistance = 80;
+    controls3d.maxPolarAngle = Math.PI / 2.05;
+    // target recentré plus bas une fois l'empreinte réelle (FOOT_W/FOOT_D) connue.
+  }
+
+  raycaster = new THREE.Raycaster();
+  mouse = new THREE.Vector2();
+
+  // Lumières
+  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  const sun = new THREE.DirectionalLight(0xfff6e0, 1.3);
+  sun.position.set(18, 32, 8); sun.castShadow = true;
+  sun.shadow.mapSize.width = sun.shadow.mapSize.height = 2048;
+  sun.shadow.camera.left = -28; sun.shadow.camera.right = 28;
+  sun.shadow.camera.top = 28; sun.shadow.camera.bottom = -28;
+  sun.shadow.camera.near = 1; sun.shadow.camera.far = 110;
+  sun.shadow.bias = -0.001;
+  scene.add(sun);
+  const fill1 = new THREE.DirectionalLight(0xb0d0ff, 0.28); fill1.position.set(-12, 8, -15); scene.add(fill1);
+  const fill2 = new THREE.DirectionalLight(0xfff8f0, 0.22); fill2.position.set(4, 10, -18);  scene.add(fill2);
+
+  // Groupes par niveau (G) + toiture : peuplés dynamiquement depuis FLOORPLAN plus bas.
+
+  // Matériaux
+  function mat(hex, opts) { return new THREE.MeshPhongMaterial(Object.assign({ color: hex, shininess: 18 }, opts || {})); }
+  M3d = {
+    wallOut: new THREE.MeshPhongMaterial({ color: 0xe0d6c4, shininess: 22, transparent: true, opacity: 1.0, side: THREE.DoubleSide }),
+    wallIn: mat(0xece7dc), garage: mat(0xd0cec2),
+    hall: mat(0xf0f0d0), sejour: mat(0xc2e6bc), sam: mat(0xffd09a),
+    cuisine: mat(0xfce49c), wc: mat(0xa8d8f0),
+    sdb: mat(0xa8d8f0), garSol: mat(0xd8d8d0), couloir: mat(0xf0eed8),
+    roof: mat(0x8c5a38, { side: THREE.DoubleSide }),
+    velux: mat(0x88d8f5, { transparent: true, opacity: 0.72 }),
+    door: mat(0x7a5030), win: mat(0x88d5f2, { transparent: true, opacity: 0.52 }),
+    stair: mat(0x888888), island: mat(0xd4b080), stove: mat(0x1e1e1e),
+    ground: mat(0x8fbc6a)
+  };
+
+  // Helpers
+  function box(w, h, d, m, x, y, z, grp) {
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+    mesh.position.set(x, y, z); mesh.castShadow = true; mesh.receiveShadow = true;
+    grp.add(mesh); return mesh;
+  }
+  function floorBox(w, h, d, hex, x, y, z, grp, roomId) {
+    const m = new THREE.MeshPhongMaterial({ color: hex, shininess: 18 });
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+    mesh.position.set(x, y, z); mesh.castShadow = true; mesh.receiveShadow = true;
+    mesh.userData.room = roomId; mesh.userData.origColor = hex;
+    grp.add(mesh);
+    if (roomId) {
+      clickables3d.push(mesh);
+      // Volume invisible surélevé pour le raycast (depuis caméra haute, les dalles à Y=0.16 sont trop loin)
+      const hitH = 5;
+      const hitM = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false });
+      const hitMesh = new THREE.Mesh(new THREE.BoxGeometry(w, hitH, d), hitM);
+      hitMesh.position.set(x, y + hitH * 0.5 + 0.3, z);
+      hitMesh.userData.room = roomId; hitMesh.userData.origColor = hex; hitMesh.userData.floorMesh = mesh;
+      grp.add(hitMesh);
+      clickables3d.push(hitMesh);
+    }
+    return mesh;
+  }
+  function cyl(rt, rb, h, m, x, y, z, grp) {
+    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, 12), m);
+    mesh.position.set(x, y, z); mesh.castShadow = true; grp.add(mesh); return mesh;
+  }
+  function staircase(cx, cz, baseY, grp) {
+    cyl(0.5, 0.5, 2.8, M3d.stair, cx, baseY + 1.4, cz, grp);
+    for (let i = 0; i < 9; i++) {
+      const a = (i / 9) * Math.PI * 2;
+      const s = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.05, 0.28), M3d.stair);
+      s.position.set(cx + Math.cos(a) * 0.62, baseY + 0.1 + i * 0.3, cz + Math.sin(a) * 0.62);
+      s.rotation.y = -a; s.castShadow = true; grp.add(s);
+    }
+  }
+  function makeLabel(text, x, y, z, grp) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 320; canvas.height = 80;
+    const ctx = canvas.getContext('2d');
+    ctx.shadowColor = 'rgba(0,0,0,0.18)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 2;
+    ctx.fillStyle = 'rgba(255,255,255,0.94)';
+    ctx.beginPath();
+    ctx.moveTo(14,3); ctx.lineTo(306,3); ctx.arcTo(317,3,317,14,11); ctx.lineTo(317,66); ctx.arcTo(317,77,306,77,11); ctx.lineTo(14,77); ctx.arcTo(3,77,3,66,11); ctx.lineTo(3,14); ctx.arcTo(3,3,14,3,11); ctx.closePath();
+    ctx.fill();
+    ctx.shadowColor = 'transparent'; ctx.strokeStyle = 'rgba(0,0,0,0.10)'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = '#1a1a1a'; ctx.font = 'bold 26px Segoe UI, Arial, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(text, 160, 40);
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas), depthTest: false, transparent: true }));
+    sprite.scale.set(3.0, 0.75, 1); sprite.position.set(x, y, z); sprite.renderOrder = 999;
+    grp.add(sprite);
+  }
+
+  const FT = 0.15, WH = 2.8, WT = 0.2; // épaisseur dalle, hauteur murs, épaisseur murs
+
+  // Terrain
+  const gnd = new THREE.Mesh(new THREE.PlaneGeometry(70, 55), M3d.ground);
+  gnd.rotation.x = -Math.PI / 2; gnd.position.set(3, -0.01, 4); gnd.receiveShadow = true;
+  scene.add(gnd);
+
+  // ════════════════════════════════════════════════════════════
+  //  GÉOMÉTRIE GÉNÉRIQUE — construite depuis FLOORPLAN (toute maison)
+  // ════════════════════════════════════════════════════════════
+  // Empreinte monde (m) sur laquelle on projette les coords FLOORPLAN (0-100 %).
+  // Dérivée de la surface RÉELLE de la maison (SURFACE_M2, injectée côté serveur)
+  // plutôt que figée en dur : un studio et un mas de 300 m² doivent rendre des
+  // empreintes différentes. On répartit la surface totale sur le nombre de
+  // niveaux (approximation : empreinte similaire à chaque niveau), avec un
+  // plancher mini pour éviter une boîte degénérée sur les biens minuscules,
+  // et un ratio largeur/profondeur plausible pour une maison.
+  const LEVEL_KEYS = Object.keys(FLOORPLAN);
+  const FOOT_RATIO = 13 / 9; // ratio largeur/profondeur par défaut (maison standard)
+  const MIN_FOOTPRINT_AREA = 16; // m², plancher mini (évite une boîte minuscule)
+  const nLevels3d = Math.max(1, LEVEL_KEYS.length);
+  const footprintArea = Math.max(MIN_FOOTPRINT_AREA, (SURFACE_M2 || 110) / nLevels3d);
+  const FOOT_D = Math.sqrt(footprintArea / FOOT_RATIO);
+  const FOOT_W = FOOT_D * FOOT_RATIO;
+  window.__footprint3d = { w: FOOT_W, d: FOOT_D, levels: nLevels3d, surface: SURFACE_M2 }; // hook de test
+  const px = p => p / 100 * FOOT_W;   // x % → m
+  const pz = p => p / 100 * FOOT_D;   // y % → m
+
+  // Couleur de sol par catégorie de pièce (cohérent avec la légende).
+  function roomColor(name) {
+    const n = (name || '').toLowerCase();
+    if (/séjour|sejour|salon|living/.test(n)) return 0xc2e6bc;
+    if (/cuisine/.test(n)) return 0xfce49c;
+    if (/manger|à m|a m|sàm|sam/.test(n)) return 0xffd09a;
+    if (/entrée|entree|hall|couloir|palier|dégag|degag/.test(n)) return 0xf0f0d0;
+    if (/chambre|ch\.|suite/.test(n)) return 0xe0ccf0;
+    if (/bain|eau|sdb|wc|toilet/.test(n)) return 0xa8d8f0;
+    if (/garage|cellier|buand|atelier|local/.test(n)) return 0xd8d8d0;
+    return 0xe8e2d4;
+  }
+
+  // G (groupes par niveau + toiture) et vis (visibilité) sont peuplés dynamiquement.
+  G = {};
+  vis = {};
+  const ctrl3d = document.getElementById('controls-3d');
+  const interBtn = document.getElementById('b-interieur');
+  function addToggleButton(key, label, on = true) {
+    vis[key] = on;
+    const b = document.createElement('button');
+    b.className = 'btn3d ' + (on ? 'on' : 'off'); b.id = 'b-' + key; b.textContent = label;
+    b.setAttribute('onclick', "toggle3d('" + key + "')");
+    ctrl3d.insertBefore(b, interBtn);
+  }
+
+  // Un groupe THREE par niveau, empilés verticalement (rdc en bas).
+  LEVEL_KEYS.forEach((key, idx) => {
+    const fp = FLOORPLAN[key];
+    const grp = new THREE.Group(); G[key] = grp; scene.add(grp);
+    const baseY = idx * (FT + WH);
+    const slabY = baseY + FT + 0.01;
+    const wallY = baseY + FT + WH / 2;
+    const labelY = baseY + FT + 1.7;
+
+    // Dalle de base du niveau
+    box(FOOT_W, FT, FOOT_D, M3d.wallIn, FOOT_W / 2, baseY + FT / 2, FOOT_D / 2, grp);
+
+    // Sols des pièces (cliquables) + labels
+    fp.rooms.forEach(r => {
+      const w = px(r.w), d = pz(r.h), cx = px(r.x + r.w / 2), cz = pz(r.y + r.h / 2);
+      floorBox(w, 0.02, d, roomColor(r.name), cx, slabY, cz, grp, r.id);
+      makeLabel(r.name, cx, labelY, cz, grp);
+    });
+    // Sols secondaires (pièces hors visite : WC, dégagements…)
+    (fp.extras || []).forEach(e => {
+      const w = px(e.w), d = pz(e.h), cx = px(e.x + e.w / 2), cz = pz(e.y + e.h / 2);
+      floorBox(w, 0.02, d, 0xeeeae0, cx, slabY, cz, grp, null);
+      makeLabel(e.name, cx, labelY, cz, grp);
+    });
+
+    // Murs périmétriques (4 façades)
+    box(FOOT_W, WH, WT, M3d.wallOut, FOOT_W / 2, wallY, 0,          grp);
+    box(FOOT_W, WH, WT, M3d.wallOut, FOOT_W / 2, wallY, FOOT_D,     grp);
+    box(WT, WH, FOOT_D, M3d.wallOut, 0,          wallY, FOOT_D / 2, grp);
+    box(WT, WH, FOOT_D, M3d.wallOut, FOOT_W,     wallY, FOOT_D / 2, grp);
+
+    addToggleButton(key, fp.label || key);
+  });
+
+  // Escalier reliant chaque niveau au suivant, dans un coin neutre.
+  for (let i = 1; i < LEVEL_KEYS.length; i++) {
+    staircase(1.4, FOOT_D - 1.4, (i - 1) * (FT + WH) + FT, G[LEVEL_KEYS[i - 1]]);
+  }
+
+  // Toiture à 2 pentes au-dessus du dernier niveau.
+  const topY = LEVEL_KEYS.length * (FT + WH);
+  const roofGrp = new THREE.Group(); G.toit = roofGrp; scene.add(roofGrp);
+  const roofShape = new THREE.Shape();
+  roofShape.moveTo(0, 0); roofShape.lineTo(FOOT_W / 2, 3.6); roofShape.lineTo(FOOT_W, 0); roofShape.closePath();
+  const roofMesh = new THREE.Mesh(new THREE.ExtrudeGeometry(roofShape, { depth: FOOT_D, bevelEnabled: false }), M3d.roof);
+  roofMesh.position.set(0, topY, 0); roofMesh.castShadow = true;
+  roofGrp.add(roofMesh);
+  roofGrp.visible = false; // masquée par défaut : on montre d'abord l'agencement des pièces
+  addToggleButton('toit', 'Toiture', false);
+
+  // Recentrage de la cible OrbitControls sur l'empreinte RÉELLE (FOOT_W/FOOT_D)
+  // calculée plus haut, plutôt qu'un centre figé qui ne correspond qu'à l'ancienne
+  // empreinte 13×9 codée en dur.
+  if (controls3d) {
+    controls3d.target.set(FOOT_W / 2, topY / 2, FOOT_D / 2);
+    controls3d.update();
+  }
+
+  // Resize
+  window.addEventListener('resize', resizeRenderer);
+
+  // Raycasting clic
+  renderer.domElement.addEventListener('click', e => {
+    const rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const hits = raycaster.intersectObjects(clickables3d);
+    if (hits.length > 0) {
+      const id = hits[0].object.userData.room;
+      if (currentRoom === id) { unhighlight3D(); deactivateRoom(); }
+      else { highlight3D(hits[0].object, id); activateRoom(id); }
+    } else {
+      unhighlight3D(); deactivateRoom();
+    }
+  });
+
+  // vis renseigné dynamiquement lors de la création des niveaux (voir builder FLOORPLAN).
+}
+
+function highlight3D(mesh, id) {
+  if (selectedMesh) {
+    const prev = selectedMesh.userData.floorMesh || selectedMesh;
+    prev.material.color.setHex(prev.userData.origColor);
+  }
+  selectedMesh = mesh;
+  const floor = mesh.userData.floorMesh || mesh;
+  floor.material.color.setHex(0xffdd44);
+}
+function unhighlight3D() {
+  if (selectedMesh) {
+    const floor = selectedMesh.userData.floorMesh || selectedMesh;
+    floor.material.color.setHex(floor.userData.origColor);
+    selectedMesh = null;
+  }
+}
+
+function resizeRenderer() {
+  if (!renderer) return;
+  const c = document.getElementById('view-3d');
+  const w = c.clientWidth || window.innerWidth;
+  const h = c.clientHeight || window.innerHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+function startLoop() {
+  animRunning = true;
+  (function loop() {
+    if (!animRunning) return;
+    animId = requestAnimationFrame(loop);
+    controls3d && controls3d.update();
+    renderer && scene && camera && renderer.render(scene, camera);
+  })();
+}
+function stopLoop() { animRunning = false; if (animId) { cancelAnimationFrame(animId); animId = null; } }
+
+// Toggle 3D boutons
+window.toggle3d = function(k) {
+  vis[k] = !vis[k];
+  G[k].visible = vis[k];
+  document.getElementById('b-' + k).className = 'btn3d ' + (vis[k] ? 'on' : 'off');
+};
+let interiorMode = false;
+window.toggleInterieur = function() {
+  interiorMode = !interiorMode;
+  M3d.wallOut.opacity = interiorMode ? 0.15 : 1.0;
+  M3d.wallOut.needsUpdate = true;
+  document.getElementById('b-interieur').className = 'btn3d ' + (interiorMode ? 'active' : 'off');
+};
+
+// ══════════════════════════════════════════════════════
+//  VISITE VIRTUELLE 360° — Three.js sphere
+// ══════════════════════════════════════════════════════
+function darken(hex, percent) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  const f = 1 - percent / 100;
+  return '#' + [Math.round(r*f),Math.round(g*f),Math.round(b*f)].map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase();
+}
+
+let three60Ready = false;
+let scene360, camera360, renderer360, controls360, sphere360mat, sphere360mesh;
+let anim360Id, anim360Running = false;
+// ── Hotspots / visite 3D ──
+let hotspot360Group = null, raycaster360 = null, hotspotObjs = [], hoveredHotspot = null;
+let editMode360 = false, pendingHotspot = null;
+const HOTSPOT_RADIUS = 470;
+let currentRoom360 = null;
+let targetFov360 = 75;
+let fadeState360 = null;   // { t } : fondu d'opacité de la sphère, avancé dans start360Loop
+let texPollState360 = null; // { id, placeholderTex, startedAt } : attente texture réelle
+const texCache360 = {};
+const texLoading360 = {}; // Track chargements en cours
+// Cache borné (LRU) : chaque CanvasTexture 2048×1024 pèse plusieurs Mo de VRAM.
+// Sans limite, une visite de 10+ pièces accumule indéfiniment des textures
+// jamais libérées. texOrder360 = ids dans l'ordre de dernière utilisation
+// (le plus récent en fin) ; au-delà de TEX_CACHE_LIMIT on dispose() les plus
+// anciennes (sauf la pièce courante, toujours protégée).
+const TEX_CACHE_LIMIT = 6;
+const texOrder360 = [];
+function touchTexCache360(id) {
+  const i = texOrder360.indexOf(id);
+  if (i !== -1) texOrder360.splice(i, 1);
+  texOrder360.push(id);
+  while (texOrder360.length > TEX_CACHE_LIMIT) {
+    const evictId = texOrder360.find(rid => rid !== currentRoom360);
+    if (!evictId) break; // tout ce qui reste est protégé (cache trop petit pour la limite)
+    texOrder360.splice(texOrder360.indexOf(evictId), 1);
+    const tex = texCache360[evictId];
+    if (tex) { tex.dispose(); delete texCache360[evictId]; }
+    delete texLoading360[evictId];
+  }
+}
+window.__texCacheSize360 = () => Object.keys(texCache360).length; // hook de test (fuite mémoire)
+
+// Détection mobile : résolution plafonnée + préchargement désactivé.
+const IS_MOBILE = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
+
+// Vérifie la disponibilité de WebGL avant d'essayer de créer un renderer.
+function isWebGLAvailable() {
+  try {
+    const cv = document.createElement('canvas');
+    return !!(window.WebGLRenderingContext && (cv.getContext('webgl') || cv.getContext('experimental-webgl')));
+  } catch (_) { return false; }
+}
+
+const TOUR = [{"id":"sejour","name":"Séjour","wallH":"#F2E8DC","wallL":"#c2bab0","ceil":"#f5f2ec","floor":"#C89F6E","floorD":"#8c6f4d"},{"id":"cuisine","name":"Cuisine","wallH":"#EDEDE6","wallL":"#bebeb8","ceil":"#f5f2ec","floor":"#C89F6E","floorD":"#8c6f4d"},{"id":"bureau","name":"Bureau","wallH":"#DCE8E4","wallL":"#b0bab6","ceil":"#f5f2ec","floor":"#B8946A","floorD":"#81684a"},{"id":"suite","name":"Chambre principale","wallH":"#E8E0F0","wallL":"#bab3c0","ceil":"#f5f2ec","floor":"#B8946A","floorD":"#81684a"},{"id":"chambre2","name":"Chambre 2","wallH":"#DCE8F0","wallL":"#b0bac0","ceil":"#f5f2ec","floor":"#B8946A","floorD":"#81684a"},{"id":"sdb","name":"Salle de bain","wallH":"#D8ECF0","wallL":"#adbdc0","ceil":"#f5f2ec","floor":"#C8C8C8","floorD":"#8c8c8c"}];
+
+const REAL_IMAGES = {}; // panoramas 360 réels — format {roomId:{url,thumb}} depuis D1 (ou string rétro-compat)
+
+// Accès unifié aux URLs panorama. Supporte l'ancien format string (rétro-compat, vagues A–C)
+// et le nouveau format objet { url, thumb } introduit en D1.
+function getImageUrls(id) {
+  const v = REAL_IMAGES && REAL_IMAGES[id];
+  if (!v) return null;
+  if (typeof v === 'string') return { url: v, thumb: v };
+  return { url: v.url || v.thumb, thumb: v.thumb || v.url };
+}
+
+// Remplace atomiquement la texture d'une pièce : dispose l'ancienne (libère la VRAM)
+// et met à jour la sphère si la pièce est celle affichée.
+// Si la pièce était absente du cache (évincée par le LRU pendant le chargement async),
+// on la réintègre via touchTexCache360 pour maintenir le cap à TEX_CACHE_LIMIT.
+function swapTexture360(id, newTex) {
+  const old = texCache360[id];
+  texCache360[id] = newTex;
+  if (old && old !== newTex) old.dispose();
+  if (!old) touchTexCache360(id); // réintégration LRU si la pièce avait été évincée
+  if (currentRoom360 === id && sphere360mat) {
+    sphere360mat.map = newTex;
+    sphere360mat.needsUpdate = true;
+  }
+}
+
+// Chargement progressif : preview 1024×512 (quasi-instantané) puis full 4096×2048.
+// Mobile : seulement la preview. Fallback : si le thumb échoue, essaie la full directement.
+function loadProgressively(id, thumbUrl, fullUrl) {
+  loadProcessedTexture(thumbUrl, previewTex => {
+    swapTexture360(id, previewTex);
+    if (!IS_MOBILE && fullUrl !== thumbUrl) {
+      loadProcessedTexture(fullUrl, fullTex => {
+        swapTexture360(id, fullTex);
+        texLoading360[id] = false;
+      }, () => { texLoading360[id] = false; }); // full échoue : on garde la preview
+    } else {
+      texLoading360[id] = false;
+    }
+  }, () => {
+    // Thumb échoue : essaie la full directement (si URL différente), sinon abandonne.
+    if (fullUrl !== thumbUrl) {
+      loadProcessedTexture(fullUrl, fullTex => {
+        swapTexture360(id, fullTex);
+        texLoading360[id] = false;
+      }, () => { texLoading360[id] = false; });
+    } else {
+      texLoading360[id] = false; // les deux ont échoué : le placeholder synthétique reste
+    }
+  });
+}
+
+// Précharge en arrière-plan les pièces adjacentes (hotspots + nav prev/next).
+// Désactivé sur mobile pour ménager la bande passante et la mémoire GPU.
+function prefetchAdjacent(roomId) {
+  if (IS_MOBILE) return;
+  const targets = new Set();
+  (HOTSPOTS[roomId] || []).forEach(h => { if (h.target) targets.add(h.target); });
+  const conn = NAV_GRAPH[roomId] || {};
+  if (conn.prev) targets.add(conn.prev);
+  if (conn.next) targets.add(conn.next);
+  targets.forEach(id => {
+    if (texCache360[id] || texLoading360[id]) return; // déjà en cache ou en cours
+    const room = TOUR.find(r => r.id === id);
+    if (!room) return;
+    const imgs = getImageUrls(id);
+    if (!imgs) return; // pas d'image réelle → synthétique généré à la demande (instantané)
+    texLoading360[id] = true;
+    loadProcessedTexture(imgs.url, tex => {
+      swapTexture360(id, tex); // gère LRU si pièce absente (évincée ou pas encore visitée)
+      texLoading360[id] = false;
+    }, () => { texLoading360[id] = false; });
+  });
+}
+
+function makeRoomTexture(room) {
+  const W = 2048, H = 1024;
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  const CEIL_Y = H * 0.22, WALL_Y = H * 0.78;
+  ctx.fillStyle = room.ceil; ctx.fillRect(0, 0, W, CEIL_Y);
+  const rcx = W/2, rcy = H*0.07;
+  const rGlow = ctx.createRadialGradient(rcx,rcy,0,rcx,rcy,W*0.12);
+  rGlow.addColorStop(0,'rgba(255,248,220,0.55)'); rGlow.addColorStop(1,'rgba(255,245,200,0)');
+  ctx.fillStyle = rGlow; ctx.fillRect(0, 0, W, CEIL_Y);
+  ctx.fillStyle = '#f0e8d0'; ctx.beginPath(); ctx.arc(rcx,rcy,W*0.022,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle = '#d8d0bc'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.arc(rcx,rcy,W*0.036,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(rcx,rcy,W*0.050,0,Math.PI*2); ctx.stroke();
+  const wg = ctx.createLinearGradient(0,CEIL_Y,0,WALL_Y);
+  wg.addColorStop(0,room.wallH); wg.addColorStop(1,room.wallL);
+  ctx.fillStyle = wg; ctx.fillRect(0,CEIL_Y,W,WALL_Y-CEIL_Y);
+  const fg = ctx.createLinearGradient(0,WALL_Y,0,H);
+  fg.addColorStop(0,room.floor); fg.addColorStop(1,room.floorD);
+  ctx.fillStyle = fg; ctx.fillRect(0,WALL_Y,W,H-WALL_Y);
+  ctx.strokeStyle = 'rgba(0,0,0,0.09)'; ctx.lineWidth = 1;
+  const PLANK_H=20, PLANK_W=220; let rowIdx=0;
+  for(let y=WALL_Y+4;y<H;y+=PLANK_H,rowIdx++){
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+    const off=(rowIdx%2)*(PLANK_W/2);
+    for(let x=off-PLANK_W;x<W+PLANK_W;x+=PLANK_W){ ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x,y+PLANK_H); ctx.stroke(); }
+  }
+  [W*0.05,W*0.30,W*0.55,W*0.78].forEach(fx=>{
+    const fenW=160,cx=fx+80;
+    const coneGrad=ctx.createLinearGradient(cx,WALL_Y,cx,H);
+    coneGrad.addColorStop(0,'rgba(255,248,210,0.28)'); coneGrad.addColorStop(1,'rgba(255,248,210,0)');
+    ctx.fillStyle=coneGrad; ctx.beginPath(); ctx.moveTo(fx+fenW*0.1,WALL_Y); ctx.lineTo(fx+fenW*0.9,WALL_Y); ctx.lineTo(cx+fenW*2.0,H); ctx.lineTo(cx-fenW*2.0,H); ctx.closePath(); ctx.fill();
+  });
+  const corniche=ctx.createLinearGradient(0,CEIL_Y-8,0,CEIL_Y+28);
+  corniche.addColorStop(0,room.ceil); corniche.addColorStop(0.4,'#ffffff'); corniche.addColorStop(1,room.wallH);
+  ctx.fillStyle=corniche; ctx.fillRect(0,CEIL_Y-8,W,36);
+  const plinthe=ctx.createLinearGradient(0,WALL_Y-5,0,WALL_Y+24);
+  plinthe.addColorStop(0,room.wallL); plinthe.addColorStop(0.5,'#e8e4dc'); plinthe.addColorStop(1,room.floor);
+  ctx.fillStyle=plinthe; ctx.fillRect(0,WALL_Y-5,W,30);
+  const fenW=160, fenH=H*0.28, fenY=CEIL_Y+(WALL_Y-CEIL_Y)*0.12;
+  [W*0.05,W*0.30,W*0.55,W*0.78].forEach(fx=>{
+    ctx.fillStyle='#e0d8c8'; ctx.fillRect(fx-8,fenY-8,fenW+16,fenH+16);
+    const skyG=ctx.createLinearGradient(fx,fenY,fx,fenY+fenH);
+    skyG.addColorStop(0,'#87CEEB'); skyG.addColorStop(0.6,'#c8e8ff'); skyG.addColorStop(1,'#e0f4e0');
+    ctx.fillStyle=skyG; ctx.fillRect(fx,fenY,fenW,fenH);
+    ctx.fillStyle='rgba(255,255,255,0.25)'; ctx.fillRect(fx+10,fenY+10,fenW*0.3,fenH*0.4);
+    ctx.strokeStyle='#c0b8a8'; ctx.lineWidth=4;
+    ctx.beginPath(); ctx.moveTo(fx+fenW/2,fenY); ctx.lineTo(fx+fenW/2,fenY+fenH); ctx.moveTo(fx,fenY+fenH/2); ctx.lineTo(fx+fenW,fenY+fenH/2); ctx.stroke();
+    ctx.fillStyle='#d8d0c0'; ctx.fillRect(fx-6,fenY+fenH,fenW+12,12);
+  });
+  const dX=W*0.44,dW=100,dH=H*0.38,dY=WALL_Y-dH;
+  ctx.fillStyle='#d0c8b8'; ctx.fillRect(dX-10,dY-10,dW+20,dH+10);
+  ctx.fillStyle='#7a6040'; ctx.fillRect(dX,dY,dW,dH);
+  ctx.fillStyle='rgba(0,0,0,0.08)';
+  ctx.fillRect(dX+8,dY+10,dW-16,dH*0.4-5); ctx.fillRect(dX+8,dY+dH*0.4+5,dW-16,dH*0.55);
+  ctx.fillStyle='#c8a040'; ctx.beginPath(); ctx.arc(dX+dW-18,dY+dH*0.5,7,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='rgba(0,0,0,0.06)'; ctx.font='bold 70px Arial,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(room.name,W/2,CEIL_Y+(WALL_Y-CEIL_Y)/2);
+  const vig=ctx.createRadialGradient(W/2,H*0.5,H*0.25,W/2,H*0.5,H*0.75);
+  vig.addColorStop(0,'rgba(0,0,0,0)'); vig.addColorStop(1,'rgba(0,0,0,0.14)');
+  ctx.fillStyle=vig; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(0,0,0,0.25)'; ctx.font='15px Arial';
+  ctx.fillText('Aperçu — Remplacez par votre panorama 360° généré par IA',W/2,H-14);
+  return new THREE.CanvasTexture(cv);
+}
+
+// Convertit une photo plate en panorama equirectangulaire pour la sphère
+function processPhotoForSphere(img) {
+  const W = 4096, H = 2048;
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  const iw = img.naturalWidth || img.width;
+  const ih = img.naturalHeight || img.height;
+
+  const Y1 = Math.round(H * 0.13);
+  const Y2 = Math.round(H * 0.83);
+  const X1 = Math.round(W * 0.12);
+  const X2 = Math.round(W * 0.88);
+  const PW = X2 - X1, PH = Y2 - Y1;
+
+  ctx.filter = 'blur(80px) saturate(0.5) brightness(0.55)';
+  ctx.drawImage(img, 0, 0, W, H);
+  ctx.filter = 'none';
+
+  ctx.filter = 'blur(40px) brightness(1.10)';
+  ctx.drawImage(img, 0, 0, iw, Math.round(ih * 0.20), 0, 0, W, Y1 + 40);
+  ctx.filter = 'none';
+  const zenG = ctx.createLinearGradient(0, 0, 0, Y1);
+  zenG.addColorStop(0,   'rgba(255,252,245,1.0)');
+  zenG.addColorStop(0.4, 'rgba(255,252,245,1.0)');
+  zenG.addColorStop(1,   'rgba(255,252,245,0)');
+  ctx.fillStyle = zenG; ctx.fillRect(0, 0, W, Y1 + 20);
+
+  ctx.filter = 'blur(30px) brightness(0.55)';
+  ctx.drawImage(img, 0, Math.round(ih * 0.82), iw, Math.round(ih * 0.18), 0, Y2 - 20, W, H - Y2 + 20);
+  ctx.filter = 'none';
+  const nadG = ctx.createLinearGradient(0, Y2, 0, H);
+  nadG.addColorStop(0,   'rgba(0,0,0,0)');
+  nadG.addColorStop(0.5, 'rgba(0,0,0,1.0)');
+  nadG.addColorStop(1,   'rgba(0,0,0,1.0)');
+  ctx.fillStyle = nadG; ctx.fillRect(0, Y2, W, H - Y2);
+
+  ctx.drawImage(img, X1, Y1, PW, PH);
+
+  const bW = Math.round(W * 0.09);
+  const gL = ctx.createLinearGradient(X1, 0, X1 + bW, 0);
+  gL.addColorStop(0, 'rgba(0,0,0,0.72)'); gL.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = gL; ctx.fillRect(X1, Y1, bW, PH);
+  const gR = ctx.createLinearGradient(X2 - bW, 0, X2, 0);
+  gR.addColorStop(0, 'rgba(0,0,0,0)'); gR.addColorStop(1, 'rgba(0,0,0,0.72)');
+  ctx.fillStyle = gR; ctx.fillRect(X2 - bW, Y1, bW, PH);
+
+  const cF = ctx.createLinearGradient(0, Y1, 0, Y1 + 100);
+  cF.addColorStop(0, 'rgba(255,252,245,0.48)'); cF.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = cF; ctx.fillRect(X1, Y1, PW, 100);
+
+  const sF = ctx.createLinearGradient(0, Y2 - 100, 0, Y2);
+  sF.addColorStop(0, 'rgba(0,0,0,0)'); sF.addColorStop(1, 'rgba(0,0,0,0.70)');
+  ctx.fillStyle = sF; ctx.fillRect(X1, Y2 - 100, PW, 100);
+
+  return new THREE.CanvasTexture(cv);
+}
+
+// Charge une VRAIE équirectangulaire 2:1 (produite par l'upload 360-A2 via sharp) et
+// la mappe DIRECTEMENT sur la sphère — sans processPhotoForSphere, qui ne servait qu'à
+// synthétiser un pseudo-pano à partir d'une photo plate. On passe par fetch→blob→objectURL
+// pour rester same-origin (l'objet R2 n'a pas à être CORS-taggé pour l'upload WebGL).
+// onError (404/réseau) → l'appelant conserve le placeholder synthétique (pas d'écran noir).
+function loadProcessedTexture(url, onDone, onError) {
+  fetch(url)
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.blob(); })
+    .then(blob => {
+      const objUrl = URL.createObjectURL(blob);
+      const img = new Image();
+      img.onload = () => {
+        const tex = new THREE.Texture(img);
+        if ('colorSpace' in tex && THREE.SRGBColorSpace) tex.colorSpace = THREE.SRGBColorSpace;
+        tex.needsUpdate = true;
+        URL.revokeObjectURL(objUrl);
+        onDone(tex);
+      };
+      img.onerror = () => { URL.revokeObjectURL(objUrl); if (onError) onError(); };
+      img.src = objUrl;
+    })
+    .catch(e => { console.error('360 image load échec:', url, '—', e.message); if (onError) onError(); });
+}
+
+function getTexture360(room) {
+  if (!texCache360[room.id]) {
+    texCache360[room.id] = makeRoomTexture(room); // placeholder synthétique immédiat
+  }
+  // Ne démarre un chargement que si aucun n'est déjà en cours pour cette pièce
+  // (évite une double-requête si un préchargement est déjà actif).
+  if (!texLoading360[room.id]) {
+    const imgs = getImageUrls(room.id);
+    if (imgs) {
+      texLoading360[room.id] = true;
+      loadProgressively(room.id, imgs.thumb, imgs.url);
+    }
+  }
+  touchTexCache360(room.id);
+  return texCache360[room.id];
+}
+
+async function init360() {
+  await waitForThree();
+  if (typeof THREE === 'undefined') return;
+  // Fallback WebGL indisponible : message explicite plutôt qu'une page vide.
+  if (!isWebGLAvailable()) {
+    three60Ready = true; // évite une re-tentative à chaque switchTab
+    const container = document.getElementById('view-360');
+    container.insertAdjacentHTML('beforeend',
+      '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#111;color:#fff;text-align:center;padding:20px;gap:10px;">' +
+      '<span style="font-size:2rem">⚠️</span>' +
+      '<strong style="font-size:15px">WebGL non disponible</strong>' +
+      '<span style="color:#bbb;font-size:12px;line-height:1.6">La visite 360° ne peut pas s\'afficher sur cet appareil.<br>Essayez Chrome, Firefox ou Safari à jour.</span>' +
+      '</div>');
+    return;
+  }
+  three60Ready = true;
+  const container = document.getElementById('view-360');
+  const W = container.clientWidth || window.innerWidth;
+  const H = container.clientHeight || window.innerHeight;
+  scene360 = new THREE.Scene();
+  camera360 = new THREE.PerspectiveCamera(75, W/H, 1, 1100);
+  camera360.position.set(0,0,1); // regard initial à l'horizon (sinon OrbitControls ouvre face au sol)
+  renderer360 = new THREE.WebGLRenderer({ antialias: !IS_MOBILE });
+  renderer360.setPixelRatio(Math.min(devicePixelRatio, IS_MOBILE ? 1.5 : 2));
+  renderer360.setSize(W,H);
+  renderer360.domElement.style.cssText = 'position:absolute;top:0;left:0;z-index:0;';
+  container.insertBefore(renderer360.domElement, container.firstChild);
+  // Segments réduits sur mobile : moins de charge GPU pour les appareils contraints.
+  const geo = new THREE.SphereGeometry(500, IS_MOBILE ? 48 : 64, IS_MOBILE ? 32 : 40);
+  sphere360mat = new THREE.MeshBasicMaterial({ map:null, side:THREE.BackSide });
+  sphere360mesh = new THREE.Mesh(geo, sphere360mat);
+  scene360.add(sphere360mesh);
+  hotspot360Group = new THREE.Group();
+  scene360.add(hotspot360Group);
+  if (THREE.OrbitControls) {
+    controls360 = new THREE.OrbitControls(camera360, renderer360.domElement);
+    controls360.enableZoom=false; controls360.enablePan=false;
+    controls360.rotateSpeed=-0.35; controls360.minDistance=1; controls360.maxDistance=1;
+    controls360.minPolarAngle=0.55; controls360.maxPolarAngle=Math.PI-0.55;
+    controls360.enableDamping=true; controls360.dampingFactor=0.08;
+    controls360.autoRotate=true; controls360.autoRotateSpeed=0.4;
+    let autoRotateTimer360;
+    renderer360.domElement.addEventListener('pointerdown',()=>{ controls360.autoRotate=false; clearTimeout(autoRotateTimer360); });
+    renderer360.domElement.addEventListener('pointerup',()=>{ autoRotateTimer360=setTimeout(()=>{ controls360.autoRotate=true; },5000); });
+    renderer360.domElement.addEventListener('wheel',e=>{ targetFov360=Math.max(30,Math.min(100,targetFov360+e.deltaY*0.04)); },{passive:true});
+  }
+  const nav = document.getElementById('nav-360');
+  nav.innerHTML = '';
+  TOUR.forEach(r => {
+    const btn = document.createElement('button');
+    btn.className='nav-btn-360'; btn.dataset.roomId=r.id; btn.textContent=r.name;
+    btn.onclick=()=>loadRoom360(r.id); nav.appendChild(btn);
+  });
+  setTimeout(()=>{ const h=document.getElementById('hint-360'); if(h) h.classList.add('fade'); },3500);
+  setup360Interaction();
+  setupHotspotEditor();
+  if (TOUR[0]) loadRoom360(TOUR[0].id);
+  window.addEventListener('resize', resize360);
+}
+
+function loadRoom360(id) {
+  const room = TOUR.find(r=>r.id===id);
+  if (!room || !sphere360mat) return;
+  currentRoom360 = id;
+  // Calage nord : oriente la sphère pour que le panorama réel s'ouvre dans la direction
+  // calibrée (NORTH_OFFSET en degrés, 0 si non calibré ou pano synthétique). Le groupe
+  // de hotspots tourne du MÊME angle : les hotspots sont stockés en repère photo et
+  // restent ainsi solidaires du panorama (le mini-plan, lui, ajoute le nord = repère plan).
+  const northRad = (NORTH_OFFSET[id] || 0) * Math.PI / 180;
+  if (sphere360mesh) sphere360mesh.rotation.y = northRad;
+  if (hotspot360Group) hotspot360Group.rotation.y = northRad;
+  document.querySelectorAll('.nav-btn-360').forEach(b=>b.classList.toggle('active',b.dataset.roomId===id));
+  const lbl = document.getElementById('room-label-360');
+  if (lbl) lbl.textContent = room.name;
+  activateRoom(id);
+  updateNavArrows(id);
+  renderHotspots(id);
+  renderMinimap(id);
+  syncAdminNorth360(id);
+  sphere360mat.opacity=0.3; sphere360mat.transparent=true;
+  const tex = getTexture360(room);
+  sphere360mat.map=tex; sphere360mat.needsUpdate=true;
+  // Fondu d'opacité et attente de la texture réelle : couplés à la boucle rAF
+  // de start360Loop (au lieu de setInterval) → un seul minuteur par pièce
+  // possible à la fois (écrasement d'état, pas de superposition), et tout
+  // s'arrête automatiquement avec la boucle quand on quitte l'onglet 360°.
+  texPollState360 = (REAL_IMAGES && REAL_IMAGES[id] && texLoading360[id])
+    ? { id, placeholderTex: tex, startedAt: Date.now() } : null;
+  fadeState360 = { t: 0 };
+  prefetchAdjacent(id); // précharge les pièces adjacentes en arrière-plan (desktop uniquement)
+}
+
+// ── Navigation walkthrough ──────────────────────────
+const NAV_GRAPH = (() => {
+  const g = {};
+  TOUR.forEach((r, i) => {
+    g[r.id] = { prev: i > 0 ? TOUR[i-1].id : null, next: i < TOUR.length-1 ? TOUR[i+1].id : null };
+  });
+  return g;
+})();
+
+function updateNavArrows(currentId) {
+  const nav = document.getElementById('nav-arrows-360');
+  if (!nav) return;
+  const conn = NAV_GRAPH[currentId] || {};
+  nav.innerHTML = '';
+  const addArrow = (targetId, symbol) => {
+    if (!targetId) return;
+    const room = TOUR.find(r => r.id === targetId);
+    if (!room) return;
+    const btn = document.createElement('button');
+    btn.className = 'nav-arrow-360';
+    btn.textContent = symbol + ' ' + room.name;
+    btn.onclick = () => walkTo(targetId);
+    nav.appendChild(btn);
+  };
+  addArrow(conn.prev, '←');
+  addArrow(conn.next, '→');
+}
+
+let walkBusy = false;
+function walkTo(targetId) {
+  if (walkBusy) return;
+  walkBusy = true;
+  const canvas = document.querySelector('#view-360 canvas');
+  if (canvas) { canvas.style.transition='opacity 0.22s'; canvas.style.opacity='0'; }
+  setTimeout(() => {
+    loadRoom360(targetId);
+    if (canvas) { canvas.style.opacity='1'; }
+    setTimeout(() => { walkBusy = false; }, 280);
+  }, 220);
+}
+
+// ── Hotspots de navigation (visite 3D) ───────────────
+// Liens cliquables positionnés dans le panorama (yaw/pitch en degrés).
+// Calibre-les depuis le navigateur : bouton "✎ Liens" (ou touche E) → clique une porte → choisis la pièce.
+const HOTSPOTS = {};
+
+// ── Mode montage ADMIN (visite 3D) ────────────────────────────────────────────
+// L'éditeur in-viewer (poser des liens, caler le nord) n'est actif que si le livrable
+// est ouvert avec ?admin=1 — jamais pour le client final. Les écritures passent par les
+// routes /api/admin/* protégées par x-admin-token (le flag ?admin ne fait qu'afficher
+// l'UI ; sans token valide, tout POST/PUT est refusé 401). Le token vient du
+// sessionStorage renseigné par la console d'assemblage (jamais dans l'URL, jamais loggé).
+const ADMIN_360 = new URLSearchParams(location.search).get('admin') === '1';
+const ADMIN_TOKEN_KEY = 'immo_admin_token';
+// genId = UUID du livrable, lu dans l'URL (/api/preview/<uuid>) — pas de donnée sensible.
+function adminGenId360(){ const m = location.pathname.match(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/); return m ? m[0] : null; }
+// Token admin : sessionStorage (copié par window.open depuis la console), sinon saisie
+// ponctuelle mémorisée pour la session. JAMAIS journalisé, JAMAIS mis dans l'URL.
+function adminToken360(){
+  let t = sessionStorage.getItem(ADMIN_TOKEN_KEY);
+  if(!t){ t = (prompt('Token admin (x-admin-token) :') || '').trim(); if(t) sessionStorage.setItem(ADMIN_TOKEN_KEY, t); }
+  return t;
+}
+// Normalise un yaw en degrés dans (-180, 180].
+function normYaw(d){ d = ((+d + 180) % 360 + 360) % 360 - 180; return +d.toFixed(1); }
+function adminStatus360(msg, kind){
+  const el = document.getElementById('heb-status'); if(!el) return;
+  el.textContent = msg || ''; el.className = 'heb-status' + (kind ? (' ' + kind) : '');
+}
+
+// yaw/pitch (deg) -> position monde sur la sphère
+function hotspotPos(yaw, pitch){
+  const phi = THREE.MathUtils.degToRad(pitch), theta = THREE.MathUtils.degToRad(yaw), cp = Math.cos(phi);
+  return new THREE.Vector3(HOTSPOT_RADIUS*cp*Math.cos(theta), HOTSPOT_RADIUS*Math.sin(phi), HOTSPOT_RADIUS*cp*Math.sin(theta));
+}
+// vecteur direction unitaire -> {yaw,pitch} (deg) — inverse exact de hotspotPos
+function dirToYawPitch(d){
+  return {
+    yaw: +THREE.MathUtils.radToDeg(Math.atan2(d.z, d.x)).toFixed(1),
+    pitch: +THREE.MathUtils.radToDeg(Math.asin(Math.max(-1,Math.min(1,d.y)))).toFixed(1)
+  };
+}
+function hsRoundRect(g,x,y,w,h,r){ g.beginPath(); g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r); g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath(); }
+
+function makeHotspotTexture(label){
+  const c = document.createElement('canvas'); c.width = 256; c.height = 220;
+  const g = c.getContext('2d'), x = c.width/2, ringY = 78, R = 50;
+  const halo = g.createRadialGradient(x, ringY, 6, x, ringY, R+20);
+  halo.addColorStop(0,'rgba(102,126,234,0.55)'); halo.addColorStop(1,'rgba(102,126,234,0)');
+  g.fillStyle = halo; g.beginPath(); g.arc(x, ringY, R+20, 0, Math.PI*2); g.fill();
+  g.strokeStyle = '#ffffff'; g.lineWidth = 7; g.beginPath(); g.arc(x, ringY, R, 0, Math.PI*2); g.stroke();
+  g.fillStyle = 'rgba(102,126,234,0.40)'; g.beginPath(); g.arc(x, ringY, R-3, 0, Math.PI*2); g.fill();
+  g.strokeStyle = '#ffffff'; g.lineWidth = 9; g.lineCap='round'; g.lineJoin='round';
+  g.beginPath(); g.moveTo(x-20, ringY-7); g.lineTo(x, ringY+16); g.lineTo(x+20, ringY-7); g.stroke();
+  if(label){
+    g.font = '600 30px system-ui, -apple-system, sans-serif'; g.textAlign='center'; g.textBaseline='middle';
+    const w = Math.min(244, g.measureText(label).width + 28), ly = 180;
+    g.fillStyle = 'rgba(0,0,0,0.62)'; hsRoundRect(g, x-w/2, ly-22, w, 44, 22); g.fill();
+    g.fillStyle = '#fff'; g.fillText(label, x, ly);
+  }
+  const tex = new THREE.CanvasTexture(c); tex.anisotropy = 4; return tex;
+}
+function makeHotspotSprite(h){
+  const room = TOUR.find(r=>r.id===h.target);
+  const label = h.label || (room ? room.name : h.target);
+  const mat = new THREE.SpriteMaterial({ map: makeHotspotTexture(label), depthTest:false, transparent:true });
+  const sp = new THREE.Sprite(mat);
+  sp.position.copy(hotspotPos(h.yaw, h.pitch));
+  sp.scale.set(70, 60, 1); sp.renderOrder = 999;
+  sp.userData = { hotspot:h, baseScale:70 };
+  return sp;
+}
+function clearHotspots(){
+  if(!hotspot360Group) return;
+  for(const o of hotspotObjs){ if(o.material.map) o.material.map.dispose(); o.material.dispose(); }
+  hotspot360Group.clear(); hotspotObjs = []; hoveredHotspot = null;
+}
+function renderHotspots(id){
+  if(!hotspot360Group) return;
+  clearHotspots();
+  (HOTSPOTS[id] || []).forEach(h => { const sp = makeHotspotSprite(h); hotspot360Group.add(sp); hotspotObjs.push(sp); });
+}
+
+function setup360Interaction(){
+  if(!renderer360) return;
+  const el = renderer360.domElement;
+  raycaster360 = new THREE.Raycaster();
+  const ndc = new THREE.Vector2();
+  let downX=0, downY=0, downT=0, moved=false;
+  const setNDC = e => { const r=el.getBoundingClientRect(); ndc.x=((e.clientX-r.left)/r.width)*2-1; ndc.y=-((e.clientY-r.top)/r.height)*2+1; };
+  el.addEventListener('pointerdown', e => { downX=e.clientX; downY=e.clientY; downT=Date.now(); moved=false; });
+  el.addEventListener('pointermove', e => {
+    if(Math.abs(e.clientX-downX)>4 || Math.abs(e.clientY-downY)>4) moved=true;
+    setNDC(e); raycaster360.setFromCamera(ndc, camera360);
+    const hit = raycaster360.intersectObjects(hotspotObjs, false)[0];
+    hoveredHotspot = hit ? hit.object : null;
+    el.style.cursor = editMode360 ? 'crosshair' : (hoveredHotspot ? 'pointer' : '');
+  });
+  el.addEventListener('pointerup', e => {
+    if(moved || (Date.now()-downT) > 450) return; // c'était un drag
+    setNDC(e); raycaster360.setFromCamera(ndc, camera360);
+    if(editMode360){
+      const sHit = raycaster360.intersectObject(sphere360mesh, false)[0];
+      if(sHit){ openHotspotPicker(dirToYawPitch(sHit.point.clone().normalize()), e.clientX, e.clientY); }
+      return;
+    }
+    const hit = raycaster360.intersectObjects(hotspotObjs, false)[0];
+    if(hit){ walkTo(hit.object.userData.hotspot.target); }
+  });
+}
+
+// ── Mode édition : poser/calibrer les liens dans le navigateur ──
+function setupHotspotEditor(){
+  const btn = document.getElementById('hotspot-edit-btn');
+  if(!btn || btn.dataset.wired) return;
+  // Client final (pas de ?admin) : aucun éditeur. On masque le bouton et on ne câble NI
+  // le clic NI la touche E → le mode édition est totalement inaccessible.
+  if(!ADMIN_360){ btn.style.display = 'none'; return; }
+  btn.dataset.wired = '1';
+  btn.onclick = () => toggleEditMode360();
+  document.getElementById('heb-close').onclick = () => toggleEditMode360(false);
+  document.getElementById('heb-undo').onclick = () => {
+    const a = HOTSPOTS[currentRoom360]; if(a && a.length){ a.pop(); renderHotspots(currentRoom360); refreshHotspotExport(); }
+  };
+  document.getElementById('heb-copy').onclick = () => {
+    const ta = document.getElementById('hotspot-export'); ta.select();
+    if(navigator.clipboard) navigator.clipboard.writeText(ta.value).catch(()=>{});
+    const b = document.getElementById('heb-copy'), o = b.textContent; b.textContent='Copié ✓'; setTimeout(()=>b.textContent=o,1200);
+  };
+  const save = document.getElementById('heb-save'); if(save) save.onclick = saveHotspots360;
+  const slider = document.getElementById('heb-north-slider'); if(slider) slider.addEventListener('input', onNorthSlider360);
+  const nsave = document.getElementById('heb-north-save'); if(nsave) nsave.onclick = saveNorth360;
+  document.addEventListener('keydown', e => {
+    if(e.key!=='e' && e.key!=='E') return;
+    const v = document.getElementById('view-360'); if(!v || !v.classList.contains('active')) return;
+    if(e.target.tagName==='INPUT' || e.target.tagName==='TEXTAREA') return;
+    toggleEditMode360();
+  });
+}
+
+// Aligne le slider nord sur la valeur de la pièce courante (appelé à chaque changement
+// de pièce). Sans effet hors mode admin (slider absent du DOM masqué).
+function syncAdminNorth360(id){
+  if(!ADMIN_360) return;
+  const s = document.getElementById('heb-north-slider'); if(!s) return;
+  const val = NORTH_OFFSET[id] || 0; s.value = val;
+  const lbl = document.getElementById('heb-north-val'); if(lbl) lbl.textContent = val + '°';
+}
+// Slider nord : réoriente EN DIRECT la sphère + le groupe hotspots (mêmes degrés), et
+// met à jour NORTH_OFFSET de la pièce (persisté ensuite via « Enregistrer le nord »).
+function onNorthSlider360(){
+  const s = document.getElementById('heb-north-slider'); if(!s || !currentRoom360) return;
+  const val = +s.value; NORTH_OFFSET[currentRoom360] = val;
+  const lbl = document.getElementById('heb-north-val'); if(lbl) lbl.textContent = val + '°';
+  const rad = val * Math.PI / 180;
+  if(sphere360mesh) sphere360mesh.rotation.y = rad;
+  if(hotspot360Group) hotspot360Group.rotation.y = rad;
+  if(minimapCone) updateMinimapCone();
+}
+// POST des hotspots de la pièce courante (liste complète = source de vérité). yaw/pitch
+// déjà en repère PHOTO (cf. addHotspot). Le token part en en-tête, jamais dans l'URL.
+async function saveHotspots360(){
+  const gen = adminGenId360(); if(!gen) return adminStatus360('ID génération introuvable dans l’URL', 'err');
+  const tok = adminToken360(); if(!tok) return adminStatus360('Token admin requis', 'err');
+  const room = currentRoom360; if(!room) return;
+  const list = (HOTSPOTS[room] || []).map(h => {
+    const o = { yaw: h.yaw, pitch: h.pitch, target: h.target };
+    if(h.label) o.label = h.label;
+    return o;
+  });
+  adminStatus360('Enregistrement des liens…');
+  try{
+    const res = await fetch('/api/admin/hotspots/' + gen + '/' + encodeURIComponent(room), {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-token': tok }, body: JSON.stringify(list)
+    });
+    if(res.status === 401){ sessionStorage.removeItem(ADMIN_TOKEN_KEY); return adminStatus360('Token refusé (401)', 'err'); }
+    if(!res.ok) return adminStatus360('Échec (' + res.status + ')', 'err');
+    const j = await res.json().catch(() => ({}));
+    adminStatus360('✓ ' + (j.count != null ? j.count : list.length) + ' lien(s) enregistré(s)', 'ok');
+  }catch(_){ adminStatus360('Erreur réseau', 'err'); }
+}
+// PUT du calage nord de la pièce courante (404 si aucun panorama uploadé pour la pièce).
+async function saveNorth360(){
+  const gen = adminGenId360(); if(!gen) return adminStatus360('ID génération introuvable dans l’URL', 'err');
+  const tok = adminToken360(); if(!tok) return adminStatus360('Token admin requis', 'err');
+  const room = currentRoom360; if(!room) return;
+  const northOffset = NORTH_OFFSET[room] || 0;
+  adminStatus360('Enregistrement du nord…');
+  try{
+    const res = await fetch('/api/admin/north/' + gen + '/' + encodeURIComponent(room), {
+      method: 'PUT', headers: { 'Content-Type': 'application/json', 'x-admin-token': tok }, body: JSON.stringify({ northOffset })
+    });
+    if(res.status === 401){ sessionStorage.removeItem(ADMIN_TOKEN_KEY); return adminStatus360('Token refusé (401)', 'err'); }
+    if(res.status === 404) return adminStatus360('Uploadez d’abord un panorama pour cette pièce', 'err');
+    if(!res.ok) return adminStatus360('Échec (' + res.status + ')', 'err');
+    adminStatus360('✓ Nord enregistré (' + northOffset + '°)', 'ok');
+  }catch(_){ adminStatus360('Erreur réseau', 'err'); }
+}
+function toggleEditMode360(on){
+  editMode360 = (on===undefined) ? !editMode360 : !!on;
+  const bar = document.getElementById('hotspot-edit-bar'), btn = document.getElementById('hotspot-edit-btn');
+  if(bar) bar.style.display = editMode360 ? 'flex' : 'none';
+  if(btn) btn.classList.toggle('on', editMode360);
+  if(editMode360 && controls360) controls360.autoRotate = false;
+  if(renderer360) renderer360.domElement.style.cursor = editMode360 ? 'crosshair' : '';
+  if(editMode360) refreshHotspotExport(); else hideHotspotPicker();
+}
+function openHotspotPicker(yp, clientX, clientY){
+  pendingHotspot = yp;
+  const pick = document.getElementById('hotspot-picker'), cont = document.getElementById('view-360'), r = cont.getBoundingClientRect();
+  pick.innerHTML = '<div class="hp-head">Cette porte mène à… (yaw '+yp.yaw+'° / pitch '+yp.pitch+'°)</div>';
+  TOUR.filter(t=>t.id!==currentRoom360).forEach(t => {
+    const b = document.createElement('button'); b.textContent = t.name; b.onclick = () => addHotspot(t.id); pick.appendChild(b);
+  });
+  let lx = Math.min(clientX - r.left + 8, r.width - 158), ly = Math.min(clientY - r.top + 8, r.height - 210);
+  pick.style.left = Math.max(8,lx)+'px'; pick.style.top = Math.max(8,ly)+'px'; pick.style.display = 'block';
+}
+function hideHotspotPicker(){ const p = document.getElementById('hotspot-picker'); if(p) p.style.display='none'; pendingHotspot = null; }
+function addHotspot(target){
+  if(!pendingHotspot) return;
+  const id = currentRoom360;
+  // pendingHotspot.yaw est un yaw MONDE (dirToYawPitch sur le point d'impact de la
+  // sphère). On stocke en repère PHOTO (= angle dans la texture équirectangulaire).
+  // Three.js applique rotation.y = nord au groupe hotspots, ce qui envoie un angle Y du
+  // repère photo vers le monde à Y − nord. Pour que le sprite retombe EXACTEMENT là où
+  // l'admin a cliqué (yaw_monde), il faut donc Y − nord = yaw_monde → Y = yaw_monde + nord.
+  // (Sans cette compensation, le nord serait appliqué deux fois — gotcha 360-C1 ; le signe
+  // est +nord et non −nord car rotation.y mappe θ → θ−α dans la convention Three.)
+  const north = NORTH_OFFSET[id] || 0;
+  const yawPhoto = normYaw(pendingHotspot.yaw + north);
+  (HOTSPOTS[id] = HOTSPOTS[id] || []).push({ yaw: yawPhoto, pitch: pendingHotspot.pitch, target });
+  hideHotspotPicker(); renderHotspots(id); refreshHotspotExport();
+}
+function refreshHotspotExport(){
+  const ta = document.getElementById('hotspot-export'); if(!ta) return;
+  const clean = {}; Object.keys(HOTSPOTS).forEach(k => { if(HOTSPOTS[k] && HOTSPOTS[k].length) clean[k] = HOTSPOTS[k]; });
+  ta.value = 'const HOTSPOTS = ' + (Object.keys(clean).length ? JSON.stringify(clean, null, 2) : '{}') + ';';
+}
+
+// ── Mini-plan boussole ───────────────────────────────
+// Schéma simplifié par étage (boîte 0..100, x→droite, y→bas). id = pièce de TOUR.
+const FLOORPLAN = {"Lsoussol":{"label":"Sous-sol","rooms":[],"extras":[{"name":"Garage","x":4,"y":4,"w":44,"h":92},{"name":"Buanderie","x":52,"y":4,"w":44,"h":92}],"alt":-1},"Lrdc":{"label":"Rez-de-chaussée","rooms":[{"id":"sejour","name":"Séjour","x":4,"y":4,"w":44,"h":44},{"id":"cuisine","name":"Cuisine","x":52,"y":4,"w":44,"h":44},{"id":"bureau","name":"Bureau","x":4,"y":52,"w":44,"h":44}],"extras":[],"alt":0},"Letage":{"label":"Étage","rooms":[{"id":"suite","name":"Ch. Pr.","x":4,"y":4,"w":44,"h":44},{"id":"chambre2","name":"Ch. 2","x":52,"y":4,"w":44,"h":44},{"id":"sdb","name":"SDB","x":4,"y":52,"w":44,"h":44}],"extras":[],"alt":1}};
+const SURFACE_M2 = 142; // surface totale (m²), numérique côté serveur — sert à dimensionner l'empreinte 3D
+const ROOM_FLOOR = {};
+Object.entries(FLOORPLAN).forEach(([f,d]) => d.rooms.forEach(r => ROOM_FLOOR[r.id] = f));
+// Décalage d'orientation par pièce (le pano est tourné arbitrairement) — à caler au besoin.
+const NORTH_OFFSET = {}; // calage nord par pièce (degrés) injecté par buildImmersiveData (vide = non calibré)
+let minimapCone = null, minimapCx = 50, minimapCy = 50;
+
+function renderMinimap(roomId){
+  const wrap = document.getElementById('minimap'); if(!wrap) return;
+  const floor = ROOM_FLOOR[roomId];
+  if(!floor){ wrap.style.display = 'none'; minimapCone = null; return; }
+  wrap.style.display = 'block';
+  const fp = FLOORPLAN[floor];
+  let s = `<div class="mm-title">${esc(fp.label)}</div><svg viewBox="-2 -2 104 104" class="mm-svg">`;
+  (fp.extras||[]).forEach(e => {
+    s += `<rect x="${e.x}" y="${e.y}" width="${e.w}" height="${e.h}" rx="1.5" class="mm-extra"/>`;
+    s += `<text x="${e.x+e.w/2}" y="${e.y+e.h/2}" class="mm-extra-label">${esc(e.name)}</text>`;
+  });
+  fp.rooms.forEach(r => {
+    const cur = r.id === roomId ? ' cur' : '';
+    s += `<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="1.5" class="mm-room${cur}" data-room="${esc(r.id)}"/>`;
+    s += `<text x="${r.x+r.w/2}" y="${r.y+r.h/2}" class="mm-label" data-room="${esc(r.id)}">${esc(r.name)}</text>`;
+  });
+  const cr = fp.rooms.find(r => r.id === roomId);
+  if(cr){
+    minimapCx = cr.x + cr.w/2; minimapCy = cr.y + cr.h/2;
+    s += `<g id="mm-cone" transform="rotate(0 ${minimapCx} ${minimapCy})">`
+      + `<path class="mm-cone-path" d="M ${minimapCx} ${minimapCy} L ${minimapCx-8} ${minimapCy-18} A 19 19 0 0 1 ${minimapCx+8} ${minimapCy-18} Z"/>`
+      + `<circle class="mm-dot" cx="${minimapCx}" cy="${minimapCy}" r="3"/></g>`;
+  }
+  s += `</svg>`;
+  wrap.innerHTML = s;
+  minimapCone = document.getElementById('mm-cone');
+  wrap.querySelectorAll('[data-room]').forEach(el =>
+    el.addEventListener('click', () => { if(el.dataset.room !== currentRoom360) walkTo(el.dataset.room); })
+  );
+}
+
+function updateMinimapCone(){
+  if(!minimapCone || !camera360) return;
+  const v = new THREE.Vector3(); camera360.getWorldDirection(v);
+  const yaw = Math.atan2(v.z, v.x) * 180/Math.PI;
+  const ang = yaw + (NORTH_OFFSET[currentRoom360] || 0); // 0° = cône vers le haut du plan
+  minimapCone.setAttribute('transform', `rotate(${ang} ${minimapCx} ${minimapCy})`);
+}
+
+function resize360() {
+  if (!renderer360) return;
+  const c = document.getElementById('view-360');
+  const w=c.clientWidth||window.innerWidth, h=c.clientHeight||window.innerHeight;
+  camera360.aspect=w/h; camera360.updateProjectionMatrix(); renderer360.setSize(w,h);
+}
+function start360Loop() {
+  anim360Running=true;
+  (function loop(){
+    if(!anim360Running) return;
+    anim360Id=requestAnimationFrame(loop);
+    controls360&&controls360.update();
+    if(camera360&&Math.abs(camera360.fov-targetFov360)>0.1){ camera360.fov+=(targetFov360-camera360.fov)*0.12; camera360.updateProjectionMatrix(); }
+    if (fadeState360 && sphere360mat) {
+      fadeState360.t += 0.08;
+      sphere360mat.opacity = Math.min(1, 0.3 + fadeState360.t * 0.7);
+      if (fadeState360.t >= 1) { sphere360mat.transparent = false; fadeState360 = null; }
+    }
+    if (texPollState360) {
+      const p = texPollState360;
+      const ready = !texLoading360[p.id] && texCache360[p.id] !== p.placeholderTex;
+      if ((ready && currentRoom360 === p.id) || Date.now() - p.startedAt > 5000) {
+        if (ready && currentRoom360 === p.id && sphere360mat) {
+          sphere360mat.map = texCache360[p.id];
+          sphere360mat.needsUpdate = true;
+        }
+        texPollState360 = null;
+      }
+    }
+    if(hotspotObjs.length){
+      const pulse = 1 + Math.sin(Date.now()*0.004)*0.06;
+      for(const o of hotspotObjs){
+        const want = (o===hoveredHotspot ? 1.2 : 1) * pulse * o.userData.baseScale;
+        const s = o.scale.x + (want - o.scale.x)*0.2;
+        o.scale.set(s, s*0.86, 1);
+      }
+    }
+    updateMinimapCone();
+    renderer360&&scene360&&camera360&&renderer360.render(scene360,camera360);
+  })();
+}
+function stop360Loop() { anim360Running=false; if(anim360Id){cancelAnimationFrame(anim360Id);anim360Id=null;} }
+
+document.getElementById('add-img-360').addEventListener('click',()=>{
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
+  inp.onchange=e=>{ const file=e.target.files[0]; if(!file) return;
+    const url=URL.createObjectURL(file);
+    const tmp=new Image();
+    tmp.onload=()=>{
+      const tex=processPhotoForSphere(tmp);
+      if(!sphere360mat) return; sphere360mat.map=tex; sphere360mat.needsUpdate=true;
+      const lbl=document.getElementById('room-label-360'); if(lbl) lbl.textContent=file.name.replace(/\.[^.]+$/,'');
+    }; tmp.src=url;
+  }; inp.click();
+});
+
+// ══════════════════════════════════════════════════════
+// TOOLBAR FUNCTIONS
+// ══════════════════════════════════════════════════════
+
+// NEW LAZY LOAD VARIABLES
+let tour360Loaded = false;
+
+function showTab(tabName) {
+  // Map toolbar names to actual tab names
+  const tabMap = { 'plan': '2d', 'plan-2d': '2d', '2d': '2d' };
+  const actualTab = tabMap[tabName] || tabName;
+
+  // Switch to tab
+  switchTab(actualTab);
+
+  // LAZY LOAD 360° only on first visit
+  if (actualTab === '360' && !tour360Loaded) {
+    loadInitial360();
+  }
+}
+
+// Lazy load 360° — appelé uniquement via showTab('360') (boutons toolbar)
+function loadInitial360() {
+  if (tour360Loaded) return;
+  tour360Loaded = true;
+
+  const loader = document.getElementById('tour-loader');
+  if (loader) loader.style.display = 'block';
+
+  setTimeout(() => {
+    if (loader) loader.style.display = 'none';
+    if (typeof THREE === 'undefined') return;
+    if (!three60Ready) init360();
+    if (renderer360) start360Loop();
+  }, 1200);
+}
+
+
+// ══════════════════════════════════════════════════════
+// WHATSAPP BUTTON
+// ══════════════════════════════════════════════════════
+const PROPERTY_ADDRESS = "Maison d'architecte — 142 m²";
+const WHATSAPP_PHONE = '33767519437';
+
+function initWhatsAppButton() {
+  const btn = document.getElementById('whatsapp-btn');
+  if (!btn) return;
+
+  btn.onclick = () => {
+    const message = `Bonjour, je suis intéressé par ${PROPERTY_ADDRESS}. Pouvez-vous me montrer le plan interactif ?`;
+    const encodedMsg = encodeURIComponent(message);
+    const url = `https://wa.me/${WHATSAPP_PHONE}?text=${encodedMsg}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+}
+
+// Initialise le bouton au chargement
+document.addEventListener('DOMContentLoaded', initWhatsAppButton);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initWhatsAppButton);
+} else {
+  initWhatsAppButton();
+}
+
+// Démarre directement sur la visite immersive (360 = expérience par défaut)
+function bootImmersive() { switchTab('360'); }
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bootImmersive);
+} else {
+  bootImmersive();
+}
+</script>
+
+<button id="whatsapp-btn" title="Nous contacter sur WhatsApp">💬</button>
+
+</body>
+</html>
