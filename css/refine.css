@@ -1,0 +1,39 @@
+/* ── Raffinement visuel (2026-07-02) ─────────────────────────────────────
+   Couche chargée APRÈS main.css/tailwind. Trois objectifs :
+   1. Icônes SVG inline (.ic) en remplacement des emoji (rendu constant
+      sur tous les OS, style « stroke » type Lucide — standard pro).
+   2. CTA d'achat unifiés sur l'accent cyan de la marque (.btn-buy),
+      fin des verts Tailwind par défaut.
+   3. Bandeau capacité sobre (fini le rouge criard plein écran).            */
+
+/* Icône générique : hérite la couleur du texte, se cale sur la ligne. */
+.ic{
+  width:1.35em;height:1.35em;
+  stroke:currentColor;fill:none;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;
+  display:inline-block;vertical-align:-.22em;flex-shrink:0;
+}
+
+/* Conteneurs d'icônes de section : accent cyan, taille posée en dur
+   (les anciens emoji étaient dimensionnés par le font-size du conteneur). */
+.picon,.cicon,.process-icon{color:var(--cyan)}
+.picon .ic,.cicon .ic,.process-icon .ic{width:1em;height:1em;vertical-align:-.12em}
+.fsuccess-icon .ic{width:2.4rem;height:2.4rem;color:var(--cyan)}
+.demo-overlay-icon .ic{width:2.6rem;height:2.6rem;color:var(--cyan)}
+.blog-ic{color:var(--cyan)}
+.blog-ic .ic{width:2.4rem;height:2.4rem}
+
+/* CTA d'achat : même langage que le CTA nav (accent cyan, texte sombre). */
+.btn-buy{
+  display:block;width:100%;
+  border:none;border-radius:10px;
+  padding:.85rem 1rem;cursor:pointer;
+  font-size:.95rem;font-weight:700;
+  background:var(--cyan);color:#001318;
+  transition:filter .2s ease;
+}
+.btn-buy:hover{filter:brightness(1.12)}
+
+/* Boutons flottants : icônes SVG dimensionnées. */
+#whatsapp-btn .ic{width:1.5rem;height:1.5rem}
+#chatToggle .ic{width:1.35rem;height:1.35rem}

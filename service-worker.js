@@ -16,6 +16,7 @@ const urlsToCache = [
   '/immo-plans/manifest.json',
   '/immo-plans/css/tailwind.min.css?v=20260614',
   '/immo-plans/css/main.css?v=20260615',
+  '/immo-plans/css/refine.css?v=20260702',
   '/immo-plans/js/main.js?v=20260702',
   '/immo-plans/fonts/inter-tight-latin-700-900.woff2?v=20260614',
   '/immo-plans/fonts/playfair-display-italic-400-latin.woff2?v=20260614',

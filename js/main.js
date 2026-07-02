@@ -231,30 +231,8 @@
   }, { threshold: 0.5 });
   document.querySelectorAll('[data-count]').forEach(el => countObs.observe(el));
 
-  // ── CURSEUR CUSTOM ──
-  (function(){
-    const isMobile = window.matchMedia('(hover:none)').matches || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    if (isMobile) return;
-
-    const dot = document.querySelector('.custom-cursor-dot');
-    const clickables = 'a, button, [role="button"], .btn-p, .btn-g, .glass';
-
-    let x = 0, y = 0, dotX = 0, dotY = 0;
-    const dotLerp = 0.25;
-
-    document.addEventListener('mousemove', e => { x = e.clientX; y = e.clientY; });
-
-    function animate() {
-      dotX += (x - dotX) * dotLerp;
-      dotY += (y - dotY) * dotLerp;
-      dot.style.transform = `translate(calc(-50% + ${Math.round(dotX)}px), calc(-50% + ${Math.round(dotY)}px))`;
-      requestAnimationFrame(animate);
-    }
-    animate();
-
-    document.addEventListener('mouseover', e => { if (e.target.closest(clickables)) dot.classList.add('hov'); });
-    document.addEventListener('mouseout',  e => { if (e.target.closest(clickables)) dot.classList.remove('hov'); });
-  })();
+  // (Curseur custom supprimé : gadget qui nuit à l'ergonomie et signe une
+  // page « template » — le curseur natif est la norme des sites pro.)
 
   // ── AVANT / APRÈS SLIDER ──
   (function(){
@@ -580,13 +558,13 @@
 
   const CHATBOT_HTML = `
     <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-4 rounded-t-lg flex justify-between items-center">
-      <h3 class="text-white font-bold"><span aria-hidden="true">🤖</span> Conseiller ImmoViz</h3>
+      <h3 class="text-white font-bold">Conseiller ImmoViz</h3>
       <button id="chatClose" class="text-white hover:text-gray-200 text-xl" aria-label="Fermer le chat">✕</button>
     </div>
 
     <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-3" role="log" aria-live="polite">
       <div class="bg-gray-800 p-3 rounded text-white text-sm">
-        Salut! 👋 Je suis ton assistant ImmoViz. Comment tu t'appelles ?
+        Bonjour, je suis l'assistant ImmoViz. Comment vous appelez-vous ?
       </div>
     </div>
 
@@ -662,20 +640,20 @@
   }
 
   function showChatSummary() {
-    const summary = `Super ${chatData.name}! 👏
+    const summary = `Parfait ${chatData.name}.
 
 Tu vends ${chatData.biens} biens/mois et ton défi c'est "${chatData.challenge}".
 
 Les agents comme toi gagnent en moyenne 2 500€ de PLUS par an avec ImmoViz 3D grâce aux +40% de clics sur les annonces.
 
-À seulement 150€ par plan, tu rentres dans tes frais rapidement. Vraiment rentable. 🚀`;
+À 150€ par plan, l'investissement est rentabilisé dès la première vente accélérée.`;
 
     displayMessage(summary);
 
     // Bouton final
     const btnDiv = document.createElement('div');
     btnDiv.className = 'mt-4';
-    btnDiv.innerHTML = `<button class="w-full bg-green-700 hover:bg-green-800 text-white py-2 rounded font-bold text-sm">✅ Je veux un devis gratuit</button>`;
+    btnDiv.innerHTML = `<button class="btn-buy" style="padding:.6rem 1rem;font-size:.85rem">Je veux un devis gratuit</button>`;
     btnDiv.querySelector('button').addEventListener('click', goToContact);
     document.getElementById('chatMessages').appendChild(btnDiv);
   }

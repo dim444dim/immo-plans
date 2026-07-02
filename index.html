@@ -94,6 +94,7 @@
   <link rel="preload" as="font" type="font/woff2" href="fonts/inter-tight-latin-700-900.woff2?v=20260614" crossorigin>
   <link rel="stylesheet" href="css/tailwind.min.css?v=20260614">
   <link rel="stylesheet" href="css/main.css?v=20260615">
+  <link rel="stylesheet" href="css/refine.css?v=20260702">
   <!-- Analytics Plausible (sans cookie, conforme RGPD). data-tracker="plausible" :
        le loader gaté-consentement de js/main.js détecte ce script (guard) → pas de
        double comptage ; "Refuser" (disableTrackers) le retire toujours. -->
@@ -102,27 +103,14 @@
 </head>
 <body>
 
-<div id="top-promo-banner" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;text-align:center;padding:8px 16px;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:12px;">
-  ✨ Aperçu gratuit —
-  <a href="https://wa.me/33767519437?text=Bonjour%2C+je+souhaite+un+aperçu+gratuit" target="_blank" rel="noopener noreferrer" style="color:#fff;font-weight:700">Demandez votre démo</a>
+<div id="top-promo-banner" style="background:#101010;border-bottom:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.85);text-align:center;padding:8px 16px;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:12px;">
+  Aperçu gratuit —
+  <a href="https://wa.me/33767519437?text=Bonjour%2C+je+souhaite+un+aperçu+gratuit" target="_blank" rel="noopener noreferrer" style="color:var(--cyan);font-weight:700">Demandez votre démo</a>
   <button id="top-promo-dismiss" style="background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:16px" aria-label="Fermer">✕</button>
 </div>
 
-<!-- TRUST BADGES (flottants) -->
-<div class="flex gap-2 mt-4 flex-wrap" style="position:fixed;top:1rem;right:2rem;z-index:99">
-  <div class="flex items-center gap-1 bg-gray-800 px-3 py-1 rounded text-xs text-gray-300">
-    <span>🔒</span> RGPD Compliant
-  </div>
-  <div class="flex items-center gap-1 bg-gray-800 px-3 py-1 rounded text-xs text-gray-300">
-    <span>⭐</span> Support français — réponse sous 24h
-  </div>
-  <div class="flex items-center gap-1 bg-gray-800 px-3 py-1 rounded text-xs text-gray-300">
-    <span>💳</span> Paiement sécurisé (Stripe)
-  </div>
-</div>
-
 <noscript>
-  <style>#loader,.custom-cursor-dot{display:none!important}</style>
+  <style>#loader{display:none!important}</style>
   <div style="position:fixed;inset:0;z-index:99999;background:#0d0d0d;color:#f0f0f0;display:flex;align-items:center;justify-content:center;text-align:center;padding:2rem;font-family:-apple-system,'Segoe UI',sans-serif">
     <div>
       <h1 style="font-size:1.5rem;margin-bottom:1rem">ImmoViz 3D</h1>
@@ -142,9 +130,6 @@
   </div>
   <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
 </div>
-
-<!-- CURSEUR CUSTOM -->
-<div class="custom-cursor-dot" id="cur-dot"></div>
 
 <div id="page-bg"></div>
 
@@ -187,7 +172,7 @@
       </form>
     </div>
     <div class="form-success">
-      <div class="fsuccess-icon">✅</div>
+      <div class="fsuccess-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="m9 11 3 3L22 4"/></svg></div>
       <p class="fsuccess-title">Demande envoyée !</p>
       <p class="fsuccess-sub">Je reviens vers vous sous 24h avec un aperçu gratuit de ce que je peux faire pour votre annonce.</p>
       <a href="#" class="btn-g" id="fback" style="margin-top:.75rem;font-size:.85rem">Fermer</a>
@@ -245,7 +230,7 @@
     </div>
 
     <div class="hgallery">
-      <span class="hcard" aria-disabled="true" style="opacity:.6;cursor:default;"><span class="hcard-icon" aria-hidden="true">🏗️</span>Exemple à venir</span>
+      <a class="hcard" href="plan-interactif-demo.html" target="_blank" rel="noopener"><span class="hcard-icon" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Voir la démo interactive — Maison 142 m²</a>
     </div>
 
     <div class="hstats">
@@ -260,7 +245,7 @@
 <!-- OBJECTIFS 2026 -->
 <div class="wrap">
   <div class="bg-gray-900 border border-gray-800 rounded-lg p-6 mb-12">
-    <p class="text-center text-xs uppercase tracking-widest text-cyan-400 font-bold mb-4"><span aria-hidden="true">🎯</span> Nos objectifs 2026</p>
+    <p class="text-center text-xs uppercase tracking-widest text-cyan-400 font-bold mb-4">Nos objectifs 2026</p>
     <div class="flex items-center justify-center gap-6 flex-wrap">
       <div class="text-center">
         <div class="text-5xl font-bold text-green-500 mb-2" id="agentCount">0</div>
@@ -304,17 +289,17 @@
 
     <div class="pgrid">
       <div class="glass pcard reveal d1">
-        <div class="picon">📸</div>
+        <div class="picon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></div>
         <h3>Les acheteurs veulent se projeter</h3>
         <p>Des photos montrent le bien, un plan interactif fait le <em style="font-style:italic;color:inherit">vivre</em>. Les acheteurs se projettent mieux et décident plus vite.</p>
       </div>
       <div class="glass pcard reveal d2">
-        <div class="picon">🚗</div>
+        <div class="picon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg></div>
         <h3>Trop de visites non qualifiées</h3>
         <p>Sans visuel précis, les curieux se déplacent pour rien. Un plan filtres les profils sérieux — seuls ceux qui sont vraiment intéressés viennent visiter.</p>
       </div>
       <div class="glass pcard reveal d3">
-        <div class="picon">💸</div>
+        <div class="picon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></div>
         <h3>Une visite 3D pro à 150€ au lieu de 3 500€</h3>
         <p>Les outils comme Matterport coûtent 3 500€/an. ImmoViz 3D livre le même rendu pour 150€, sans abonnement, en 48h.</p>
       </div>
@@ -347,7 +332,7 @@
     </div>
     <iframe id="demo-frame" title="Plan 3D interactif — démonstration"></iframe>
     <div class="demo-overlay" id="demo-overlay" tabindex="0" role="button" aria-label="Charger la démonstration interactive du plan 3D">
-      <div class="demo-overlay-icon" aria-hidden="true">🏠</div>
+      <div class="demo-overlay-icon" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
       <p><strong>Explorer la démo interactive</strong><br>Maison d'architecte 142 m² — Plan 2D · Vue 3D · Visite 360°</p>
     </div>
     <div class="scene-hint hidden" id="scene-hint">⟳ &nbsp;Glissez pour tourner autour du plan</div>
@@ -362,21 +347,21 @@
     <div class="process-grid">
       <div class="process-step reveal d1">
         <div class="process-num">01</div>
-        <div class="process-icon">📋</div>
+        <div class="process-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></div>
         <h3>Vous me contactez</h3>
         <p>Envoyez-moi le lien de votre annonce LeBonCoin ou quelques photos de votre bien.</p>
       </div>
       <div class="process-arrow reveal">→</div>
       <div class="process-step reveal d2">
         <div class="process-num">02</div>
-        <div class="process-icon">⚡</div>
+        <div class="process-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
         <h3>Je construis le plan en 48h</h3>
         <p>Plan 2D + Vue 3D + Visite 360° générés et mis en ligne sur une URL dédiée.</p>
       </div>
       <div class="process-arrow reveal">→</div>
       <div class="process-step reveal d3">
         <div class="process-num">03</div>
-        <div class="process-icon">🎯</div>
+        <div class="process-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
         <h3>Vous publiez et vendez</h3>
         <p>Collez l'URL dans votre annonce. Les acheteurs sérieux arrivent.</p>
       </div>
@@ -423,19 +408,19 @@
     <h2 class="reveal">Technique confirmée.<br><em>Résultats garantis.</em></h2>
     <div class="cgrid" style="margin-top:2.5rem">
       <div class="glass ccard reveal d1">
-        <div class="cicon">⚡</div>
+        <div class="cicon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
         <div class="cnum" data-count="48" data-suffix="h">48h</div>
         <div class="clbl">Livraison garantie</div>
         <p class="cdesc">De l'annonce au plan interactif en ligne en moins de 48 heures. Sans déplacement, sans matériel spécial.</p>
       </div>
       <div class="glass ccard reveal d2">
-        <div class="cicon">💰</div>
+        <div class="cicon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg></div>
         <div class="cnum" data-count="150" data-suffix="€">150€</div>
         <div class="clbl">Vs 3 500€/an</div>
         <p class="cdesc">Le même résultat que Matterport à moins de 5% du prix, sans abonnement, livré en une fois.</p>
       </div>
       <div class="glass ccard reveal d3">
-        <div class="cicon">🔒</div>
+        <div class="cicon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
         <div class="cnum" data-count="100" data-suffix="%">100%</div>
         <div class="clbl">Propriétaire du fichier</div>
         <p class="cdesc">Le fichier HTML vous appartient pour toujours. Hébergement inclus 6 mois. Zéro dépendance externe.</p>
@@ -452,25 +437,25 @@
     <p class="sub reveal" style="margin:0 auto 2.5rem">Vous ne payez qu'après validation du résultat. Et si vous changez d'avis dans les 14 jours suivants (droit de rétractation légal, art. L221-18 du Code de la consommation), vous êtes remboursé intégralement — zéro question, zéro condition.</p>
     <div class="cgrid">
       <div class="glass ccard reveal d1">
-        <div class="cicon">📅</div>
+        <div class="cicon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2v4M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></div>
         <div class="cnum" data-count="14" data-suffix=" j">14 j</div>
         <div class="clbl">Pour changer d'avis</div>
         <p class="cdesc">À partir de la livraison de votre plan interactif.</p>
       </div>
       <div class="glass ccard reveal d2">
-        <div class="cicon">💯</div>
+        <div class="cicon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg></div>
         <div class="cnum" data-count="100" data-suffix="%">100%</div>
         <div class="clbl">Remboursement garanti</div>
         <p class="cdesc">Intégral, sans retenue, si le résultat ne vous convient pas.</p>
       </div>
       <div class="glass ccard reveal d3">
-        <div class="cicon">🔓</div>
+        <div class="cicon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></div>
         <div class="cnum" data-count="0">0</div>
         <div class="clbl">Condition</div>
         <p class="cdesc">Aucune justification à fournir, aucune démarche compliquée.</p>
       </div>
     </div>
-    <p class="sub reveal" style="margin:2.5rem auto 0">💡 Vous ne risquez rien : vous validez le résultat avant de payer, et vous êtes intégralement remboursé sous 14 jours si le plan ne vous convient pas.</p>
+    <p class="sub reveal" style="margin:2.5rem auto 0">Vous ne risquez rien : vous validez le résultat avant de payer, et vous êtes intégralement remboursé sous 14 jours si le plan ne vous convient pas.</p>
   </div>
 </section>
 
@@ -482,22 +467,22 @@
 
     <div class="pgrid">
       <div class="glass pcard reveal d1">
-        <div class="picon">✅</div>
+        <div class="picon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="m9 11 3 3L22 4"/></svg></div>
         <h3>Vous êtes propriétaire du fichier</h3>
         <p>Vous recevez le fichier HTML brut. Vous pouvez le garder à jamais, même si vous arrêtez avec nous. Contrairement à Matterport qui vous lock-in.</p>
       </div>
       <div class="glass pcard reveal d2">
-        <div class="picon">✅</div>
+        <div class="picon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="m9 11 3 3L22 4"/></svg></div>
         <h3>Pas d'abonnement caché</h3>
         <p>150€ unique. Point. Pas de "renouvellement obligatoire", pas de surprise à la fin du mois.</p>
       </div>
       <div class="glass pcard reveal d3">
-        <div class="picon">✅</div>
+        <div class="picon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="m9 11 3 3L22 4"/></svg></div>
         <h3>Accès illimité et permanent</h3>
         <p>Votre plan reste accessible indéfiniment. Nous ne "supprimerons" pas vos données après 6 mois.</p>
       </div>
       <div class="glass pcard reveal d1">
-        <div class="picon">✅</div>
+        <div class="picon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="m9 11 3 3L22 4"/></svg></div>
         <h3>Nous ne vendons pas vos données</h3>
         <p>Zéro tracking invasif. Zéro vente de contact à des tiers. Vos clients restent VOS clients.</p>
       </div>
@@ -518,7 +503,7 @@
     <div class="ab-before">
       <div class="ab-label ab-label-before">Sans ImmoViz 3D</div>
       <ul class="ab-list">
-        <li>📷 3 photos classiques</li>
+        <li>3 photos classiques</li>
         <li>Annonce LeBonCoin standard</li>
       </ul>
       <div class="ab-stat ab-stat-red">↓ 2.3% de taux de clic moyen</div>
@@ -529,7 +514,7 @@
     <div class="ab-after">
       <div class="ab-label ab-label-after">Avec ImmoViz 3D</div>
       <ul class="ab-list">
-        <li>🏡 Plan 2D + Vue 3D + 360°</li>
+        <li>Plan 2D + Vue 3D + 360°</li>
         <li>Annonce avec visite interactive</li>
       </ul>
       <div class="ab-stat ab-stat-cyan">↑ +40% de taux de clic</div>
@@ -611,8 +596,8 @@
           <li>2 retouches incluses</li>
         </ul>
         <div style="display:flex;flex-direction:column;gap:.55rem">
+          <button type="button" data-checkout="price_start" data-amount="150" class="btn-buy">Acheter maintenant — 150€</button>
           <a href="mailto:dimitri444art@gmail.com?subject=Commande Start" class="btn-g" style="display:block;text-align:center;justify-content:center">Demander un devis</a>
-          <button type="button" data-checkout="price_start" data-amount="150" class="bg-green-700 hover:bg-green-800 text-white font-bold" style="width:100%;border:none;border-radius:10px;padding:.8rem 1rem;cursor:pointer;font-size:.95rem">Acheter maintenant — 150€</button>
         </div>
       </div>
       <div class="glass tcard reveal d2" style="border-color:rgba(0,229,255,.45)">
@@ -628,8 +613,8 @@
           <li>2 retouches incluses</li>
         </ul>
         <div style="display:flex;flex-direction:column;gap:.55rem">
-          <a href="mailto:dimitri444art@gmail.com?subject=Commande Pro" class="btn-p" style="display:block;text-align:center;justify-content:center">Demander un devis →</a>
-          <button type="button" data-checkout="price_pro" data-amount="300" class="bg-green-700 hover:bg-green-800 text-white font-bold" style="width:100%;border:none;border-radius:10px;padding:.8rem 1rem;cursor:pointer;font-size:.95rem">Acheter maintenant — 300€</button>
+          <button type="button" data-checkout="price_pro" data-amount="300" class="btn-buy">Acheter maintenant — 300€</button>
+          <a href="mailto:dimitri444art@gmail.com?subject=Commande Pro" class="btn-g" style="display:block;text-align:center;justify-content:center">Demander un devis</a>
         </div>
       </div>
     </div>
@@ -674,7 +659,7 @@
 <section class="py-16 px-4 bg-gradient-to-b from-brand-dark2 to-brand-dark">
   <div class="max-w-3xl mx-auto">
     <h2 class="text-4xl font-bold text-white mb-8 text-center">
-      <span aria-hidden="true">💰</span> Combien pouvez-vous gagner avec ImmoViz 3D ?
+      Combien pouvez-vous gagner avec ImmoViz 3D ?
     </h2>
 
     <div class="bg-gray-900 p-8 rounded-lg border border-gray-800">
@@ -724,14 +709,14 @@
           0€
         </div>
         <div class="space-y-2 text-gray-300 text-sm">
-          <p>💚 ImmoViz coûte <strong id="roiAnnualCost">0€</strong> par an</p>
-          <p>✅ Vous gagnez <strong id="roiNet">0€</strong> net après ImmoViz</p>
-          <p>🚀 ROI : <strong id="roiPercent">0%</strong></p>
+          <p>ImmoViz coûte <strong id="roiAnnualCost">0€</strong> par an</p>
+          <p>Vous gagnez <strong id="roiNet">0€</strong> net après ImmoViz</p>
+          <p>ROI : <strong id="roiPercent">0%</strong></p>
         </div>
       </div>
 
       <!-- CTA -->
-      <button id="roi-cta-btn" class="w-full mt-6 bg-green-700 hover:bg-green-800 text-white font-bold py-4 rounded-lg text-lg">
+      <button id="roi-cta-btn" class="btn-buy mt-6" style="padding:1rem;font-size:1.05rem">
         Je veux ce gain supplémentaire →
       </button>
     </div>
@@ -754,20 +739,20 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td>💰 Prix</td><td class="comp-us">150€ (une fois)</td><td class="comp-them">3 500€/an</td></tr>
+          <tr><td>Prix</td><td class="comp-us">150€ (une fois)</td><td class="comp-them">3 500€/an</td></tr>
           <tr><td>⏱️ Délai</td><td class="comp-us">48h</td><td class="comp-them">5-7 jours</td></tr>
-          <tr><td>📐 Plan 2D</td><td class="comp-yes">✓</td><td class="comp-yes">✓</td></tr>
-          <tr><td>🎨 Vue 3D</td><td class="comp-yes">✓</td><td class="comp-yes">✓</td></tr>
-          <tr><td>🌀 Visite 360°</td><td class="comp-yes">✓</td><td class="comp-yes">✓</td></tr>
-          <tr><td>👤 Propriétaire du fichier</td><td class="comp-yes">✓</td><td class="comp-no">✗</td></tr>
-          <tr><td>🔄 Abonnement obligatoire</td><td class="comp-yes">Non</td><td class="comp-no">Oui</td></tr>
-          <tr><td>🛠️ Installation matériel</td><td class="comp-yes">Aucune</td><td class="comp-no">Caméra pro requise</td></tr>
-          <tr><td>🇫🇷 Support français</td><td class="comp-yes">✓</td><td class="comp-unk">?</td></tr>
+          <tr><td>Plan 2D</td><td class="comp-yes">✓</td><td class="comp-yes">✓</td></tr>
+          <tr><td>Vue 3D</td><td class="comp-yes">✓</td><td class="comp-yes">✓</td></tr>
+          <tr><td>Visite 360°</td><td class="comp-yes">✓</td><td class="comp-yes">✓</td></tr>
+          <tr><td>Propriétaire du fichier</td><td class="comp-yes">✓</td><td class="comp-no">✗</td></tr>
+          <tr><td>Abonnement obligatoire</td><td class="comp-yes">Non</td><td class="comp-no">Oui</td></tr>
+          <tr><td>Installation matériel</td><td class="comp-yes">Aucune</td><td class="comp-no">Caméra pro requise</td></tr>
+          <tr><td>Support français</td><td class="comp-yes">✓</td><td class="comp-unk">?</td></tr>
           <tr class="comp-total"><td>Économies annuelles</td><td class="comp-us">3 350€</td><td class="comp-them">—</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="sub reveal" style="margin:1.5rem auto 0">✅ Avec ImmoViz 3D, vous obtenez le même résultat que Matterport pour <em>95% moins cher</em> et <em>4× plus vite</em>.</p>
+    <p class="sub reveal" style="margin:1.5rem auto 0">Avec ImmoViz 3D, vous obtenez le même résultat que Matterport pour <em>95% moins cher</em> et <em>4× plus vite</em>.</p>
   </div>
 </section>
 
@@ -790,7 +775,7 @@
 <section id="chiffres-cles" class="py-16 px-4 bg-black border-y border-gray-800">
   <div class="max-w-5xl mx-auto">
     <h2 class="text-3xl font-bold text-white mb-12 text-center">
-      📊 ImmoViz 3D en chiffres
+      ImmoViz 3D en chiffres
     </h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -839,7 +824,7 @@
 </footer>
 
 
-<button id="whatsapp-btn" title="Nous contacter sur WhatsApp" aria-label="Nous contacter sur WhatsApp"><span aria-hidden="true">💬</span></button>
+<button id="whatsapp-btn" title="Nous contacter sur WhatsApp" aria-label="Nous contacter sur WhatsApp"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg></button>
 
 <!-- EXIT INTENT POP-UP -->
 <div id="exit-popup" role="dialog" aria-modal="true" aria-labelledby="exit-popup-title">
@@ -857,21 +842,21 @@
 
 <!-- Bandeau capacité : message VRAI (capacité de production réelle),
      sans compteur de rareté simulé (pratique trompeuse, art. L121-2 C. conso). -->
-<div id="placesBar" class="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-red-600 to-red-700 text-white py-4 px-6 z-40">
-  <div class="max-w-4xl mx-auto flex items-center justify-between">
+<div id="placesBar" class="fixed bottom-0 left-0 right-0 py-3 px-6 z-40" style="background:rgba(10,10,10,.92);border-top:1px solid rgba(255,255,255,.1);backdrop-filter:blur(10px)">
+  <div class="max-w-4xl mx-auto flex items-center justify-between" style="gap:1rem">
     <div>
-      <h3 class="font-bold text-lg">⚡ Capacité limitée : 7 projets/semaine</h3>
-      <p class="text-sm text-red-100 mt-1">Chaque plan est vérifié à la main avant livraison — premier arrivé, premier servi</p>
+      <h3 class="font-bold" style="font-size:.95rem;color:#f0f0f0">Capacité limitée : 7 projets/semaine</h3>
+      <p class="text-sm mt-1" style="color:rgba(255,255,255,.55)">Chaque plan est vérifié à la main avant livraison — premier arrivé, premier servi</p>
     </div>
-    <div class="text-right">
-      <a href="#tarifs" class="font-bold text-white" style="text-decoration:underline">Commander →</a>
+    <div class="text-right" style="flex-shrink:0">
+      <a href="#tarifs" class="font-bold" style="color:var(--cyan)">Commander →</a>
     </div>
   </div>
 </div>
 
 <!-- Bouton flottant pour ouvrir le chatbot — #chatbot injecté au premier clic -->
 <button id="chatToggle" class="fixed bottom-4 right-4 bg-purple-600 hover:bg-purple-700 text-white w-12 h-12 rounded-full shadow-lg z-30 flex items-center justify-center text-xl" aria-label="Ouvrir le chat assistant ImmoViz">
-  <span aria-hidden="true">🤖</span>
+  <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
 </button>
 
 
@@ -884,7 +869,7 @@
 <section class="py-16 px-4 bg-gradient-to-b from-black to-brand-dark">
   <div class="max-w-5xl mx-auto">
     <h2 class="text-4xl font-bold text-white mb-4 text-center">
-      <span aria-hidden="true">📚</span> Blog ImmoViz 3D
+      Blog ImmoViz 3D
     </h2>
     <p class="text-center text-gray-400 mb-12">
       Conseils, tutos et success stories pour vendre plus vite
@@ -894,7 +879,7 @@
       <!-- Article 1 -->
       <article class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800 hover:border-green-500/50 transition">
         <div class="h-40 bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
-          <span class="text-5xl" aria-hidden="true">📐</span>
+          <span class="blog-ic" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M21.3 8.7 15.3 2.7a1 1 0 0 0-1.4 0L2.7 13.9a1 1 0 0 0 0 1.4l6 6a1 1 0 0 0 1.4 0L21.3 10a1 1 0 0 0 0-1.4Z"/><path d="m7.5 10.5 2 2M10.5 7.5l2 2M13.5 4.5l2 2"/></svg></span>
         </div>
         <div class="p-6">
           <h3 class="text-xl font-bold text-white mb-2">Plan 2D Interactif : Pourquoi C'est 10x Mieux qu'une Photo</h3>
@@ -911,7 +896,7 @@
       <!-- Article 2 -->
       <article class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800 hover:border-green-500/50 transition">
         <div class="h-40 bg-gradient-to-br from-purple-600 to-purple-800 flex items-center justify-center">
-          <span class="text-5xl" aria-hidden="true">🆚</span>
+          <span class="blog-ic" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></span>
         </div>
         <div class="p-6">
           <h3 class="text-xl font-bold text-white mb-2">Matterport vs ImmoViz 3D : Faut-il vraiment dépenser 3 500€?</h3>
@@ -928,7 +913,7 @@
       <!-- Article 3 -->
       <article class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800 hover:border-green-500/50 transition">
         <div class="h-40 bg-gradient-to-br from-green-600 to-green-800 flex items-center justify-center">
-          <span class="text-5xl" aria-hidden="true">🎯</span>
+          <span class="blog-ic" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
         </div>
         <div class="p-6">
           <h3 class="text-xl font-bold text-white mb-2">Réduire le délai de vente grâce à une visite interactive</h3>
@@ -961,10 +946,10 @@
 
 <div id="cookieBanner" class="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-800 p-4 z-50">
   <div class="max-w-4xl mx-auto flex items-center justify-between gap-4">
-    <p class="text-gray-300 text-sm flex-1"><span aria-hidden="true">✅</span> Cookies pour améliorer l'expérience. <a href="/immo-plans/privacy.html" class="text-blue-400 hover:no-underline" style="text-decoration: underline;">Politique</a></p>
+    <p class="text-gray-300 text-sm flex-1">Cookies pour améliorer l'expérience. <a href="/immo-plans/privacy.html" class="text-blue-400 hover:no-underline" style="text-decoration: underline;">Politique</a></p>
     <div class="flex gap-3">
       <button id="cookie-reject" class="bg-gray-700 text-white px-4 py-2 rounded text-sm">Refuser</button>
-      <button id="cookie-accept" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded text-sm font-bold">Accepter</button>
+      <button id="cookie-accept" class="btn-buy" style="width:auto;padding:.5rem 1rem;font-size:.85rem">Accepter</button>
     </div>
   </div>
 </div>
