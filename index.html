@@ -339,6 +339,27 @@
   </div>
 </section>
 
+<!-- SCROLL-SCRUBBING CANVAS -->
+<div id="scroll-demo">
+  <section id="scroll-video-section" style="height:300vh; position:relative;">
+    <div style="position:sticky; top:0; height:100vh; overflow:hidden; background:#000;">
+      <canvas id="scroll-canvas" style="width:100%; height:100%; object-fit:cover;"></canvas>
+      <div id="scroll-loader" style="position:absolute;inset:0;display:flex;flex-direction:column;
+           align-items:center;justify-content:center;background:#000;color:#fff;">
+        <div>Chargement de la visite…</div>
+        <div style="font-size:2rem;font-weight:700;margin-top:.5rem;">
+          <span id="scroll-progress">0</span>%
+        </div>
+      </div>
+      <div style="position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+           color:rgba(255,255,255,.7);font-size:.9rem;pointer-events:none;">
+        ↕ Scrollez pour explorer
+      </div>
+    </div>
+  </section>
+  <script src="scroll-video.js"></script>
+</div>
+
 <!-- COMMENT ÇA MARCHE -->
 <section id="process">
   <div class="wrap">
