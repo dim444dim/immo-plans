@@ -1,8 +1,7 @@
 const FRICTION = 0.86;
 const STIFFNESS = 0.62;
-const FRAMES_PER_SCROLL_TURN = 30;
-const WHEEL_UNITS_PER_TURN = 100;
-const SCROLL_SENSITIVITY = FRAMES_PER_SCROLL_TURN / WHEEL_UNITS_PER_TURN;
+const SCROLL_TURNS_TO_COMPLETE = 6.7; // tours de molette pour traverser tout le clip
+const WHEEL_UNITS_PER_TURN = 100;     // deltaY d'un cran de molette standard
 
 let bitmaps = [];
 let loadedCount = 0;
@@ -32,6 +31,11 @@ async function loadFrame(frameDir, filename, index, total, progressEl) {
 }
 
 function attachScrollHandlers(sectionEl, count) {
+  // Sensibilité proportionnelle au clip : ~6,7 tours de molette pour le traverser,
+  // quel que soit le nombre de frames (200 en prod comme 10 en démo) ; une valeur
+  // fixe par frame fait sauter tout le clip en un cran quand count est petit.
+  const sensitivity = count / (SCROLL_TURNS_TO_COMPLETE * WHEEL_UNITS_PER_TURN);
+
   // Aux bornes (première/dernière frame), on laisse l'événement remonter :
   // sinon la page est piégée dans la section une fois l'animation terminée.
   function atBoundary(delta) {
@@ -41,7 +45,7 @@ function attachScrollHandlers(sectionEl, count) {
   sectionEl.addEventListener('wheel', (e) => {
     if (atBoundary(e.deltaY)) return;
     e.preventDefault();
-    targetFrame = Math.max(0, Math.min(count - 1, targetFrame + e.deltaY * SCROLL_SENSITIVITY));
+    targetFrame = Math.max(0, Math.min(count - 1, targetFrame + e.deltaY * sensitivity));
   }, { passive: false });
 
   let touchStartY = null;
@@ -59,7 +63,7 @@ function attachScrollHandlers(sectionEl, count) {
     }
     e.preventDefault();
     touchStartY = touchY;
-    targetFrame = Math.max(0, Math.min(count - 1, targetFrame + delta * SCROLL_SENSITIVITY));
+    targetFrame = Math.max(0, Math.min(count - 1, targetFrame + delta * sensitivity));
   }, { passive: false });
 }
 
