@@ -1,7 +1,7 @@
 /* ---- bloc JS #1 ---- */
 
 // ── BANDEAU PROMO TOP ──
-(function () {
+(() => {
   const banner = document.getElementById('top-promo-banner');
   const dismiss = document.getElementById('top-promo-dismiss');
   if (!banner) return;
@@ -10,14 +10,14 @@
     return;
   }
   if (dismiss)
-    dismiss.addEventListener('click', function () {
+    dismiss.addEventListener('click', () => {
       banner.style.display = 'none';
       localStorage.setItem('ctaDismissed', '1');
     });
 })();
 
 // ── LOADER ──
-(function () {
+(() => {
   const loaderStart = performance.now();
   const MIN_DISPLAY = 200; // évite un flash si le chargement est instantané
   function hideLoader() {
@@ -29,7 +29,7 @@
 })();
 
 // ── PARALLAX SOURIS (hero uniquement) ──
-(function () {
+(() => {
   const heroEl = document.querySelector('.hero');
   const heroInner = document.querySelector('.hero-inner');
   let mx = 0,
@@ -71,7 +71,7 @@
 })();
 
 // ── VIEWER 3D — chargement de l'iframe au clic + switch to tab 3D ──
-(function () {
+(() => {
   const frame = document.getElementById('demo-frame');
   const hint = document.getElementById('scene-hint');
   const overlay = document.getElementById('demo-overlay');
@@ -184,15 +184,15 @@ document.querySelectorAll('.faqq').forEach((btn) => {
       if (ans) ans.setAttribute('aria-hidden', 'false');
       if (window.plausible)
         plausible('FAQ ouverte', {
-          props: { question: btn.textContent.replace(/[+\-]$/, '').trim() },
+          props: { question: btn.textContent.replace(/[+-]$/, '').trim() },
         });
     }
   });
 });
 
 // ── ANIMATION MOT PAR MOT — H1 HERO ──
-document.addEventListener('DOMContentLoaded', function () {
-  (function () {
+document.addEventListener('DOMContentLoaded', () => {
+  (() => {
     const h1 = document.querySelector('.hero-inner h1');
     if (!h1) return;
     const wordSpans = [];
@@ -257,7 +257,7 @@ function animCount(el) {
   const start = performance.now();
   function step(now) {
     const p = Math.min((now - start) / dur, 1);
-    const ease = 1 - Math.pow(1 - p, 3);
+    const ease = 1 - (1 - p) ** 3;
     el.textContent = prefix + Math.round(ease * target) + suffix;
     if (p < 1) requestAnimationFrame(step);
   }
@@ -280,7 +280,7 @@ document.querySelectorAll('[data-count]').forEach((el) => countObs.observe(el));
 // page « template » — le curseur natif est la norme des sites pro.)
 
 // ── AVANT / APRÈS SLIDER ──
-(function () {
+(() => {
   const wrap = document.querySelector('.ab-wrap');
   const div = document.getElementById('ab-div');
   const after = document.querySelector('.ab-after');
@@ -347,7 +347,7 @@ document.querySelectorAll('[data-count]').forEach((el) => countObs.observe(el));
 })();
 
 // ── FORMULAIRE MODAL ──
-(function () {
+(() => {
   const overlay = document.getElementById('form-overlay');
   const box = document.getElementById('form-box');
   const form = document.getElementById('devis-form');
@@ -355,7 +355,7 @@ document.querySelectorAll('[data-count]').forEach((el) => countObs.observe(el));
   const fback = document.getElementById('fback');
   if (!overlay) return;
 
-  window.openForm = function () {
+  window.openForm = () => {
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
     setTimeout(
@@ -450,7 +450,7 @@ document.querySelectorAll('[data-count]').forEach((el) => countObs.observe(el));
 })();
 
 // ── STICKY CTA ──
-(function () {
+(() => {
   const bar = document.getElementById('sticky-cta');
   const btn = document.getElementById('sticky-btn');
   if (!bar) return;
@@ -485,7 +485,7 @@ document.querySelectorAll('[data-count]').forEach((el) => countObs.observe(el));
 })();
 
 // ── BURGER MENU MOBILE ──
-(function () {
+(() => {
   const btn = document.getElementById('burger-btn');
   const menu = document.getElementById('mobile-menu');
   const close = document.getElementById('mmclose');
@@ -594,13 +594,13 @@ if (document.readyState !== 'loading') initWhatsAppButton();
 
 /* ---- bloc JS #2 — Exit Intent Popup ---- */
 
-(function () {
+(() => {
   var shown = localStorage.getItem('exitPopupShown');
   if (shown) return;
 
   var popup = document.getElementById('exit-popup');
   var ready = false;
-  setTimeout(function () {
+  setTimeout(() => {
     ready = true;
   }, 3000);
 
@@ -621,11 +621,11 @@ if (document.readyState !== 'loading') initWhatsAppButton();
 
   document.getElementById('exit-close-btn').addEventListener('click', closeExitPopup);
   document.getElementById('exit-btn-no').addEventListener('click', closeExitPopup);
-  popup.addEventListener('click', function (e) {
+  popup.addEventListener('click', (e) => {
     if (e.target === popup) closeExitPopup();
   });
 
-  document.getElementById('exit-btn-yes').addEventListener('click', function () {
+  document.getElementById('exit-btn-yes').addEventListener('click', () => {
     var msg = encodeURIComponent('Bonjour, je souhaite un aperçu gratuit de mon bien');
     window.open(
       'https://wa.me/' + WHATSAPP_PHONE + '?text=' + msg,
@@ -636,11 +636,11 @@ if (document.readyState !== 'loading') initWhatsAppButton();
     closeExitPopup();
   });
 
-  document.addEventListener('keydown', function (e) {
+  document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && popup.classList.contains('show')) closeExitPopup();
   });
 
-  document.addEventListener('mousemove', function (e) {
+  document.addEventListener('mousemove', (e) => {
     if (e.clientY < 10 && window.innerWidth >= 768 && ready && !shown) {
       showExitPopup();
     }
@@ -725,7 +725,7 @@ const chatFlowQuestions = [
 ];
 
 let chatStep = 0;
-let chatData = {};
+const chatData = {};
 
 function displayMessage(text, isBot = true) {
   const messagesDiv = document.getElementById('chatMessages');

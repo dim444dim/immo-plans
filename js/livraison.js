@@ -1,7 +1,7 @@
 /* Logique propre à livraison.html : personnalisation via paramètres URL
    (?nom=...&plan=...&bien=...) + copie du lien du plan. Externalisé du
    <script> inline pour respecter la CSP (script-src 'self'). */
-(function () {
+(() => {
   const params = new URLSearchParams(window.location.search);
   const nom = params.get('nom') || '';
   const plan = params.get('plan') || '';

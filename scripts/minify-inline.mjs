@@ -5,10 +5,11 @@
 //          attributs onclick="..." dans le HTML.
 //
 // Réexécution : node scripts/minify-inline.mjs
+
+import CleanCSS from 'clean-css';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import CleanCSS from 'clean-css';
 
 const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 

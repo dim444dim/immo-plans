@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 // verify-vitrine.mjs — VERIFY Vague 3 (vitrine immo-plans), point d'entrée unique.
 //
 // Usage : node verify-vitrine.mjs [--a=<hash3A>] [--b=<hash3B>]
@@ -13,10 +14,10 @@
 // Les phases 1+2 sont le GATE DUR. 3+4 sont best-effort (mieux vaut le confirmer, mais
 // le déterministe ne ment pas et tourne partout).
 
-import { readFileSync, existsSync, statSync, readdirSync } from 'node:fs';
 import { execSync, spawnSync } from 'node:child_process';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
-import { join, extname } from 'node:path';
+import { extname, join } from 'node:path';
 
 const ROOT = process.cwd();
 const arg = (k, d) => {
@@ -148,7 +149,7 @@ function phase2() {
   const pages = Object.fromEntries(PAGES.map((p) => [p, read(`${p}.html`)]));
 
   // a) aucun placeholder légal n'a fuité
-  let leaks = [];
+  const leaks = [];
   for (const p of PAGES)
     if (pages[p] && /\[À COMPLÉTER|TODO|XXXX|lorem ipsum/i.test(pages[p])) leaks.push(p);
   rec(
@@ -177,7 +178,7 @@ function phase2() {
   );
 
   // c) snippet Plausible présent sur TOUTES les pages + data-domain COHÉRENT
-  let missing = [];
+  const missing = [];
   const domains = new Map();
   for (const p of PAGES) {
     if (!pages[p]) {
@@ -209,7 +210,7 @@ function phase2() {
   }
 
   // d) cohérence CSP : plausible autorisé (script+connect) sur les 6 pages
-  let cspBad = [];
+  const cspBad = [];
   for (const p of PAGES) {
     if (!pages[p]) continue;
     if (!cspAllowsPlausible(extractCSP(pages[p]))) cspBad.push(p);
@@ -222,7 +223,7 @@ function phase2() {
   );
 
   // e) zéro inline exécutable (CSP-ready)
-  let inlineBad = [];
+  const inlineBad = [];
   const HANDLER =
     /\son(click|load|error|mouse[a-z]+|key[a-z]+|submit|change|input|focus|blur|toggle)\s*=/i;
   const INLINE_SCRIPT =
@@ -239,7 +240,7 @@ function phase2() {
   );
 
   // f) toutes les <img> ont width ET height (zéro CLS)
-  let imgBad = [];
+  const imgBad = [];
   for (const p of PAGES) {
     if (!pages[p]) continue;
     const imgs = pages[p].match(/<img\b[^>]*>/gi) || [];
