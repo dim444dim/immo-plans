@@ -38,7 +38,7 @@ Pour prévisualiser en local, servir le dossier avec n'importe quel serveur stat
 
 ### Conventions de code
 - Indentation **2 espaces**, fins de ligne **LF**, encodage **UTF-8** (voir `.editorconfig`)
-- Formatage JS/CSS : guillemets simples, point-virgules (voir `.prettierrc`)
+- Formatage JS/CSS : guillemets simples, point-virgules (voir `biome.json`, `npm run format`)
 
 ---
 
