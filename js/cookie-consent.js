@@ -1,7 +1,7 @@
 /* Bandeau cookies — partagé par privacy.html et livraison.html.
    Pattern repris de main.js (wireStaticHandlers) : aucun onclick inline,
    pour permettre une CSP sans 'unsafe-inline' dans script-src. */
-(function(){
+(function () {
   function loadTrackers() {
     if (document.querySelector('script[data-tracker="plausible"]')) return;
     const plausible = document.createElement('script');
@@ -14,7 +14,7 @@
 
   function disableTrackers() {
     window.plausible = () => {};
-    document.querySelectorAll('script[data-tracker]').forEach(el => el.remove());
+    document.querySelectorAll('script[data-tracker]').forEach((el) => el.remove());
   }
 
   function acceptCookies() {

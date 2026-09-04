@@ -73,15 +73,19 @@ function tagsOf(html, tagName) {
 }
 
 function cspContent(html) {
-  const meta = (html.match(/<meta\b[^>]*>/gi) || [])
-    .find(t => /http-equiv\s*=\s*(["'])Content-Security-Policy\1/i.test(t));
+  const meta = (html.match(/<meta\b[^>]*>/gi) || []).find((t) =>
+    /http-equiv\s*=\s*(["'])Content-Security-Policy\1/i.test(t),
+  );
   return meta ? attr(meta, 'content') : null;
 }
 
 /* Renvoie le tableau des sources d'une directive CSP, ou null si absente. */
 function cspDirective(csp, name) {
-  const part = csp.split(';').map(s => s.trim()).filter(Boolean)
-    .find(p => p === name || p.startsWith(name + ' '));
+  const part = csp
+    .split(';')
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .find((p) => p === name || p.startsWith(name + ' '));
   return part ? part.slice(name.length).trim().split(/\s+/).filter(Boolean) : null;
 }
 
@@ -95,11 +99,15 @@ for (const page of PAGES) {
   const html = read(page);
 
   check(`${page} : snippet Plausible présent (src + data-domain)`, () => {
-    const script = tagsOf(html, 'script').find(s => attr(s, 'src') === PLAUSIBLE_SRC);
+    const script = tagsOf(html, 'script').find((s) => attr(s, 'src') === PLAUSIBLE_SRC);
     assert(script, `aucune <script src="${PLAUSIBLE_SRC}">`);
     const domain = attr(script, 'data-domain');
     assert(domain, 'data-domain absent du snippet Plausible');
-    assert.strictEqual(domain, EXPECTED_DOMAIN, `data-domain = "${domain}" (attendu "${EXPECTED_DOMAIN}")`);
+    assert.strictEqual(
+      domain,
+      EXPECTED_DOMAIN,
+      `data-domain = "${domain}" (attendu "${EXPECTED_DOMAIN}")`,
+    );
   });
 
   check(`${page} : CSP autorise plausible.io en script-src ET connect-src`, () => {
@@ -107,10 +115,16 @@ for (const page of PAGES) {
     assert(csp, 'meta Content-Security-Policy absente');
     const scriptSrc = cspDirective(csp, 'script-src');
     assert(scriptSrc, 'directive script-src absente');
-    assert(scriptSrc.includes(PLAUSIBLE_HOST), `script-src n'autorise pas ${PLAUSIBLE_HOST} (=${scriptSrc.join(' ')})`);
+    assert(
+      scriptSrc.includes(PLAUSIBLE_HOST),
+      `script-src n'autorise pas ${PLAUSIBLE_HOST} (=${scriptSrc.join(' ')})`,
+    );
     const connectSrc = cspDirective(csp, 'connect-src');
     assert(connectSrc, 'directive connect-src absente');
-    assert(connectSrc.includes(PLAUSIBLE_HOST), `connect-src n'autorise pas ${PLAUSIBLE_HOST} (=${connectSrc.join(' ')})`);
+    assert(
+      connectSrc.includes(PLAUSIBLE_HOST),
+      `connect-src n'autorise pas ${PLAUSIBLE_HOST} (=${connectSrc.join(' ')})`,
+    );
   });
 }
 
@@ -140,10 +154,12 @@ for (const page of PAGES) {
 
 check('index.html : image LCP préchargée en fetchpriority="high" (et non lazy)', () => {
   const html = read('index.html');
-  const link = tagsOf(html, 'link').find(l =>
-    attr(l, 'rel') === 'preload' &&
-    attr(l, 'as') === 'image' &&
-    attr(l, 'fetchpriority') === 'high');
+  const link = tagsOf(html, 'link').find(
+    (l) =>
+      attr(l, 'rel') === 'preload' &&
+      attr(l, 'as') === 'image' &&
+      attr(l, 'fetchpriority') === 'high',
+  );
   assert(link, 'aucun <link rel="preload" as="image" fetchpriority="high"> (image LCP)');
 });
 
@@ -161,7 +177,7 @@ check('aucun .gif > 300 Ko référencé dans index/blois/amboise', () => {
       if (seen.has(rel)) continue;
       seen.add(rel);
       if (exists(rel) && sizeOf(rel) > MAX_GIF_BYTES) {
-        assert.fail(`${page} référence ${rel} (${(sizeOf(rel) / 1024 | 0)} Ko > 300 Ko)`);
+        assert.fail(`${page} référence ${rel} (${(sizeOf(rel) / 1024) | 0} Ko > 300 Ko)`);
       }
     }
   }
@@ -187,8 +203,9 @@ check('index.html : vidéo demo-3d (WebM + MP4 + poster) en place et référenc�
  * ------------------------------------------------------------------ */
 console.log('\n4. .gitignore (artefacts dev)');
 check('.gitignore exclut screenshots/ et test-evidence/', () => {
-  const lines = read('.gitignore').split(/\r?\n/)
-    .map(l => l.trim().replace(/^\//, '').replace(/\/$/, ''));
+  const lines = read('.gitignore')
+    .split(/\r?\n/)
+    .map((l) => l.trim().replace(/^\//, '').replace(/\/$/, ''));
   assert(lines.includes('screenshots'), 'screenshots/ non ignoré');
   assert(lines.includes('test-evidence'), 'test-evidence/ non ignoré');
 });

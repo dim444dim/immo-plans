@@ -1,7 +1,7 @@
 const FRICTION = 0.86;
 const STIFFNESS = 0.62;
 const SCROLL_TURNS_TO_COMPLETE = 6.7; // tours de molette pour traverser tout le clip
-const WHEEL_UNITS_PER_TURN = 100;     // deltaY d'un cran de molette standard
+const WHEEL_UNITS_PER_TURN = 100; // deltaY d'un cran de molette standard
 
 let bitmaps = [];
 let loadedCount = 0;
@@ -42,29 +42,41 @@ function attachScrollHandlers(sectionEl, count) {
     return (delta < 0 && targetFrame <= 0) || (delta > 0 && targetFrame >= count - 1);
   }
 
-  sectionEl.addEventListener('wheel', (e) => {
-    if (atBoundary(e.deltaY)) return;
-    e.preventDefault();
-    targetFrame = Math.max(0, Math.min(count - 1, targetFrame + e.deltaY * sensitivity));
-  }, { passive: false });
+  sectionEl.addEventListener(
+    'wheel',
+    (e) => {
+      if (atBoundary(e.deltaY)) return;
+      e.preventDefault();
+      targetFrame = Math.max(0, Math.min(count - 1, targetFrame + e.deltaY * sensitivity));
+    },
+    { passive: false },
+  );
 
   let touchStartY = null;
-  sectionEl.addEventListener('touchstart', (e) => {
-    touchStartY = e.touches[0].clientY;
-  }, { passive: true });
+  sectionEl.addEventListener(
+    'touchstart',
+    (e) => {
+      touchStartY = e.touches[0].clientY;
+    },
+    { passive: true },
+  );
 
-  sectionEl.addEventListener('touchmove', (e) => {
-    if (touchStartY === null) return;
-    const touchY = e.touches[0].clientY;
-    const delta = touchStartY - touchY;
-    if (atBoundary(delta)) {
+  sectionEl.addEventListener(
+    'touchmove',
+    (e) => {
+      if (touchStartY === null) return;
+      const touchY = e.touches[0].clientY;
+      const delta = touchStartY - touchY;
+      if (atBoundary(delta)) {
+        touchStartY = touchY;
+        return;
+      }
+      e.preventDefault();
       touchStartY = touchY;
-      return;
-    }
-    e.preventDefault();
-    touchStartY = touchY;
-    targetFrame = Math.max(0, Math.min(count - 1, targetFrame + delta * sensitivity));
-  }, { passive: false });
+      targetFrame = Math.max(0, Math.min(count - 1, targetFrame + delta * sensitivity));
+    },
+    { passive: false },
+  );
 }
 
 function startLoop(ctx, canvas, count) {
@@ -98,9 +110,9 @@ async function initScrollVideo(canvasId, frameDir, count) {
   const filenames = await loadManifest(frameDir);
   const total = filenames.length || count;
 
-  await Promise.all(filenames.map((filename, index) =>
-    loadFrame(frameDir, filename, index, total, progressEl)
-  ));
+  await Promise.all(
+    filenames.map((filename, index) => loadFrame(frameDir, filename, index, total, progressEl)),
+  );
 
   canvas.width = bitmaps[0].width;
   canvas.height = bitmaps[0].height;

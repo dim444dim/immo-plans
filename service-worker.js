@@ -24,28 +24,32 @@ const urlsToCache = [
   '/immo-plans/icons/icon-512.png?v=20260614',
   '/immo-plans/icons/icon-maskable-192.png?v=20260614',
   '/immo-plans/icons/icon-maskable-512.png?v=20260614',
-  '/immo-plans/icons/apple-touch-icon.png?v=20260614'
+  '/immo-plans/icons/apple-touch-icon.png?v=20260614',
 ];
 
-self.addEventListener('install', event => {
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-      .then(() => self.skipWaiting())
+    caches
+      .open(CACHE_NAME)
+      .then((cache) => cache.addAll(urlsToCache))
+      .then(() => self.skipWaiting()),
   );
 });
 
-self.addEventListener('activate', event => {
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
+    caches
+      .keys()
+      .then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== CACHE_NAME) {
+              return caches.delete(cacheName);
+            }
+          }),
+        );
+      })
+      .then(() => self.clients.claim()),
   );
 });
 
@@ -56,49 +60,54 @@ self.addEventListener('activate', event => {
 // images, panoramas...) restent en "stale-while-revalidate" : le cache
 // répond instantanément tout en rafraîchissant en arrière-plan.
 function isNavigationRequest(request) {
-  return request.mode === 'navigate' ||
-    (request.headers.get('accept') || '').includes('text/html');
+  return request.mode === 'navigate' || (request.headers.get('accept') || '').includes('text/html');
 }
 
 function networkFirst(request, cache) {
-  return fetch(request).then(response => {
-    if (response && response.status === 200) {
-      cache.put(request, response.clone());
-    }
-    return response;
-  }).catch(() =>
-    cache.match(request).then(cached => cached || caches.match('/immo-plans/index.html'))
-  );
-}
-
-function staleWhileRevalidate(request, cache) {
-  return cache.match(request).then(cached => {
-    const networkFetch = fetch(request).then(response => {
-      // Une réponse opaque (cross-origin sans CORS) ne permet pas de lire son
-      // statut réel : on ne la met PAS en cache pour éviter de figer une
-      // erreur silencieuse. Seules les réponses 200 lisibles sont cachées.
+  return fetch(request)
+    .then((response) => {
       if (response && response.status === 200) {
         cache.put(request, response.clone());
       }
       return response;
-    }).catch(() => {
-      if (cached) return cached;
-      return Promise.reject('Ressource indisponible (hors-ligne et non mise en cache)');
-    });
+    })
+    .catch(() =>
+      cache.match(request).then((cached) => cached || caches.match('/immo-plans/index.html')),
+    );
+}
+
+function staleWhileRevalidate(request, cache) {
+  return cache.match(request).then((cached) => {
+    const networkFetch = fetch(request)
+      .then((response) => {
+        // Une réponse opaque (cross-origin sans CORS) ne permet pas de lire son
+        // statut réel : on ne la met PAS en cache pour éviter de figer une
+        // erreur silencieuse. Seules les réponses 200 lisibles sont cachées.
+        if (response && response.status === 200) {
+          cache.put(request, response.clone());
+        }
+        return response;
+      })
+      .catch(() => {
+        if (cached) return cached;
+        return Promise.reject('Ressource indisponible (hors-ligne et non mise en cache)');
+      });
 
     return cached || networkFetch;
   });
 }
 
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', (event) => {
   const request = event.request;
   if (request.method !== 'GET') return;
 
   event.respondWith(
-    caches.open(CACHE_NAME).then(cache =>
-      isNavigationRequest(request)
-        ? networkFirst(request, cache)
-        : staleWhileRevalidate(request, cache)
-    )
+    caches
+      .open(CACHE_NAME)
+      .then((cache) =>
+        isNavigationRequest(request)
+          ? networkFirst(request, cache)
+          : staleWhileRevalidate(request, cache),
+      ),
   );
 });

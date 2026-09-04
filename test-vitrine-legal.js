@@ -24,7 +24,8 @@ const PLAUSIBLE_SRC = 'https://plausible.io/js/script.js';
 const PLAUSIBLE_DOMAIN = 'dim444dim.github.io/immo-plans';
 const DIRECTEUR_LABEL = 'Directeur de la publication';
 // Phrase de rétractation 14j : doit apparaître MOT POUR MOT et à l'identique sur chaque page.
-const RETRACTATION = "Conformément à l'article L221-18 du Code de la consommation, vous disposez d'un délai de 14 jours à compter de la commande pour exercer votre droit de rétractation, sans avoir à justifier de motifs.";
+const RETRACTATION =
+  "Conformément à l'article L221-18 du Code de la consommation, vous disposez d'un délai de 14 jours à compter de la commande pour exercer votre droit de rétractation, sans avoir à justifier de motifs.";
 
 // --- Compteur d'assertions ---
 let pass = 0;
@@ -44,14 +45,17 @@ function check(cond, msg) {
 // --- Parsing CSP QUOTE-AWARE : (["'])(.*?)\1 — JAMAIS [^"'] (la CSP contient des 'self') ---
 function extractCsp(html) {
   const m = html.match(
-    /<meta\s+http-equiv=(["'])Content-Security-Policy\1\s+content=(["'])([\s\S]*?)\2\s*\/?>/i
+    /<meta\s+http-equiv=(["'])Content-Security-Policy\1\s+content=(["'])([\s\S]*?)\2\s*\/?>/i,
   );
   return m ? m[3] : null;
 }
 
 function directiveSources(csp, name) {
   // ';' n'apparaît pas à l'intérieur des quotes de cette CSP : split simple sûr ici.
-  const parts = csp.split(';').map((s) => s.trim()).filter(Boolean);
+  const parts = csp
+    .split(';')
+    .map((s) => s.trim())
+    .filter(Boolean);
   for (const p of parts) {
     const toks = p.split(/\s+/);
     if (toks[0].toLowerCase() === name) return toks.slice(1);
@@ -105,7 +109,9 @@ function siretOk(html) {
 function findPlaceholder(html) {
   if (/\[\s*À\s+COMPL[EÉ]TER/i.test(html)) return '[À COMPLÉTER…]';
   if (/\bTODO\b/i.test(html)) return 'TODO';
-  const m = html.match(/\[[^\]]*\b(compl[eé]ter|à renseigner|renseigner le|à remplir|à définir|placeholder|xxx+)\b[^\]]*\]/i);
+  const m = html.match(
+    /\[[^\]]*\b(compl[eé]ter|à renseigner|renseigner le|à remplir|à définir|placeholder|xxx+)\b[^\]]*\]/i,
+  );
   return m ? m[0] : null;
 }
 
@@ -123,24 +129,42 @@ for (const page of PAGES) {
 
   // 1. Hébergeur GitHub + directeur de publication + contact
   check(html.includes(HOST), `[${page}] hébergeur GitHub absent (attendu: "${HOST}")`);
-  check(html.includes(DIRECTEUR_LABEL), `[${page}] directeur de publication absent (attendu label: "${DIRECTEUR_LABEL}")`);
+  check(
+    html.includes(DIRECTEUR_LABEL),
+    `[${page}] directeur de publication absent (attendu label: "${DIRECTEUR_LABEL}")`,
+  );
   check(html.includes(CONTACT), `[${page}] contact email absent (attendu: "${CONTACT}")`);
 
   // 2. Aucun placeholder ; SIRET = chiffres OU "immatriculation en cours"
   const ph = findPlaceholder(html);
   check(ph === null, `[${page}] placeholder interdit trouvé: ${ph}`);
-  check(siretOk(html), `[${page}] SIRET invalide (attendu: chiffres OU "immatriculation en cours")`);
+  check(
+    siretOk(html),
+    `[${page}] SIRET invalide (attendu: chiffres OU "immatriculation en cours")`,
+  );
 
   // 3. Snippet Plausible présent (src + data-domain)
-  check(html.includes(PLAUSIBLE_SRC), `[${page}] snippet Plausible absent (src "${PLAUSIBLE_SRC}")`);
-  check(html.includes('data-domain="' + PLAUSIBLE_DOMAIN + '"'), `[${page}] data-domain Plausible absent/incorrect (attendu "${PLAUSIBLE_DOMAIN}")`);
+  check(
+    html.includes(PLAUSIBLE_SRC),
+    `[${page}] snippet Plausible absent (src "${PLAUSIBLE_SRC}")`,
+  );
+  check(
+    html.includes('data-domain="' + PLAUSIBLE_DOMAIN + '"'),
+    `[${page}] data-domain Plausible absent/incorrect (attendu "${PLAUSIBLE_DOMAIN}")`,
+  );
 
   // 4. CSP autorise plausible.io en script-src ET connect-src (parse quote-aware)
   const csp = extractCsp(html);
   check(csp !== null, `[${page}] aucune <meta CSP> trouvée`);
   if (csp) {
-    check(cspAllowsPlausible(directiveSources(csp, 'script-src')), `[${page}] CSP script-src n'autorise pas plausible.io`);
-    check(cspAllowsPlausible(directiveSources(csp, 'connect-src')), `[${page}] CSP connect-src n'autorise pas plausible.io`);
+    check(
+      cspAllowsPlausible(directiveSources(csp, 'script-src')),
+      `[${page}] CSP script-src n'autorise pas plausible.io`,
+    );
+    check(
+      cspAllowsPlausible(directiveSources(csp, 'connect-src')),
+      `[${page}] CSP connect-src n'autorise pas plausible.io`,
+    );
   }
 
   // 5. Aucun handler inline on*= ni <script> à contenu inline
@@ -154,8 +178,7 @@ for (const page of PAGES) {
 }
 
 // --- Vérif transversale : la rétractation est bien IDENTIQUE entre toutes les pages ---
-const retractFound = PAGES
-  .map((p) => path.join(DIR, p))
+const retractFound = PAGES.map((p) => path.join(DIR, p))
   .filter((fp) => fs.existsSync(fp))
   .map((fp) => fs.readFileSync(fp, 'utf8').includes(RETRACTATION));
 check(retractFound.every(Boolean), 'rétractation 14j non identique/présente sur toutes les pages');

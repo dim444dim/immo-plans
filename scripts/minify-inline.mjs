@@ -27,7 +27,7 @@ const cleanCss = new CleanCSS({ level: 1 });
 function collapseBlankLines(js) {
   return js
     .split('\n')
-    .map(line => line.replace(/[ \t]+$/, ''))
+    .map((line) => line.replace(/[ \t]+$/, ''))
     .join('\n')
     .replace(/\n{3,}/g, '\n\n');
 }
