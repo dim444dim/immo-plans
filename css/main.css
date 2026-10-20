@@ -31,10 +31,13 @@
   --card2: rgba(16, 12, 8, 0.88);
   --places-bar-h: 88px;
 }
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* Dans une couche : une règle de précision nulle hors couche battrait space-y-*, space-x-* (Tailwind 4). */
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 }
 html {
   scroll-behavior: smooth;
