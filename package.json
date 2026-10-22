@@ -12,6 +12,6 @@
     "lighthouse": "^13.4.0",
     "postcss": "^8.5.31",
     "tailwindcss": "^4.3.3",
-    "terser": "^5.48.0"
+    "terser": "^5.51.2"
   }
 }
