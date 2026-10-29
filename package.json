@@ -6,7 +6,7 @@
     "check": "biome check ."
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.12",
+    "@biomejs/biome": "2.6.3",
     "@tailwindcss/postcss": "^4.3.3",
     "clean-css": "^5.3.3",
     "lighthouse": "^13.4.0",
